@@ -8,10 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using Emgu.CV;
-using Emgu.Util;
-
-namespace Lamp
+namespace MultiProjectionViewer
 {
   public partial class Form1 : Form
   {

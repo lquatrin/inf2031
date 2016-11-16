@@ -1,4 +1,4 @@
-﻿namespace Lamp
+﻿namespace MultiProjectionViewer
 {
   partial class Form1
   {
