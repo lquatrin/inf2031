@@ -22,3 +22,8 @@ double ClassCppToCS_Wrapper::CppWrapperClass::GetSum ()
   
   return sum;
 }
+
+void ClassCppToCS_Wrapper::CppWrapperClass::testLamp ()
+{
+  pCC->lampTest();
+}

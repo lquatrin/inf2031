@@ -32,6 +32,7 @@ namespace ClassCppToCS_CS
           controlCpp.GetSum();
           double sumOfArray = controlCpp.sum;
           Console.WriteLine(sumOfArray.ToString());
+          controlCpp.testLamp();
         }
 
       }

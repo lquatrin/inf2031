@@ -16,6 +16,8 @@ namespace ClassCppToCS_Wrapper {
     double GetSum();
     double sum;
 
+    void testLamp ();
+
   private:
     computingClass* pCC;
 	};
