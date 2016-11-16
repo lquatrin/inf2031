@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using ClassCppToCS_Wrapper;
+using CppWrapper;
 
 namespace ClassCppToCS_CS
 {
@@ -28,7 +28,7 @@ namespace ClassCppToCS_CS
       {
         fixed (int* pmyArray = &myArray[0])
         {
-          ClassCppToCS_Wrapper.CppWrapperClass controlCpp = new ClassCppToCS_Wrapper.CppWrapperClass(pmyArray, noElements);
+          CppWrapper.CppLAMPWrapper controlCpp = new CppWrapper.CppLAMPWrapper(pmyArray, noElements);
           controlCpp.GetSum();
           double sumOfArray = controlCpp.sum;
           Console.WriteLine(sumOfArray.ToString());

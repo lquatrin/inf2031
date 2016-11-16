@@ -8,12 +8,12 @@
 
 using namespace System;
 
-namespace ClassCppToCS_Wrapper {
+namespace CppWrapper {
 
-	public ref class CppWrapperClass
+	public ref class CppLAMPWrapper
 	{
   public:
-    CppWrapperClass(int* pInt, int arraySize);
+    CppLAMPWrapper(int* pInt, int arraySize);
     double GetSum();
     double sum;
 

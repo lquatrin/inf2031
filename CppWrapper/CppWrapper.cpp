@@ -8,19 +8,19 @@
 #include "../LAMP/lamp.cpp"
 #include "../LAMP/lamp_f.cpp"
 
-ClassCppToCS_Wrapper::CppWrapperClass::CppWrapperClass(int *pInt, int arraySize)
+CppWrapper::CppLAMPWrapper::CppLAMPWrapper(int *pInt, int arraySize)
 {
   pCC = new LAMPClass(pInt, arraySize);
 }
 
-double ClassCppToCS_Wrapper::CppWrapperClass::GetSum ()
+double CppWrapper::CppLAMPWrapper::GetSum()
 {
   sum = pCC->SumArray();
   
   return sum;
 }
 
-void ClassCppToCS_Wrapper::CppWrapperClass::testLamp ()
+void CppWrapper::CppLAMPWrapper::testLamp()
 {
   pCC->lampTest();
 }
