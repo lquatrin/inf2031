@@ -11,11 +11,11 @@ using namespace System::Security::Permissions;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly:AssemblyTitleAttribute(L"ClassCppToCS_Wrapper")];
+[assembly:AssemblyTitleAttribute(L"CppWrapper")];
 [assembly:AssemblyDescriptionAttribute(L"")];
 [assembly:AssemblyConfigurationAttribute(L"")];
 [assembly:AssemblyCompanyAttribute(L"tecgraf.pu-rio.br")];
-[assembly:AssemblyProductAttribute(L"ClassCppToCS_Wrapper")];
+[assembly:AssemblyProductAttribute(L"CppLAMPWrapper")];
 [assembly:AssemblyCopyrightAttribute(L"Copyright (c) tecgraf.pu-rio.br 2016")];
 [assembly:AssemblyTrademarkAttribute(L"")];
 [assembly:AssemblyCultureAttribute(L"")];
