@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "../ClassCppToCS_Cpp/header.h"
-#include "../ClassCppToCS_Cpp/body.cpp"
+#include "../LAMP/lamp.h"
+#include "../LAMP/lamp.cpp"
+#include "../LAMP/lamp_f.cpp"
 
 using namespace System;
 
@@ -19,6 +20,6 @@ namespace ClassCppToCS_Wrapper {
     void testLamp ();
 
   private:
-    computingClass* pCC;
+    LAMPClass* pCC;
 	};
 }

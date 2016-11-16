@@ -2,18 +2,15 @@
 
 #include "stdafx.h"
 
-#include "ClassCppToCS_Wrapper.h"
+#include "CppWrapper.h"
 
-#include "../ClassCppToCS_Cpp/header.h"
-#include "../ClassCppToCS_Cpp/body.cpp"
-
+#include "../LAMP/lamp.h"
+#include "../LAMP/lamp.cpp"
+#include "../LAMP/lamp_f.cpp"
 
 ClassCppToCS_Wrapper::CppWrapperClass::CppWrapperClass(int *pInt, int arraySize)
 {
-  pCC = new computingClass(pInt, arraySize);
-
-
-
+  pCC = new LAMPClass(pInt, arraySize);
 }
 
 double ClassCppToCS_Wrapper::CppWrapperClass::GetSum ()
