@@ -4,11 +4,11 @@
 
 #include <opencv2/core/core.hpp>
 
-class computingClass
+class LAMPClass
 {
 public:
-  computingClass(int* pInt, int arrSize);
-  ~computingClass() {}
+  LAMPClass(int* pInt, int arrSize);
+  ~LAMPClass() {}
 
   double SumArray();
 

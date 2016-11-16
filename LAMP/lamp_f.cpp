@@ -1,28 +1,13 @@
 #pragma once
 
-#include "header.h"
-
-#include <vector>
-
+#include "lamp.h"
 #include <opencv2/core/core_c.h>
 
-computingClass::computingClass (int* pInt, int arrSize)
-{
-  for (int i = 0; i < arrSize; i++)
-  {
-    vec.push_back(pInt[i]);
-  }
-}
-
-double computingClass::SumArray ()
-{
-  int sum = 0;
-  for (int i = 0; i < vec.size(); i++)
-  {
-    sum += vec[i];
-  }
-  return (double)sum;
-}
+/**
+* Code From Guilherme G. Schardong [gschardong@inf.puc-rio.br]
+* Available at: https://github.com/schardong/mpalg/blob/master/src/lamp.cpp
+* ref: http://ieeexplore.ieee.org/xpl/articleDetails.jsp?reload=true&arnumber=6065024
+*/
 
 static bool s_CheckInputErrorsLAMP(const cv::Mat& X, const std::vector<int> cp_index, const cv::Mat& Ys)
 {
@@ -49,7 +34,8 @@ static bool s_CheckInputErrorsLAMP(const cv::Mat& X, const std::vector<int> cp_i
   return true;
 }
 
-cv::Mat computingClass::lamp(const cv::Mat& X, const std::vector<int> cp_index, const cv::Mat& Ys)
+
+cv::Mat LAMPClass::lamp(const cv::Mat& X, const std::vector<int> cp_index, const cv::Mat& Ys)
 {
   if (!s_CheckInputErrorsLAMP(X, cp_index, Ys)) {
     fprintf(stderr, "ERROR: lamp - Invalid input.\n");
@@ -137,7 +123,7 @@ cv::Mat computingClass::lamp(const cv::Mat& X, const std::vector<int> cp_index, 
   return Y;
 }
 
-void computingClass::lampTest ()
+void LAMPClass::lampTest()
 {
   float d[10][3] = {
     { 1, 2, 3 },
@@ -162,7 +148,7 @@ void computingClass::lampTest ()
 
   cv::Mat X = cv::Mat(10, 3, CV_32FC1, d);
   cv::Mat Ys = cv::Mat(3, 2, CV_32FC1, ys);
-  
+
   cv::Mat P = lamp(X, idx, Ys);
 
   printf("Result of LAMP:\n - Matrix P: [%d, %d]\n", P.rows, P.cols);

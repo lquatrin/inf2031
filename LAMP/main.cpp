@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "header.h"
+#include "lamp.h"
 
 #include <opencv2/core/core.hpp>
 
@@ -15,7 +15,7 @@ int main()
   myarray[1] = 15;
   myarray[2] = 75;
 
-  computingClass cC = computingClass(myarray, noElements);
+  LAMPClass cC = LAMPClass(myarray, noElements);
 
   cC.lampTest();
 
