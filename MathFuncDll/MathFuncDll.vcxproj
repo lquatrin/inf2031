@@ -14,7 +14,7 @@
     <ProjectGuid>{407A7E15-3D24-4373-B26E-E0D4E6795BA2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>MathFuncDll</RootNamespace>
-    <ProjectName>MathFuncDll_01</ProjectName>
+    <ProjectName>1_MathFuncDll_01</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
