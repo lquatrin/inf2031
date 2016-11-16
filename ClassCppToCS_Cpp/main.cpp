@@ -2,6 +2,8 @@
 
 #include "header.h"
 
+#include <opencv2/core/core.hpp>
+
 using namespace std;
 
 int main()
@@ -14,6 +16,8 @@ int main()
   myarray[2] = 75;
 
   computingClass cC = computingClass(myarray, noElements);
+
+  cC.lampTest();
 
   delete[] myarray;
   return 0;

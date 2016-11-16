@@ -25,9 +25,9 @@ namespace Lamp
 
       Emgu.CV.Matrix<double> X = new Emgu.CV.Matrix<double>(d);
 
-      //Application.EnableVisualStyles();
-      //Application.SetCompatibleTextRenderingDefault(false);
-      //Application.Run(new Form1());
+      Application.EnableVisualStyles();
+      Application.SetCompatibleTextRenderingDefault(false);
+      Application.Run(new Form1());
     }
   }
 }
