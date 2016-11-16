@@ -1,14 +1,28 @@
 #pragma once
 
-#include "lamp.h"
+#include "header.h"
 
 #include <vector>
 
 #include <opencv2/core/core_c.h>
 
-CppLAMP::CppLAMP () {}
+computingClass::computingClass (int* pInt, int arrSize)
+{
+  for (int i = 0; i < arrSize; i++)
+  {
+    vec.push_back(pInt[i]);
+  }
+}
 
-CppLAMP::~CppLAMP () {}
+double computingClass::SumArray ()
+{
+  int sum = 0;
+  for (int i = 0; i < vec.size(); i++)
+  {
+    sum += vec[i];
+  }
+  return (double)sum;
+}
 
 static bool s_CheckInputErrorsLAMP(const cv::Mat& X, const std::vector<int> cp_index, const cv::Mat& Ys)
 {
@@ -35,7 +49,7 @@ static bool s_CheckInputErrorsLAMP(const cv::Mat& X, const std::vector<int> cp_i
   return true;
 }
 
-cv::Mat CppLAMP::lamp(const cv::Mat& X, const std::vector<int> cp_index, const cv::Mat& Ys)
+cv::Mat computingClass::lamp(const cv::Mat& X, const std::vector<int> cp_index, const cv::Mat& Ys)
 {
   if (!s_CheckInputErrorsLAMP(X, cp_index, Ys)) {
     fprintf(stderr, "ERROR: lamp - Invalid input.\n");
@@ -123,7 +137,7 @@ cv::Mat CppLAMP::lamp(const cv::Mat& X, const std::vector<int> cp_index, const c
   return Y;
 }
 
-void CppLAMP::testLAMP()
+void computingClass::lampTest ()
 {
   float d[10][3] = {
     { 1, 2, 3 },

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Lamp")]
+[assembly: AssemblyTitle("ClassCppToCS_CS")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Lamp")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
+[assembly: AssemblyCompany("tecgraf.pu-rio.br")]
+[assembly: AssemblyProduct("ClassCppToCS_CS")]
+[assembly: AssemblyCopyright("Copyright © tecgraf.pu-rio.br 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("142844fe-aab5-4489-a7bc-b7b8f7b57b52")]
+[assembly: Guid("f3c026da-ff2c-40f6-b669-fa871a26cb7d")]
 
 // Version information for an assembly consists of the following four values:
 //

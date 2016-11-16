@@ -4,15 +4,17 @@
 
 #include <opencv2/core/core.hpp>
 
-class CppLAMP
+class computingClass
 {
 public:
-  CppLAMP ();
-  ~CppLAMP ();
+  computingClass(int* pInt, int arrSize);
+  ~computingClass() {}
+
+  double SumArray();
 
   cv::Mat lamp(const cv::Mat& X, const std::vector<int> cp_index, const cv::Mat& Ys);
 
-  void testLAMP();
+  void lampTest();
 
 private:
   std::vector<int> vec;
