@@ -6,8 +6,15 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LAMP", "LAMP\lampcpp.vcxproj", "{274B8935-6939-44B5-BD21-4BC9198AFF3C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppWrapper", "CppWrapper\cppwrapper.vcxproj", "{13164D1F-B805-42AD-83FC-025DB10C34A6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{274B8935-6939-44B5-BD21-4BC9198AFF3C} = {274B8935-6939-44B5-BD21-4BC9198AFF3C}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiProjection", "MultiProjectionViewer\MultiProjection.csproj", "{993D6C9E-1EAC-4113-895C-BA447A06104F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{13164D1F-B805-42AD-83FC-025DB10C34A6} = {13164D1F-B805-42AD-83FC-025DB10C34A6}
+		{274B8935-6939-44B5-BD21-4BC9198AFF3C} = {274B8935-6939-44B5-BD21-4BC9198AFF3C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
