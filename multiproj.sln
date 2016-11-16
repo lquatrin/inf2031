@@ -12,6 +12,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathFuncs_01", "MathFuncs\M
 		{407A7E15-3D24-4373-B26E-E0D4E6795BA2} = {407A7E15-3D24-4373-B26E-E0D4E6795BA2}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyClassCpp", "MyClassCpp\MyClassCpp.vcxproj", "{5AB24824-3E49-4512-9969-945D0BA621ED}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyClassCppDLL", "MyClassCppDLL\MyClassCppDLL.vcxproj", "{FA02CDF7-4662-4DDA-B4C2-E65406637044}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5AB24824-3E49-4512-9969-945D0BA621ED} = {5AB24824-3E49-4512-9969-945D0BA621ED}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyClassCS", "MyClassCS\MyClassCS.csproj", "{54000AEA-C6AA-46F8-8600-D3A37887A95D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5AB24824-3E49-4512-9969-945D0BA621ED} = {5AB24824-3E49-4512-9969-945D0BA621ED}
+		{FA02CDF7-4662-4DDA-B4C2-E65406637044} = {FA02CDF7-4662-4DDA-B4C2-E65406637044}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +65,36 @@ Global
 		{4C02DB0B-A92E-4644-80DC-9463F8EB581D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4C02DB0B-A92E-4644-80DC-9463F8EB581D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4C02DB0B-A92E-4644-80DC-9463F8EB581D}.Release|Win32.ActiveCfg = Release|Any CPU
+		{5AB24824-3E49-4512-9969-945D0BA621ED}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{5AB24824-3E49-4512-9969-945D0BA621ED}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{5AB24824-3E49-4512-9969-945D0BA621ED}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{5AB24824-3E49-4512-9969-945D0BA621ED}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5AB24824-3E49-4512-9969-945D0BA621ED}.Debug|Win32.Build.0 = Debug|Win32
+		{5AB24824-3E49-4512-9969-945D0BA621ED}.Release|Any CPU.ActiveCfg = Release|Win32
+		{5AB24824-3E49-4512-9969-945D0BA621ED}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{5AB24824-3E49-4512-9969-945D0BA621ED}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{5AB24824-3E49-4512-9969-945D0BA621ED}.Release|Win32.ActiveCfg = Release|Win32
+		{5AB24824-3E49-4512-9969-945D0BA621ED}.Release|Win32.Build.0 = Release|Win32
+		{FA02CDF7-4662-4DDA-B4C2-E65406637044}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{FA02CDF7-4662-4DDA-B4C2-E65406637044}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{FA02CDF7-4662-4DDA-B4C2-E65406637044}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{FA02CDF7-4662-4DDA-B4C2-E65406637044}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FA02CDF7-4662-4DDA-B4C2-E65406637044}.Debug|Win32.Build.0 = Debug|Win32
+		{FA02CDF7-4662-4DDA-B4C2-E65406637044}.Release|Any CPU.ActiveCfg = Release|Win32
+		{FA02CDF7-4662-4DDA-B4C2-E65406637044}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{FA02CDF7-4662-4DDA-B4C2-E65406637044}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{FA02CDF7-4662-4DDA-B4C2-E65406637044}.Release|Win32.ActiveCfg = Release|Win32
+		{FA02CDF7-4662-4DDA-B4C2-E65406637044}.Release|Win32.Build.0 = Release|Win32
+		{54000AEA-C6AA-46F8-8600-D3A37887A95D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54000AEA-C6AA-46F8-8600-D3A37887A95D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54000AEA-C6AA-46F8-8600-D3A37887A95D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{54000AEA-C6AA-46F8-8600-D3A37887A95D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{54000AEA-C6AA-46F8-8600-D3A37887A95D}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{54000AEA-C6AA-46F8-8600-D3A37887A95D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54000AEA-C6AA-46F8-8600-D3A37887A95D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54000AEA-C6AA-46F8-8600-D3A37887A95D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{54000AEA-C6AA-46F8-8600-D3A37887A95D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{54000AEA-C6AA-46F8-8600-D3A37887A95D}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

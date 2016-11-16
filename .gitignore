@@ -38,6 +38,12 @@ MathFuncDll/Release
 MathFuncDll/Debug
 MathFuncs/bin
 MathFuncs/obj
+MyClassCpp/Release
+MyClassCpp/Debug
+MyClassCppDLL/Release
+MyClassCppDLL/Debug
+MathFuncs/bin
+MathFuncs/obj
 
 # Visual Studio files
 *.sdf
