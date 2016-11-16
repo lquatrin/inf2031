@@ -27,3 +27,17 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio folders
+ipch
+Release
+Debug
+LAMP/bin
+LAMP/obj
+MathFuncDll/Release
+MathFuncDll/Debug
+MathFuncs/bin
+MathFuncs/obj
+
+# Visual Studio files
+*.sdf
