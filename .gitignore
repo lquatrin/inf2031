@@ -32,18 +32,18 @@
 ipch
 Release
 Debug
-LAMP/bin
-LAMP/obj
-MathFuncDll/Release
-MathFuncDll/Debug
-MathFuncs/bin
-MathFuncs/obj
-MyClassCpp/Release
-MyClassCpp/Debug
-MyClassCppDLL/Release
-MyClassCppDLL/Debug
-MathFuncs/bin
-MathFuncs/obj
+WrappersCppFromCS/LAMP/bin
+WrappersCppFromCS/LAMP/obj
+WrappersCppFromCS/MathFuncDll/Release
+WrappersCppFromCS/MathFuncDll/Debug
+WrappersCppFromCS/MathFuncs/bin
+WrappersCppFromCS/MathFuncs/obj
+WrappersCppFromCS/MyClassCpp/Release
+WrappersCppFromCS/MyClassCpp/Debug
+WrappersCppFromCS/MyClassCppDLL/Release
+WrappersCppFromCS/MyClassCppDLL/Debug
+WrappersCppFromCS/MathFuncs/bin
+WrappersCppFromCS/MathFuncs/obj
 
 # Visual Studio files
 *.sdf
