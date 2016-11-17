@@ -33,6 +33,13 @@ namespace ClassCppToCS_CS
           double sumOfArray = controlCpp.sum;
           Console.WriteLine(sumOfArray.ToString());
           controlCpp.testLamp();
+
+          CppWrapper.CppMDSWrapper mds = new CppWrapper.CppMDSWrapper(pmyArray, noElements);
+          mds.testMDS();
+
+          CppWrapper.CppHistogramWrapper histo = new CppWrapper.CppHistogramWrapper();
+          Console.WriteLine("histograma distancias");
+          histo.testHistogram();
         }
 
       }
