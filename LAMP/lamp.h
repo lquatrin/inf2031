@@ -16,6 +16,8 @@ public:
 
   void lampTest();
 
+  cv::Mat ilamp (const cv::Mat& X, const cv::Mat& Y, const unsigned int k, float* p, int p_dimension);
+
 private:
   std::vector<int> vec;
 };
