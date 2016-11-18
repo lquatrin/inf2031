@@ -155,10 +155,13 @@ void LAMPClass::lampTest()
 
   for (int k = 0; k < P.rows; ++k)
   {
+    printf("   %.02d | ", k);
     for (int c = 0; c < P.cols; ++c)
     {
       printf("%.2f ", P.at<float>(k, c));
     }
-    printf("\n");
+    printf("|\n");
   }
+
+
 }
