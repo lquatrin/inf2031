@@ -15,7 +15,7 @@ public:
   cv::Mat lamp(const cv::Mat& X, const std::vector<int> cp_index, const cv::Mat& Ys);
 
   void lampTest();
-
+  void PrintCVMAT(cv::Mat m);
   cv::Mat ilamp (const cv::Mat& X, const cv::Mat& Y, const unsigned int k, const cv::Mat& p);
 
 private:

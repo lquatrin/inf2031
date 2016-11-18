@@ -4,6 +4,8 @@
 
 #include <vector>
 #include <cmath>
+#include <iostream>
+#include <algorithm>
 
 #include <opencv2/core/core_c.h>
 
@@ -27,6 +29,31 @@ double LAMPClass::SumArray()
   return (double)sum;
 }
 
+struct PointDistance {
+  int index;
+  float distance;
+};
+
+struct PointDistanceSortFunc
+{
+  inline bool operator() (const PointDistance& struct1, const PointDistance& struct2)
+  {
+    return (struct1.distance < struct2.distance);
+  }
+};
+
+void LAMPClass::PrintCVMAT(cv::Mat m)
+{
+  for (int k = 0; k < m.rows; ++k)
+  {
+    printf("   %.02d | ", k);
+    for (int c = 0; c < m.cols; ++c)
+    {
+      printf("%.2f ", m.at<float>(k, c));
+    }
+    printf("|\n");
+  }
+}
 
 // iLAMP maps a point 'p' on the screen (usually R^2) into a high-dimensional vector 'q' (R^m).
 // Find affine transformation f(p) = pM + t that minimizes SUM_{i=1, k} alpha_i * abs(f(y_i) - x_i)^2
@@ -37,23 +64,32 @@ double LAMPClass::SumArray()
 // \param p_dimension dimension space of 'p' instance
 cv::Mat LAMPClass::ilamp(const cv::Mat& X, const cv::Mat& Y, const unsigned int k, const cv::Mat& p)
 {
+  //printf("Print X:\n");
+  //PrintCVMAT(X);
+  //printf("Print Y:\n");
+  //PrintCVMAT(Y);
+  //printf("Print p:\n");
+  //PrintCVMAT(p);
+  
   // Steps:
-  // -> TODO
   // 1 - Find k closest neighbors to p among the instances in Y, named as Ys = {y1, ... , yk}.
   //     Also Xs = {x1, ... , xk} is dataset containing the correspondent high-dimensional instances on X.
-  std::vector<int> neighbors(k);
-  for (int i = 0; i < k; ++i)
-    //TODO: REFAZER VIZINHOS
-    neighbors[i] = i;
+  std::vector<PointDistance> pdist(Y.rows);
+  for (int i = 0; i < Y.rows; i++)
+  {
+    pdist[i].index = i;
+    pdist[i].distance = cv::norm(Y.row(i), p.row(0));
+  }
+  std::sort(pdist.begin(), pdist.end(), PointDistanceSortFunc());
 
   // 2 - Create Ys and Xs with the neighbors of the point p
   cv::Mat Ys = cv::Mat::zeros(k, Y.cols, CV_32FC1);
-  for (int i = 0; i < k; i++)
-    Ys.row(i) = Y.row(neighbors[i]);
-
   cv::Mat Xs = cv::Mat::zeros(k, X.cols, CV_32FC1);
-  for (int i = 0; i < k; ++i)
-    Xs.row(i) = X.row(neighbors[i]);
+  for (int i = 0; i < k; i++)
+  {
+    Ys.row(i) = Y.row(pdist[i].index) * 1; // "* 1" prevents lazy evaluation
+    Xs.row(i) = X.row(pdist[i].index) * 1; // "* 1" prevents lazy evaluation
+  }
 
   // 3 - Evaluate for each neighbor: alpha_i = (1 / norm(y_i - p)^2)
   cv::Mat alpha = cv::Mat::zeros(1, k, CV_32FC1);
@@ -85,14 +121,17 @@ cv::Mat LAMPClass::ilamp(const cv::Mat& X, const cv::Mat& Y, const unsigned int 
   cv::reduce(a_yi, y_t, 0, CV_REDUCE_SUM);
   y_t = y_t / sum_alpha;
 
+
   // 5 - Evaluate x^_i = x_i - x~ and y^_i = y_i - y~
   cv::Mat x_c = cv::Mat::zeros(Xs.rows, Xs.cols, Xs.depth());
   for (int i = 0; i < k; i++)
     x_c.row(i) = Xs.row(i) - x_t;
 
-  cv::Mat y_c = cv::Mat::zeros(Xs.rows, Xs.cols, Xs.depth());
+  cv::Mat y_c = cv::Mat::zeros(Ys.rows, Ys.cols, Ys.depth());
   for (int i = 0; i < k; i++)
     y_c.row(i) = Ys.row(i) - y_t;
+
+  //TODO PRINTS
 
   // 6 - Build A and B
   cv::Mat sqrt_alpha;
@@ -100,21 +139,53 @@ cv::Mat LAMPClass::ilamp(const cv::Mat& X, const cv::Mat& Y, const unsigned int 
 
   cv::Mat A;
   y_c.copyTo(A);
-  for (int i = 0; i < y_c.rows; i++)
-    y_c.row(i) = sqrt_alpha.at<float>(0, i) * y_c.row(i);
+  for (int i = 0; i < A.rows; i++)
+    A.row(i) = sqrt_alpha.at<float>(0, i) * y_c.row(i);
 
   cv::Mat B;
   x_c.copyTo(B);
-  for (int i = 0; i < x_c.rows; i++)
-    x_c.row(i) = sqrt_alpha.at<float>(0, i) * x_c.row(i);
+  for (int i = 0; i < B.rows; i++)
+    B.row(i) = sqrt_alpha.at<float>(0, i) * x_c.row(i);
+
+  //TODO PRINTS
 
   // 7 - SVD of At*B to compute M as M = U*V
   // cv::SVD turns a Matrix H into  u*w*vt
   cv::SVD udv(A.t() * B);
   cv::Mat M = udv.u * udv.vt;
 
+  //TODO PRINTS
+
   // 8 - q = f(p) = (p - y~) * M + x~
   cv::Mat q = (p - y_t) * M + x_t;
+
+  //TODO PRINTS
+#ifdef _DEBUG
+  for (int i = 0; i < pdist.size(); i++)
+    printf("pdist: %d %f\n", pdist[i].index, pdist[i].distance);
+
+  printf("Print Ys:\n");
+  PrintCVMAT(Ys);
+  printf("Print Xs:\n");
+  PrintCVMAT(Xs);
+
+  printf("Print alpha:\n");
+  PrintCVMAT(alpha);
+
+  printf("Print a_xi:\n");
+  PrintCVMAT(a_xi);
+
+  printf("Print a_yi:\n");
+  PrintCVMAT(a_yi);
+
+  printf("Print sum_alpha: %f\n", sum_alpha);
+
+  printf("Print x_t:\n");
+  PrintCVMAT(x_t);
+
+  printf("Print y_t:\n");
+  PrintCVMAT(y_t);
+#endif
 
   return q;
 }

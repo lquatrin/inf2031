@@ -138,6 +138,8 @@ void LAMPClass::lampTest()
     { 9, 8, 7 },
   };
 
+
+
   std::vector<int> idx = { 1, 5, 9 };
 
   float ys[3][2] = {
@@ -149,19 +151,31 @@ void LAMPClass::lampTest()
   cv::Mat X = cv::Mat(10, 3, CV_32FC1, d);
   cv::Mat Ys = cv::Mat(3, 2, CV_32FC1, ys);
 
-  cv::Mat P = lamp(X, idx, Ys);
-
-  printf("Result of LAMP:\n - Matrix P: [%d, %d]\n", P.rows, P.cols);
-
-  for (int k = 0; k < P.rows; ++k)
+  cv::Mat Y = lamp(X, idx, Ys);
+  
   {
-    printf("   %.02d | ", k);
-    for (int c = 0; c < P.cols; ++c)
-    {
-      printf("%.2f ", P.at<float>(k, c));
-    }
-    printf("|\n");
+    float vp[1][2] = {
+      { 3, 5 },
+    };
+    cv::Mat p = cv::Mat(1, 2, CV_32FC1, vp);
+
+    cv::Mat q = ilamp(X, Y, 5, p);
+
+    printf("Print P[%.2f, %.2f] to Q:\n", vp[0][0], vp[0][1]);
+    PrintCVMAT(q);
+    printf("\n");
   }
 
+  {
+    float vp[1][2] = {
+      { 4, 9 },
+    };
+    cv::Mat p = cv::Mat(1, 2, CV_32FC1, vp);
 
+    cv::Mat q = ilamp(X, Y, 5, p);
+
+    printf("Print P[%.2f, %.2f] to Q:\n", vp[0][0], vp[0][1]);
+    PrintCVMAT(q);
+    printf("\n");
+  }
 }
