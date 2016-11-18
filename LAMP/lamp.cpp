@@ -64,13 +64,6 @@ void LAMPClass::PrintCVMAT(cv::Mat m)
 // \param p_dimension dimension space of 'p' instance
 cv::Mat LAMPClass::ilamp(const cv::Mat& X, const cv::Mat& Y, const unsigned int k, const cv::Mat& p)
 {
-  //printf("Print X:\n");
-  //PrintCVMAT(X);
-  //printf("Print Y:\n");
-  //PrintCVMAT(Y);
-  //printf("Print p:\n");
-  //PrintCVMAT(p);
-  
   // Steps:
   // 1 - Find k closest neighbors to p among the instances in Y, named as Ys = {y1, ... , yk}.
   //     Also Xs = {x1, ... , xk} is dataset containing the correspondent high-dimensional instances on X.
@@ -82,7 +75,7 @@ cv::Mat LAMPClass::ilamp(const cv::Mat& X, const cv::Mat& Y, const unsigned int 
   }
   std::sort(pdist.begin(), pdist.end(), PointDistanceSortFunc());
 
-  // 2 - Create Ys and Xs with the neighbors of the point p
+  // 2 - Create Ys and Xs with the closest neighbors of the point p
   cv::Mat Ys = cv::Mat::zeros(k, Y.cols, CV_32FC1);
   cv::Mat Xs = cv::Mat::zeros(k, X.cols, CV_32FC1);
   for (int i = 0; i < k; i++)
@@ -91,10 +84,14 @@ cv::Mat LAMPClass::ilamp(const cv::Mat& X, const cv::Mat& Y, const unsigned int 
     Xs.row(i) = X.row(pdist[i].index) * 1; // "* 1" prevents lazy evaluation
   }
 
-  // 3 - Evaluate for each neighbor: alpha_i = (1 / norm(y_i - p)^2)
+  // 3 - Evaluate for each neighbor: alpha_i = (1 / norm(y_i - p)^2), norm = ||x|| 
   cv::Mat alpha = cv::Mat::zeros(1, k, CV_32FC1);
   for (int i = 0; i < k; ++i)
-    alpha.at<float>(0, i) = 1 / cv::max(cv::norm(Ys.row(i), p), TOLERANCE);
+  {
+    cv::Mat t = Ys.row(i) - p;
+    alpha.at<float>(0, i) = 1 / cv::max(t.dot(t), TOLERANCE);
+    //alpha.at<float>(0, i) = 1 / cv::max(cv::norm(Ys.row(i), p), TOLERANCE);
+  }
 
   // 4 - t = x~ - y~ * M, with: x~ = (SUM_{i=1, k} alpha_i * x_i) / (SUM_{i=1, k} alpha_i), y~ = (SUM_{i=1, k} alpha_i * y_i) / (SUM_{i=1, k} alpha_i)
   cv::Mat a_xi = cv::Mat::zeros(Xs.rows, Xs.cols, Xs.depth());
@@ -161,6 +158,15 @@ cv::Mat LAMPClass::ilamp(const cv::Mat& X, const cv::Mat& Y, const unsigned int 
 
   //TODO PRINTS
 #ifdef _DEBUG
+  printf("Print X:\n");
+  PrintCVMAT(X);
+  printf("Print Y:\n");
+  PrintCVMAT(Y);
+  printf("Print p:\n");
+  PrintCVMAT(p);
+
+  printf("Neighbors: %d\n", k);
+
   for (int i = 0; i < pdist.size(); i++)
     printf("pdist: %d %f\n", pdist[i].index, pdist[i].distance);
 

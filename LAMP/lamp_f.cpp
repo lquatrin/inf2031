@@ -66,7 +66,11 @@ cv::Mat LAMPClass::lamp(const cv::Mat& X, const std::vector<int> cp_index, const
 
     // Building the weights of each control point over the current point.
     for (int j = 0; j < cp_index.size(); ++j)
-      alpha.at<float>(0, j) = 1 / cv::max(cv::norm(Xs.row(j), X.row(proj_idx[i])), tol);
+    {
+      cv::Mat t = Xs.row(j) - X.row(proj_idx[i]);
+      alpha.at<float>(0, j) = 1 / cv::max(t.dot(t), tol);
+      //alpha.at<float>(0, j) = 1 / cv::max(cv::norm(Xs.row(j), X.row(proj_idx[i])), tol);
+    }
 
     float sum_alpha = cv::sum(alpha)[0];
 
@@ -153,13 +157,15 @@ void LAMPClass::lampTest()
 
   cv::Mat Y = lamp(X, idx, Ys);
   
+  int k_neighbors = 5;
+
   {
     float vp[1][2] = {
       { 3, 5 },
     };
     cv::Mat p = cv::Mat(1, 2, CV_32FC1, vp);
 
-    cv::Mat q = ilamp(X, Y, 5, p);
+    cv::Mat q = ilamp(X, Y, k_neighbors, p);
 
     printf("Print P[%.2f, %.2f] to Q:\n", vp[0][0], vp[0][1]);
     PrintCVMAT(q);
@@ -172,7 +178,7 @@ void LAMPClass::lampTest()
     };
     cv::Mat p = cv::Mat(1, 2, CV_32FC1, vp);
 
-    cv::Mat q = ilamp(X, Y, 5, p);
+    cv::Mat q = ilamp(X, Y, k_neighbors, p);
 
     printf("Print P[%.2f, %.2f] to Q:\n", vp[0][0], vp[0][1]);
     PrintCVMAT(q);
