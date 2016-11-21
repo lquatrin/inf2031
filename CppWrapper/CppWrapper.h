@@ -47,10 +47,10 @@ namespace CppWrapper {
     public:
       CppHistogramWrapper();
 	  void CreateHistogram(char** ppNames, int iNbOfNames);
-	  void addPath(array<System::String^>^ bytes);
+	  void addPath(array<System::String^>^ bytes,int channel);
       void testHistogram();
       array<double, 2>^GetDistances(void);
-
+      void Clear();
     private:
       Histogram* pHistogram;
   };

@@ -11,7 +11,7 @@ public:
   std::vector<std::vector<double>> calcMDS(void);
   cv::Mat cmdscale(const cv::Mat& dist, const int k, const cv::Mat* eigenvals = NULL, const cv::Mat* eigenvecs = NULL);
   void mdsTest();
-
+  void Clear();
 private:
   std::vector<int> vec;
   cv::Mat mdists;

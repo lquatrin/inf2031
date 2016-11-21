@@ -75,7 +75,7 @@ void CppWrapper::CppHistogramWrapper::CreateHistogram(char** ppNames, int iNbOfN
 
 }
 
-void CppWrapper::CppHistogramWrapper::addPath(array<System::String^>^ bytes){
+void CppWrapper::CppHistogramWrapper::addPath(array<System::String^>^ bytes,int channel){
 	std::vector<std::string> mpath;
 	for (int i = 0; i < bytes->Length; i++){
 		printf("%s\n", bytes[i]);
@@ -84,7 +84,7 @@ void CppWrapper::CppHistogramWrapper::addPath(array<System::String^>^ bytes){
 		mpath.push_back(standardString);
 	}
 
-	pHistogram->ReadImages(mpath);
+	pHistogram->ReadImages(mpath,channel);
 	pHistogram->CalcHistogram();
 }
 
@@ -95,9 +95,11 @@ array<double, 2>^CppWrapper::CppHistogramWrapper::GetDistances(void){
 	pHistogram->getDistMatrix(vec);
 	array<double, 2>^ Distances = gcnew array<double, 2>(vec.size(), vec.size());
 
+ 
 	for (int i = 0; i < vec.size(); i++){
 		for (int j = 0; j < vec[i].size(); j++){
 			Distances[i, j] = vec[i][j];
+      printf("%g\n", vec[i][j]);
 		}
 	}
 	printf("tamanho %d\n", Distances->Length);
@@ -107,4 +109,9 @@ array<double, 2>^CppWrapper::CppHistogramWrapper::GetDistances(void){
 void CppWrapper::CppHistogramWrapper::testHistogram()
 {
 	pHistogram->test();
+}
+
+void CppWrapper::CppHistogramWrapper::Clear()
+{
+  pHistogram->Clear();
 }

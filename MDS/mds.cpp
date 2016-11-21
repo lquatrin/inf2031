@@ -101,6 +101,9 @@ Mat MDSClass::cmdscale(const Mat& dist, const int k, const Mat* eigenvals, const
 	return mds_points;
 }
 
+void MDSClass::Clear(){
+  vec.clear();
+}
 
 void MDSClass::mdsTest()
 {

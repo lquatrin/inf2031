@@ -13,11 +13,11 @@ class Histogram
 public:
   Histogram();
   ~Histogram(){}
-  void ReadImages(std::vector<std::string> paths);
+  void ReadImages(std::vector<std::string> paths,int channel);
   void CalcHistogram(void);
   void getDistMatrix(std::vector<std::vector<double>> &vec);
   void test(void);
-
+  void Clear();
 private:
   std::vector<cv::Mat> srcs;
   std::vector<cv::Mat> hsvs;
