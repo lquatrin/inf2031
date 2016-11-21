@@ -15,9 +15,9 @@ int main()
   myarray[1] = 15;
   myarray[2] = 75;
 
-  MDSClass cC = MDSClass(myarray, noElements);
+ //MDSClass cC = MDSClass(myarray, noElements);
 
-  cC.mdsTest();
+  //cC.mdsTest();
 
   delete[] myarray;
   return 0;

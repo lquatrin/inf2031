@@ -52,7 +52,7 @@ void Histogram::getDistMatrix(std::vector<std::vector<double>> &vec){
   for (int i = 0; i < hists.size(); i++){
     std::vector<double> s_vec;
     for (int j = 0; j < hists.size(); j++){
-      s_vec.push_back(cv::compareHist(hists[i], hists[j], 0));
+      s_vec.push_back(cv::compareHist(hists[i], hists[j], 3));
     }
     vec.push_back(s_vec);
   }
@@ -61,9 +61,9 @@ void Histogram::getDistMatrix(std::vector<std::vector<double>> &vec){
 void Histogram::test(){
 
   std::vector<std::string> paths;
-  paths.push_back("C:\\Users\\schirmer\\Documents\\GitHub\\inf2031\\Histogram\\images\\fusca1.png");
-  paths.push_back("C:\\Users\\schirmer\\Documents\\GitHub\\inf2031\\Histogram\\images\\fusca2.png");
-  paths.push_back("C:\\Users\\schirmer\\Documents\\GitHub\\inf2031\\Histogram\\images\\fusca3.png");
+  paths.push_back("images\\fusca1.jpg");
+  paths.push_back("images\\fusca2.jpg");
+  paths.push_back("images\\fusca3.jpg");
 
   ReadImages(paths);
   CalcHistogram();

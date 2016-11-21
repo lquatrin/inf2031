@@ -12,6 +12,8 @@
 #include "../Histogram/Histogram.h"
 #include "../Histogram/Histogram.cpp"
 
+#include <msclr\marshal_cppstd.h>
+#include <math.h>
 using namespace System;
 
 namespace CppWrapper {
@@ -32,25 +34,25 @@ namespace CppWrapper {
   public ref class CppMDSWrapper
   {
     public:
-      CppMDSWrapper(int* pInt, int arraySize);
-   
-      void testMDS();
-
+	CppMDSWrapper(array<double,2>^ tvalues, int arraySize);
+	array<double, 2>^ GetMDS();
+    void testMDS();
     private:
-      MDSClass* pMDS;
+	MDSClass* pMDS;
+	array<double, 2>^ dists;
   };
 
   public ref class CppHistogramWrapper
   {
     public:
       CppHistogramWrapper();
-      void CriateHistogram(array<String^>^paths);
+	  void CreateHistogram(char** ppNames, int iNbOfNames);
+	  void addPath(array<System::String^>^ bytes);
       void testHistogram();
       array<double, 2>^GetDistances(void);
 
     private:
       Histogram* pHistogram;
-     
   };
 
 }
