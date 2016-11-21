@@ -86,20 +86,22 @@ namespace ClassCppToCS_CS
             case 0:
               chart = chart1;
               chart.Series.RemoveAt(0);
-              chart.Series.Add("MDS HUE points");
+              chart.Series.Add("MDS HUE");
               break;
             case 1:
               chart = chart2;
               chart.Series.RemoveAt(0);
-              chart.Series.Add("MDS Saturation points");
+              chart.Series.Add("MDS Saturation");
               break;
             case 2:
               chart = chart4;
               chart.Series.RemoveAt(0);
-              chart.Series.Add("MDS Values point");
+              chart.Series.Add("MDS Values");
               break;
           }
           //chart.ChartAreas[0].Area3DStyle.Enable3D = true;
+          chart.ChartAreas[0].AxisX.Minimum = -1;
+          chart.ChartAreas[0].AxisX.Maximum = 1;
           for (int i = 0; i < counter; i++)
           {
             string name = paths[i].Split('\\').Last();
