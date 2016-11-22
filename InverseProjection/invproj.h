@@ -10,16 +10,22 @@
 class InverseProjection
 {
 public:
-  InverseProjection();
-  ~InverseProjection(){}
-  void ReadImages(std::vector<std::string> paths,int channel);
-  void CalcInverseProjection(void);
-  void getDistMatrix(std::vector<std::vector<double>> &vec);
-  void test(void);
-  void Clear();
+  void test (void);
+
+public:
+  InverseProjection ();
+  ~InverseProjection ();
+
+  void ReadImages (std::vector<std::string> paths,int channel);
+
+  void CalcInverseProjection (void);
+
+  void Clear ();
+  
+  //void getDistMatrix(std::vector<std::vector<double>> &vec);
+
 private:
   std::vector<cv::Mat> srcs;
   std::vector<cv::Mat> hsvs;
-  std::vector<cv::MatND> hists;
 };
 

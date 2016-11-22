@@ -2,10 +2,15 @@
 
 #include "invproj.h"
 
-InverseProjection::InverseProjection(){ }
+InverseProjection::InverseProjection () {}
 
+InverseProjection::~InverseProjection ()
+{
+  Clear();
+}
 
-void InverseProjection::ReadImages(std::vector<std::string> paths, int channel){
+void InverseProjection::ReadImages (std::vector<std::string> paths, int channel)
+{
 
   for (int i = 0; i < paths.size(); i++)
     srcs.push_back(cv::imread(paths[i], 1));
@@ -22,52 +27,37 @@ void InverseProjection::ReadImages(std::vector<std::string> paths, int channel){
 
 }
 
-void InverseProjection::CalcInverseProjection(void){
-  int h_bins = 180;
-  int s_bins = 256;
-  int v_bins = 256;
-  int histSize[] = { h_bins, s_bins, v_bins };
+void InverseProjection::CalcInverseProjection (void)
+{
+  //Number of C's
+  std::vector<double> C;
 
-  float h_ranges[] = { 0, 180 };
-  float s_ranges[] = { 0, 256 };
-  float v_ranges[] = { 0, 256 };
 
-  const float* ranges[] = { h_ranges, s_ranges, v_ranges };
-
-  /// InverseProjections
-  for (int i = 0; i < hsvs.size(); i++){
-    cv::MatND s_hist;
-    calcHist(&hsvs[i], 1, 0, cv::Mat(), s_hist, 1, histSize, ranges, true, false);
-    //normalize(s_hist, s_hist, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
-    hists.push_back(s_hist);
-  }
 }
 
-void InverseProjection::getDistMatrix(std::vector<std::vector<double>> &vec){
-
-  // cria matriz de diferenças nos InverseProjectionas baseando-se no método de correlação 
-
-  for (int i = 0; i < hists.size(); i++){
-    std::vector<double> s_vec;
-    for (int j = 0; j < hists.size(); j++){
-      s_vec.push_back(cv::compareHist(hists[i], hists[j], 3));
-    }
-    vec.push_back(s_vec);
-  }
-}
-
-void InverseProjection::test(){
-
+void InverseProjection::test ()
+{
   std::vector<std::string> paths;
-  paths.push_back("images\\fusca\\fusca1.jpg");
-  paths.push_back("images\\fusca\\fusca2.jpg");
-  paths.push_back("images\\fusca\\fusca3.jpg");
-  paths.push_back("images\\fusca\\fusca4.jpg");
+  paths.push_back("images\\blue.png");
+  paths.push_back("images\\green.png");
+  paths.push_back("images\\red.png");
 
   ReadImages(paths,0);
-  //CalcInverseProjection();
+  
+  for (int i = 0; i < srcs.size(); i++)
+  {
+    cv::Vec3b intensity = srcs[i].at<cv::Vec3b>(0, 0);
+    uchar blue = intensity.val[0];
+    uchar green = intensity.val[1];
+    uchar red = intensity.val[2];
+    
+    printf("[%s] %d:\n", paths[i].c_str(), i);
+    printf(" - %.03d %.03d %.03d\n", blue, green, red);
+  }
+  
+  CalcInverseProjection();
+
   //std::vector<std::vector<double>> m_vec;
-  //
   //getDistMatrix(m_vec);
 
 #ifdef _DEBUG
@@ -80,9 +70,23 @@ void InverseProjection::test(){
 #endif
 }
 
-void InverseProjection::Clear(){
+void InverseProjection::Clear ()
+{
   srcs.clear();
   hsvs.clear();
-  hists.clear();
 }
 
+/*
+void InverseProjection::getDistMatrix(std::vector<std::vector<double>> &vec){
+
+// cria matriz de diferenças nos InverseProjectionas baseando-se no método de correlação
+
+for (int i = 0; i < hists.size(); i++){
+std::vector<double> s_vec;
+for (int j = 0; j < hists.size(); j++){
+s_vec.push_back(cv::compareHist(hists[i], hists[j], 3));
+}
+vec.push_back(s_vec);
+}
+}
+*/
