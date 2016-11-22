@@ -19,6 +19,18 @@ LAMPClass::LAMPClass(int* pInt, int arrSize)
   }
 }
 
+LAMPClass::LAMPClass(double** pInt, int arrSize)
+{
+
+}
+
+std::vector<std::vector<double>> LAMPClass::calcLAMP (void)
+{
+  std::vector<std::vector<double>> vect;
+  printf("TODO: calcLAMP\n");
+  return vect;
+}
+
 double LAMPClass::SumArray()
 {
   int sum = 0;

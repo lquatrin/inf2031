@@ -22,6 +22,10 @@ namespace CppWrapper {
 	{
   public:
     CppLAMPWrapper(int* pInt, int arraySize);
+    CppLAMPWrapper(array<double, 2>^ tvalues, int arraySize);
+
+    array<double, 2>^ GetLAMP();
+
     double GetSum();
     double sum;
 
@@ -29,6 +33,7 @@ namespace CppWrapper {
 
   private:
     LAMPClass* pCC;
+    array<double, 2>^ dists;
 	};
 
   public ref class CppMDSWrapper

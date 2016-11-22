@@ -8,11 +8,14 @@ class LAMPClass
 {
 public:
   LAMPClass(int* pInt, int arrSize);
+  LAMPClass(double** pInt, int arrSize);
   ~LAMPClass() {}
 
   double SumArray();
 
   cv::Mat lamp(const cv::Mat& X, const std::vector<int> cp_index, const cv::Mat& Ys);
+
+  std::vector<std::vector<double>> calcLAMP(void);
 
   void lampTest();
   void PrintCVMAT(cv::Mat m);

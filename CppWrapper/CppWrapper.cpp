@@ -11,11 +11,35 @@
 #include "../MDS/mds.h"
 #include "../MDS/mds.cpp"
 
-
-
 CppWrapper::CppLAMPWrapper::CppLAMPWrapper(int *pInt, int arraySize)
 {
 	pCC = new LAMPClass(pInt, arraySize);
+}
+
+CppWrapper::CppLAMPWrapper::CppLAMPWrapper (array<double, 2>^ tvalues, int arraySize)
+{
+  dists = tvalues;
+  double **m = (double**)malloc(arraySize * sizeof(double*));
+
+  for (int i = 0; i < arraySize; i++){
+    m[i] = (double*)malloc(arraySize * sizeof(double));
+    for (int j = 0; j < arraySize; j++){
+      m[i][j] = tvalues[i, j];
+    }
+  }
+
+  pCC = new LAMPClass(m, arraySize);
+  std::vector<std::vector<double>> vec = pCC->calcLAMP();
+  for (int i = 0; i < vec.size(); i++){
+    for (int j = 0; j < vec[i].size(); j++){
+      dists[i, j] = vec[i][j];
+    }
+  }
+}
+
+array<double, 2>^ CppWrapper::CppLAMPWrapper::GetLAMP ()
+{
+  return dists;
 }
 
 double CppWrapper::CppLAMPWrapper::GetSum()
@@ -78,8 +102,10 @@ void CppWrapper::CppHistogramWrapper::CreateHistogram(char** ppNames, int iNbOfN
 void CppWrapper::CppHistogramWrapper::addPath(array<System::String^>^ bytes,int channel){
 	std::vector<std::string> mpath;
 	for (int i = 0; i < bytes->Length; i++){
+#ifdef _DEBUG
 		printf("%s\n", bytes[i]);
-		msclr::interop::marshal_context context;
+#endif
+    msclr::interop::marshal_context context;
 		std::string standardString = context.marshal_as<std::string>(bytes[i]);
 		mpath.push_back(standardString);
 	}
@@ -99,11 +125,15 @@ array<double, 2>^CppWrapper::CppHistogramWrapper::GetDistances(void){
 	for (int i = 0; i < vec.size(); i++){
 		for (int j = 0; j < vec[i].size(); j++){
 			Distances[i, j] = vec[i][j];
+#ifdef _DEBUG
       printf("%g\n", vec[i][j]);
-		}
+#endif
+    }
 	}
+#ifdef _DEBUG
 	printf("tamanho %d\n", Distances->Length);
-	return Distances;
+#endif
+  return Distances;
 }
 
 void CppWrapper::CppHistogramWrapper::testHistogram()

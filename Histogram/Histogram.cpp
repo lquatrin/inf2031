@@ -71,12 +71,14 @@ void Histogram::test(){
 
   getDistMatrix(m_vec);
 
+#ifdef _DEBUG
   for (int i = 0; i < m_vec.size(); i++){
     for (int j = 0; j < m_vec[i].size(); j++){
       printf("%.5g ", m_vec[i][j]);
     }
     printf("\n");
   }
+#endif
 }
 
 void Histogram::Clear(){

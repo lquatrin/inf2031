@@ -32,8 +32,7 @@ namespace ClassCppToCS_CS
       this.openFileDialog1.Title = "My Image Browser";
     }
 
-
-    private void MDS_Click(object sender, EventArgs e)
+    private DialogResult OpenFileImageDialog ()
     {
       openFileDialog1.Filter =
       "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|" +
@@ -42,7 +41,13 @@ namespace ClassCppToCS_CS
       // Allow the user to select multiple images.
       openFileDialog1.Multiselect = true;
       openFileDialog1.Title = "My Image Browser";
-      DialogResult result = openFileDialog1.ShowDialog();
+      return openFileDialog1.ShowDialog();
+    }
+
+
+    private void MDS_Click(object sender, EventArgs e)
+    {
+      DialogResult result = OpenFileImageDialog();
       List<string> paths = new List<string>();
       if (result == DialogResult.OK) // Test result.
       {
@@ -66,7 +71,7 @@ namespace ClassCppToCS_CS
           histo.addPath(paths.ToArray(), k);
           double[,] array = histo.GetDistances();
 
-          Console.Write("matriz de distancias\n");
+          Console.WriteLine("matriz de distancias\n");
           for (int i = 0; i < counter; i++)
           {
             for (int j = 0; j < counter; j++)
@@ -113,6 +118,81 @@ namespace ClassCppToCS_CS
           }
         }
       }
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+      DialogResult result = OpenFileImageDialog();
+      List<string> paths = new List<string>();
+      if (result == DialogResult.OK) // Test result.
+      {
+        CppWrapper.CppHistogramWrapper histo = new CppWrapper.CppHistogramWrapper();
+        for (int k = 0; k < 3; k++)
+        {
+          histo.Clear();
+          paths.Clear();
+          int counter = 0;
+          foreach (String file in openFileDialog1.FileNames)
+          {
+            string files = openFileDialog1.InitialDirectory + file;
+            paths.Add(files);
+            counter++;
+          }
+
+          histo.addPath(paths.ToArray(), k);
+          double[,] array = histo.GetDistances();
+
+          Console.WriteLine("Distância entre histogramas:");
+          for (int i = 0; i < counter; i++)
+          {
+            for (int j = 0; j < counter; j++)
+            {
+              Console.Write(" " + array[i, j]);
+            }
+            Console.Write("\n");
+          }
+
+
+          CppWrapper.CppLAMPWrapper mlamp = new CppWrapper.CppLAMPWrapper(array, counter);
+          //double[,] arrayMDS = mlamp.GetMDS();
+
+          /*
+          //TO DO - refinar!
+          Chart chart = new Chart();
+          switch (k)
+          {
+            case 0:
+              chart = chart1;
+              chart.Series.RemoveAt(0);
+              chart.Series.Add("MDS HUE");
+              break;
+            case 1:
+              chart = chart2;
+              chart.Series.RemoveAt(0);
+              chart.Series.Add("MDS Saturation");
+              break;
+            case 2:
+              chart = chart4;
+              chart.Series.RemoveAt(0);
+              chart.Series.Add("MDS Values");
+              break;
+          }
+          //chart.ChartAreas[0].Area3DStyle.Enable3D = true;
+          chart.ChartAreas[0].AxisX.Minimum = -1;
+          chart.ChartAreas[0].AxisX.Maximum = 1;
+          for (int i = 0; i < counter; i++)
+          {
+            string name = paths[i].Split('\\').Last();
+            chart.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            chart.Series[0].Points.AddXY(Math.Round(arrayMDS[i, 0], 1), Math.Round(arrayMDS[i, 1], 3));
+            chart.Series[0].Points[i].LegendToolTip = name;
+            chart.Series[0].Points[i].ToolTip = name + "\n X= " + arrayMDS[i, 0] + " Y = " + arrayMDS[i, 1];
+
+          }
+          */
+        }
+      }
+      Console.WriteLine("LAMP");
     }
   }
 }
