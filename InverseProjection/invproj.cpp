@@ -33,6 +33,7 @@ void InverseProjection::ReadImages (std::vector<std::string> paths, int channel)
 // A: matriz 'mdists'
 // x: coeficientes
 // b: resultados
+// TODO: receber a matriz de distâncias correta em relação a cada pixel.
 void InverseProjection::CalcInverseProjection (void)
 {
   if (srcs.size() == 0) return;
@@ -42,34 +43,31 @@ void InverseProjection::CalcInverseProjection (void)
   s_w = srcs[0].rows;
   s_h = srcs[1].cols;
 
-  printf("Image Size: %d %d %d\n", s_w, s_h, srcs[0].channels());
 
   int chnls = 0;
-
-  //for (int chnls = 0; chnls < srcs[0].channels(); chnls++)
-  //{
-  for (int pcol = 0; pcol < s_w; pcol++)
+  for (int chnls = 0; chnls < srcs[0].channels(); chnls++)
   {
-    for (int prow = 0; prow < s_h; prow++)
+    for (int pcol = 0; pcol < s_w; pcol++)
     {
-      //Coeficientes
-      cv::Mat A = cv::Mat::zeros(n, n, cv::DataType<double>::type);
-      A.at<double>(1, 0) = 1.0;
-      A.at<double>(2, 0) = 1.0;
-      A.at<double>(0, 1) = 1.0;
-      A.at<double>(0, 2) = 1.0;
-      
-      cv::Mat B = cv::Mat::zeros(n, 1, cv::DataType<double>::type);
-
-      for (int i_imgs = 0; i_imgs < n; i_imgs++)
-        B.at<double>(i_imgs, 0) = ((double)srcs[i_imgs].at<cv::Vec3b>(prow, pcol).val[chnls]) / MAX_UCHAR_IMAGE_VALUE;
-      
-      cv::Cholesky(A.ptr<double>(), A.step, A.rows, B.ptr<double>(), B.step, B.cols);
+      for (int prow = 0; prow < s_h; prow++)
+      {
+        //Coeficientes
+        //TODO: GERAR A MATRIZ CORRETA PARA CADA PIXEL / CHANNEL
+        cv::Mat A = cv::Mat::zeros(n, n, cv::DataType<double>::type);
+        A.at<double>(1, 0) = 1.0;
+        A.at<double>(2, 0) = 1.0;
+        A.at<double>(0, 1) = 1.0;
+        A.at<double>(0, 2) = 1.0;
         
-      return;
+        cv::Mat C = cv::Mat::zeros(n, 1, cv::DataType<double>::type);
+
+        for (int i_imgs = 0; i_imgs < n; i_imgs++)
+          C.at<double>(i_imgs, 0) = ((double)srcs[i_imgs].at<cv::Vec3b>(prow, pcol).val[chnls]) / MAX_UCHAR_IMAGE_VALUE;
+        
+        cv::Cholesky(A.ptr<double>(), A.step, A.rows, C.ptr<double>(), C.step, C.cols);
+      }
     }
   }
-  //}
 }
 
 void InverseProjection::test ()
@@ -93,7 +91,7 @@ void InverseProjection::test ()
   }
   printf("\n");
   
-  //CalcInverseProjection();
+  CalcInverseProjection();
 
   //std::vector<std::vector<double>> m_vec;
   //getDistMatrix(m_vec);
