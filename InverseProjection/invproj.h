@@ -11,6 +11,7 @@ class InverseProjection
 {
 public:
   void test (void);
+  void testCholesky (void);
 
 public:
   InverseProjection ();

@@ -9,7 +9,8 @@ using namespace std;
 int main()
 {
   InverseProjection h = InverseProjection();
-  h.test();
+  //h.test();
+  h.testCholesky();
   system("pause");
   return 0;
 }
