@@ -1,12 +1,11 @@
-
 #pragma once
-#include "Histogram.h"
+
+#include "invproj.h"
+
+InverseProjection::InverseProjection(){ }
 
 
-Histogram::Histogram(){ }
-
-
-void Histogram::ReadImages(std::vector<std::string> paths,int channel){
+void InverseProjection::ReadImages(std::vector<std::string> paths, int channel){
 
   for (int i = 0; i < paths.size(); i++)
     srcs.push_back(cv::imread(paths[i], 1));
@@ -16,15 +15,14 @@ void Histogram::ReadImages(std::vector<std::string> paths,int channel){
     std::vector<cv::Mat> s_hsv;
     cv::Mat t_hsv;
     cv::cvtColor(srcs[i], t_hsv, cv::COLOR_BGR2HSV);
-    split(t_hsv, s_hsv);
+    cv::split(t_hsv, s_hsv);
 
     hsvs.push_back(s_hsv[channel]);
   }
 
 }
 
-
-void Histogram::CalcHistogram(void){
+void InverseProjection::CalcInverseProjection(void){
   int h_bins = 180;
   int s_bins = 256;
   int v_bins = 256;
@@ -36,7 +34,7 @@ void Histogram::CalcHistogram(void){
 
   const float* ranges[] = { h_ranges, s_ranges, v_ranges };
 
-  /// Histograms
+  /// InverseProjections
   for (int i = 0; i < hsvs.size(); i++){
     cv::MatND s_hist;
     calcHist(&hsvs[i], 1, 0, cv::Mat(), s_hist, 1, histSize, ranges, true, false);
@@ -45,9 +43,9 @@ void Histogram::CalcHistogram(void){
   }
 }
 
-void Histogram::getDistMatrix(std::vector<std::vector<double>> &vec){
+void InverseProjection::getDistMatrix(std::vector<std::vector<double>> &vec){
 
-  // cria matriz de diferenças nos histogramas baseando-se no método de correlação 
+  // cria matriz de diferenças nos InverseProjectionas baseando-se no método de correlação 
 
   for (int i = 0; i < hists.size(); i++){
     std::vector<double> s_vec;
@@ -58,18 +56,19 @@ void Histogram::getDistMatrix(std::vector<std::vector<double>> &vec){
   }
 }
 
-void Histogram::test(){
+void InverseProjection::test(){
 
   std::vector<std::string> paths;
   paths.push_back("images\\fusca\\fusca1.jpg");
   paths.push_back("images\\fusca\\fusca2.jpg");
   paths.push_back("images\\fusca\\fusca3.jpg");
+  paths.push_back("images\\fusca\\fusca4.jpg");
 
   ReadImages(paths,0);
-  CalcHistogram();
-  std::vector<std::vector<double>> m_vec;
-
-  getDistMatrix(m_vec);
+  //CalcInverseProjection();
+  //std::vector<std::vector<double>> m_vec;
+  //
+  //getDistMatrix(m_vec);
 
 #ifdef _DEBUG
   for (int i = 0; i < m_vec.size(); i++){
@@ -81,7 +80,7 @@ void Histogram::test(){
 #endif
 }
 
-void Histogram::Clear(){
+void InverseProjection::Clear(){
   srcs.clear();
   hsvs.clear();
   hists.clear();

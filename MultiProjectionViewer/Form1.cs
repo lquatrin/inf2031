@@ -132,8 +132,11 @@ namespace ClassCppToCS_CS
           histo.Clear();
           paths.Clear();
           int counter = 0;
+          textBox1.Clear();
           foreach (String file in openFileDialog1.FileNames)
           {
+            textBox1.AppendText(file);
+            textBox1.AppendText("\n");
             string files = openFileDialog1.InitialDirectory + file;
             paths.Add(files);
             counter++;
@@ -193,6 +196,11 @@ namespace ClassCppToCS_CS
         }
       }
       Console.WriteLine("LAMP");
+    }
+
+    private void textBox1_TextChanged(object sender, EventArgs e)
+    {
+
     }
   }
 }
