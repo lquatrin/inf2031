@@ -13,6 +13,8 @@ public:
   void test (void);
   void testCholesky (void);
 
+  void CalcInverseProjection01(int number_of_charts, int n_points_per_chart, int dimension, double** points, double** input, std::vector<std::string> image_paths);
+
 public:
   InverseProjection ();
   ~InverseProjection ();
@@ -23,6 +25,7 @@ public:
 
   void Clear ();
   
+  double RadialBasisKernel(double* X1, double* X2, double sigma);
   //void getDistMatrix(std::vector<std::vector<double>> &vec);
 
 private:

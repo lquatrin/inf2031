@@ -43,10 +43,12 @@
       this.MDS = new System.Windows.Forms.Button();
       this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
       this.button1 = new System.Windows.Forms.Button();
-      this.textBox1 = new System.Windows.Forms.TextBox();
+      this.button2 = new System.Windows.Forms.Button();
+      this.pictureBox1 = new System.Windows.Forms.PictureBox();
       ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart4)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.SuspendLayout();
       // 
       // chart1
@@ -55,7 +57,7 @@
       this.chart1.ChartAreas.Add(chartArea4);
       legend4.Name = "Legend1";
       this.chart1.Legends.Add(legend4);
-      this.chart1.Location = new System.Drawing.Point(4, 3);
+      this.chart1.Location = new System.Drawing.Point(12, 41);
       this.chart1.Name = "chart1";
       series4.ChartArea = "ChartArea1";
       series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
@@ -64,7 +66,7 @@
       series4.Name = "Series1";
       series4.ToolTip = "#SERIESNAME";
       this.chart1.Series.Add(series4);
-      this.chart1.Size = new System.Drawing.Size(523, 294);
+      this.chart1.Size = new System.Drawing.Size(484, 287);
       this.chart1.TabIndex = 0;
       this.chart1.Text = "chart1";
       // 
@@ -74,16 +76,17 @@
       this.chart2.ChartAreas.Add(chartArea5);
       legend5.Name = "Legend1";
       this.chart2.Legends.Add(legend5);
-      this.chart2.Location = new System.Drawing.Point(530, 3);
+      this.chart2.Location = new System.Drawing.Point(502, 41);
       this.chart2.Name = "chart2";
       series5.ChartArea = "ChartArea1";
       series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
       series5.Legend = "Legend1";
       series5.Name = "Series1";
       this.chart2.Series.Add(series5);
-      this.chart2.Size = new System.Drawing.Size(524, 294);
+      this.chart2.Size = new System.Drawing.Size(484, 287);
       this.chart2.TabIndex = 1;
       this.chart2.Text = "chart2";
+      this.chart2.Click += new System.EventHandler(this.chart2_Click);
       // 
       // chart4
       // 
@@ -91,20 +94,20 @@
       this.chart4.ChartAreas.Add(chartArea6);
       legend6.Name = "Legend1";
       this.chart4.Legends.Add(legend6);
-      this.chart4.Location = new System.Drawing.Point(4, 300);
+      this.chart4.Location = new System.Drawing.Point(992, 41);
       this.chart4.Name = "chart4";
       series6.ChartArea = "ChartArea1";
       series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
       series6.Legend = "Legend1";
       series6.Name = "Series1";
       this.chart4.Series.Add(series6);
-      this.chart4.Size = new System.Drawing.Size(523, 301);
+      this.chart4.Size = new System.Drawing.Size(484, 287);
       this.chart4.TabIndex = 3;
       this.chart4.Text = "chart3";
       // 
       // MDS
       // 
-      this.MDS.Location = new System.Drawing.Point(1060, 5);
+      this.MDS.Location = new System.Drawing.Point(12, 12);
       this.MDS.Name = "MDS";
       this.MDS.Size = new System.Drawing.Size(102, 23);
       this.MDS.TabIndex = 4;
@@ -118,7 +121,7 @@
       // 
       // button1
       // 
-      this.button1.Location = new System.Drawing.Point(1060, 34);
+      this.button1.Location = new System.Drawing.Point(120, 12);
       this.button1.Name = "button1";
       this.button1.Size = new System.Drawing.Size(102, 23);
       this.button1.TabIndex = 5;
@@ -126,21 +129,32 @@
       this.button1.UseVisualStyleBackColor = true;
       this.button1.Click += new System.EventHandler(this.button1_Click);
       // 
-      // textBox1
+      // button2
       // 
-      this.textBox1.Location = new System.Drawing.Point(1168, 3);
-      this.textBox1.Multiline = true;
-      this.textBox1.Name = "textBox1";
-      this.textBox1.Size = new System.Drawing.Size(299, 598);
-      this.textBox1.TabIndex = 6;
-      this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+      this.button2.Location = new System.Drawing.Point(228, 12);
+      this.button2.Name = "button2";
+      this.button2.Size = new System.Drawing.Size(102, 23);
+      this.button2.TabIndex = 7;
+      this.button2.Text = "Inverse Projection";
+      this.button2.UseVisualStyleBackColor = true;
+      this.button2.Click += new System.EventHandler(this.button2_Click);
+      // 
+      // pictureBox1
+      // 
+      this.pictureBox1.Location = new System.Drawing.Point(12, 334);
+      this.pictureBox1.Name = "pictureBox1";
+      this.pictureBox1.Size = new System.Drawing.Size(1464, 349);
+      this.pictureBox1.TabIndex = 8;
+      this.pictureBox1.TabStop = false;
+      this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
       // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(1471, 605);
-      this.Controls.Add(this.textBox1);
+      this.ClientSize = new System.Drawing.Size(1493, 695);
+      this.Controls.Add(this.pictureBox1);
+      this.Controls.Add(this.button2);
       this.Controls.Add(this.button1);
       this.Controls.Add(this.MDS);
       this.Controls.Add(this.chart4);
@@ -151,8 +165,8 @@
       ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart4)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
@@ -164,7 +178,8 @@
     private System.Windows.Forms.Button MDS;
     private System.Windows.Forms.OpenFileDialog openFileDialog1;
     private System.Windows.Forms.Button button1;
-    private System.Windows.Forms.TextBox textBox1;
+    private System.Windows.Forms.Button button2;
+    private System.Windows.Forms.PictureBox pictureBox1;
   }
 }
 

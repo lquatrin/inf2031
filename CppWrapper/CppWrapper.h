@@ -12,6 +12,9 @@
 #include "../Histogram/Histogram.h"
 #include "../Histogram/Histogram.cpp"
 
+#include "../InverseProjection/invproj.h"
+#include "../InverseProjection/invproj.cpp"
+
 #include <msclr\marshal_cppstd.h>
 #include <math.h>
 using namespace System;
@@ -58,6 +61,17 @@ namespace CppWrapper {
       void Clear();
     private:
       Histogram* pHistogram;
+  };
+
+  public ref class CppInverseProjectionWrapper
+  {
+  public:
+    CppInverseProjectionWrapper ();
+
+    void InverseProjection01(array<double, 2>^ t_points, int n_points, int n_series, array<System::String^>^ bytes, array<double, 2>^ input_point);
+
+  private:
+    InverseProjection* pinvproj;
   };
 
 }

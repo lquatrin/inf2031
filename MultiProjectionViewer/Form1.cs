@@ -15,9 +15,13 @@ namespace ClassCppToCS_CS
 {
   public partial class Form1 : Form
   {
+    public CppWrapper.CppInverseProjectionWrapper wrapper_inverse_projection;
+     
     public Form1()
     {
       InitializeComponent();
+
+      wrapper_inverse_projection = new CppWrapper.CppInverseProjectionWrapper();
     }
 
     private void InitializeOpenFileDialog()
@@ -122,7 +126,7 @@ namespace ClassCppToCS_CS
 
     private void button1_Click(object sender, EventArgs e)
     {
-      DialogResult result = OpenFileImageDialog();
+      /*DialogResult result = OpenFileImageDialog();
       List<string> paths = new List<string>();
       if (result == DialogResult.OK) // Test result.
       {
@@ -156,7 +160,7 @@ namespace ClassCppToCS_CS
           }
 
 
-          CppWrapper.CppLAMPWrapper mlamp = new CppWrapper.CppLAMPWrapper(array, counter);
+          CppWrapper.CppLAMPWrapper mlamp = new CppWrapper.CppLAMPWrapper(array, counter);*/
           //double[,] arrayMDS = mlamp.GetMDS();
 
           /*
@@ -192,13 +196,84 @@ namespace ClassCppToCS_CS
             chart.Series[0].Points[i].ToolTip = name + "\n X= " + arrayMDS[i, 0] + " Y = " + arrayMDS[i, 1];
 
           }
-          */
         }
       }
       Console.WriteLine("LAMP");
+          */
     }
 
     private void textBox1_TextChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void chart2_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void button2_Click(object sender, EventArgs e)
+    {
+      Chart chart = chart1;
+
+      int number_of_charts = 3;
+
+      int n_series = chart.Series.Count();
+      int n_points_per_chart = chart.Series[0].Points.Count();
+      double[,] arraypoints = new double[number_of_charts * n_points_per_chart, 2];
+      
+      if (n_series > 0)
+      {
+        int s = 0;
+        for (int p = 0; p < n_points_per_chart; p++)
+        {
+          DataPoint pt = chart.Series[0].Points[p];
+          //Console.WriteLine(s * n_points_per_chart + p);
+          arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
+          arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
+        }
+
+        chart = chart2;
+        for (int p = 0; p < n_points_per_chart; p++)
+        {
+          DataPoint pt = chart.Series[0].Points[p];
+          //Console.WriteLine(s * n_points_per_chart + p);
+          arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
+          arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
+        }
+        
+
+        chart = chart4;
+        for (int p = 0; p < n_points_per_chart; p++)
+        {
+          DataPoint pt = chart.Series[0].Points[p];
+          //Console.WriteLine(s * n_points_per_chart + p);
+          arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
+          arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
+        }
+        
+      }
+      
+
+
+      List<string> paths = new List<string>();
+      int counter = 0;
+      foreach (String file in openFileDialog1.FileNames)
+      {
+        string files = openFileDialog1.InitialDirectory + file;
+        paths.Add(files);
+        counter++;
+      }
+
+      //pictureBox1.Invalidate();
+
+      double[,] input_point = new double[,] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
+      wrapper_inverse_projection.InverseProjection01(arraypoints, n_points_per_chart, number_of_charts, paths.ToArray(), input_point);
+
+      //pictureBox1.Image = Image.FromFile("result.jpg");
+    }
+
+    private void pictureBox1_Click(object sender, EventArgs e)
     {
 
     }

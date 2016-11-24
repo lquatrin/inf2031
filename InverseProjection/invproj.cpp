@@ -215,3 +215,84 @@ vec.push_back(s_vec);
 }
 }
 */
+
+double InverseProjection::RadialBasisKernel (double* X1, double* X2, double sigma)
+{
+  return exp((-(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2))) / (2.0*sigma*sigma));
+}
+
+void InverseProjection::CalcInverseProjection01(
+  int number_of_charts,
+  int n_points_per_chart,
+  int dimension,
+  double** points,
+  double** input,
+  std::vector<std::string> image_paths)
+{
+  printf(" - Init CalcInverseProjection01\n");
+
+  std::vector<cv::Mat> srcs;
+  std::vector<cv::Mat> hsvs;
+
+  for (int i = 0; i < image_paths.size(); i++)
+    srcs.push_back(cv::imread(image_paths[i], 1));
+
+  for (int i = 0; i < srcs.size(); i++)
+  {
+    // Separa a imagem em 3 componentes H S e V
+    cv::Mat t_hsv;
+    cv::cvtColor(srcs[i], t_hsv, cv::COLOR_BGR2HSV);
+    hsvs.push_back(t_hsv);
+  }
+
+  cv::Mat fimage = hsvs[0];
+
+  cv::Mat Res = cv::Mat::zeros(fimage.rows, fimage.cols, cv::DataType<cv::Vec3b>::type);
+
+  for (int chnls = 0; chnls < number_of_charts; chnls++)
+  {
+    cv::Mat A = cv::Mat::zeros(n_points_per_chart, n_points_per_chart, cv::DataType<double>::type);
+    for (int r = 0; r < n_points_per_chart; r++)
+    {
+      A.at<double>(r, r) = RadialBasisKernel(points[r + chnls*n_points_per_chart], points[r + chnls*n_points_per_chart], 0.75);;
+      for (int c = r + 1; c < n_points_per_chart; c++)
+      {
+        double dist = RadialBasisKernel(points[r + chnls*n_points_per_chart], points[c + chnls*n_points_per_chart], 0.75);
+
+        A.at<double>(r, c) = dist;
+        A.at<double>(c, r) = dist;
+      }
+    }
+
+    cv::Mat Ar = cv::Mat::zeros(1, n_points_per_chart, cv::DataType<double>::type);
+    for (int r = 0; r < n_points_per_chart; r++)
+      Ar.at<double>(0, r) = RadialBasisKernel(input[chnls], points[r + chnls*n_points_per_chart], 0.75);
+
+    for (int pcol = 0; pcol < fimage.cols; pcol++)
+    {
+      for (int prow = 0; prow < fimage.rows; prow++)
+      {
+        cv::Mat C = cv::Mat::zeros(n_points_per_chart, 1, cv::DataType<double>::type);
+        for (int i_imgs = 0; i_imgs < hsvs.size(); i_imgs++)
+          C.at<double>(i_imgs, 0) = ((double)hsvs[i_imgs].at<cv::Vec3b>(prow, pcol).val[chnls]);
+
+        cv::Mat M;
+        A.copyTo(M);
+
+        cv::Cholesky(M.ptr<double>(), M.step, M.rows, C.ptr<double>(), C.step, C.cols);
+
+        cv::Mat_<double> value_r = Ar * C;
+        
+        Res.at<cv::Vec3b>(prow, pcol).val[chnls] = (uchar)(value_r.at<double>(0, 0));
+      }
+    }
+  }
+
+  cv::Mat Res_w;
+  cv::cvtColor(Res, Res_w, cv::COLOR_HSV2BGR);
+  cv::imwrite("result.jpg", Res_w);
+
+  printf(" - End CalcInverseProjection01\n");
+}
+
+
