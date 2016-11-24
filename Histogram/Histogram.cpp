@@ -26,13 +26,13 @@ void Histogram::ReadImages(std::vector<std::string> paths,int channel){
 
 void Histogram::CalcHistogram(void){
   int h_bins = 180;
-  int s_bins = 256;
-  int v_bins = 256;
+  int s_bins = 255;
+  int v_bins = 255;
   int histSize[] = { h_bins, s_bins, v_bins };
 
   float h_ranges[] = { 0, 180 };
-  float s_ranges[] = { 0, 256 };
-  float v_ranges[] = { 0, 256 };
+  float s_ranges[] = { 0, 255 };
+  float v_ranges[] = { 0, 255 };
 
   const float* ranges[] = { h_ranges, s_ranges, v_ranges };
 

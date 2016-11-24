@@ -115,7 +115,7 @@ namespace ClassCppToCS_CS
           {
             string name = paths[i].Split('\\').Last();
             chart.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-            chart.Series[0].Points.AddXY(Math.Round(arrayMDS[i, 0], 1), Math.Round(arrayMDS[i, 1], 3));
+            chart.Series[0].Points.AddXY(Math.Round(arrayMDS[i, 0], 3), Math.Round(arrayMDS[i, 1], 3));
             chart.Series[0].Points[i].LegendToolTip = name;
             chart.Series[0].Points[i].ToolTip = name + "\n X= " + arrayMDS[i, 0] + " Y = " + arrayMDS[i, 1];
 
