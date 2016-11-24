@@ -68,7 +68,9 @@ namespace CppWrapper {
   public:
     CppInverseProjectionWrapper ();
 
+    void SetInputColorScapeType (int type);
     void InverseProjection01(array<double, 2>^ t_points, int n_points, int n_series, array<System::String^>^ bytes, array<double, 2>^ input_point);
+    void InverseProjection02(array<double, 2>^ t_points, int n_points, int n_series, array<System::String^>^ bytes, array<double, 2>^ input_point);
 
   private:
     InverseProjection* pinvproj;
