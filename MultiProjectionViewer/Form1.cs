@@ -16,12 +16,20 @@ namespace ClassCppToCS_CS
   public partial class Form1 : Form
   {
     public CppWrapper.CppInverseProjectionWrapper wrapper_inverse_projection;
-     
+    public int current_colorspace_input;
+
     public Form1()
     {
       InitializeComponent();
 
+      comboBox1.Items.Add("HSV");
+      comboBox1.Items.Add("RGB");
+
+      current_colorspace_input = 0;
+      comboBox1.SelectedIndex = current_colorspace_input;
+
       wrapper_inverse_projection = new CppWrapper.CppInverseProjectionWrapper();
+      wrapper_inverse_projection.SetInputColorScapeType(0);
     }
 
     private void InitializeOpenFileDialog()
@@ -267,7 +275,7 @@ namespace ClassCppToCS_CS
 
       //pictureBox1.Invalidate();
 
-      double[,] input_point = new double[,] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
+      double[,] input_point = new double[,] { { -0.17429880797863, 0.124405957758427 }, { 0, 0 }, { 0, 0 } };
       wrapper_inverse_projection.InverseProjection01(arraypoints, n_points_per_chart, number_of_charts, paths.ToArray(), input_point);
 
       //pictureBox1.Image = Image.FromFile("result.jpg");
@@ -276,6 +284,12 @@ namespace ClassCppToCS_CS
     private void pictureBox1_Click(object sender, EventArgs e)
     {
 
+    }
+
+    private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      if (wrapper_inverse_projection != null)
+        wrapper_inverse_projection.SetInputColorScapeType(comboBox1.SelectedIndex);
     }
   }
 }

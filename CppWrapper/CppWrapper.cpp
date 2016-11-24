@@ -154,6 +154,11 @@ CppWrapper::CppInverseProjectionWrapper::CppInverseProjectionWrapper ()
   pinvproj = new InverseProjection();
 }
 
+void CppWrapper::CppInverseProjectionWrapper::SetInputColorScapeType (int type)
+{
+  pinvproj->input_colorspace = type;
+}
+
 void CppWrapper::CppInverseProjectionWrapper::InverseProjection01(array<double, 2>^ t_points,
   int n_points_per_series,
   int number_of_charts,

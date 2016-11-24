@@ -28,7 +28,12 @@ public:
   double RadialBasisKernel(double* X1, double* X2, double sigma);
   //void getDistMatrix(std::vector<std::vector<double>> &vec);
 
+  int input_colorspace;
+
 private:
+  cv::Mat ConvertBGRToInputColorSpace (cv::Mat ipt, int type);
+  cv::Mat ConvertInputColorSpaceToBGR (cv::Mat ipt, int type);
+
   std::vector<cv::Mat> srcs;
   std::vector<cv::Mat> hsvs;
 };

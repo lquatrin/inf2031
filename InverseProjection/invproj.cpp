@@ -4,7 +4,10 @@
 
 #define MAX_UCHAR_IMAGE_VALUE 255.0
 
-InverseProjection::InverseProjection () {}
+InverseProjection::InverseProjection ()
+{
+  input_colorspace = 0;
+}
 
 InverseProjection::~InverseProjection ()
 {
@@ -239,10 +242,7 @@ void InverseProjection::CalcInverseProjection01(
 
   for (int i = 0; i < srcs.size(); i++)
   {
-    // Separa a imagem em 3 componentes H S e V
-    cv::Mat t_hsv;
-    cv::cvtColor(srcs[i], t_hsv, cv::COLOR_BGR2HSV);
-    hsvs.push_back(t_hsv);
+    hsvs.push_back(ConvertBGRToInputColorSpace(srcs[i], input_colorspace));
   }
 
   cv::Mat fimage = hsvs[0];
@@ -288,11 +288,31 @@ void InverseProjection::CalcInverseProjection01(
     }
   }
 
-  cv::Mat Res_w;
-  cv::cvtColor(Res, Res_w, cv::COLOR_HSV2BGR);
+  cv::Mat Res_w = ConvertInputColorSpaceToBGR(Res, input_colorspace);
   cv::imwrite("result.jpg", Res_w);
 
   printf(" - End CalcInverseProjection01\n");
 }
+
+cv::Mat InverseProjection::ConvertBGRToInputColorSpace(cv::Mat ipt, int type)
+{
+  cv::Mat ret;
+  if (type == 0)
+    cv::cvtColor(ipt, ret, cv::COLOR_BGR2HSV);
+  else if (type == 1)
+    ret = ipt;
+  return ret;
+}
+
+cv::Mat InverseProjection::ConvertInputColorSpaceToBGR(cv::Mat ipt, int type)
+{
+  cv::Mat ret;
+  if (type == 0)
+    cv::cvtColor(ipt, ret, cv::COLOR_HSV2BGR);
+  else if (type == 1)
+    ret = ipt;
+  return ret;
+}
+
 
 
