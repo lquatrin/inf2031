@@ -222,47 +222,45 @@ namespace ClassCppToCS_CS
 
     private void button2_Click(object sender, EventArgs e)
     {
-      Chart chart = chart1;
-
+      Chart chart;
+      int s = 0;
       int number_of_charts = 3;
-
+      
+      chart = chart1;
       int n_series = chart.Series.Count();
       int n_points_per_chart = chart.Series[0].Points.Count();
       double[,] arraypoints = new double[number_of_charts * n_points_per_chart, 2];
+
+      s = 0;
       
-      if (n_series > 0)
+      for (int p = 0; p < n_points_per_chart; p++)
       {
-        int s = 0;
-        for (int p = 0; p < n_points_per_chart; p++)
-        {
-          DataPoint pt = chart.Series[0].Points[p];
-          //Console.WriteLine(s * n_points_per_chart + p);
-          arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
-          arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
-        }
-
-        chart = chart2;
-        for (int p = 0; p < n_points_per_chart; p++)
-        {
-          DataPoint pt = chart.Series[0].Points[p];
-          //Console.WriteLine(s * n_points_per_chart + p);
-          arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
-          arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
-        }
-        
-
-        chart = chart4;
-        for (int p = 0; p < n_points_per_chart; p++)
-        {
-          DataPoint pt = chart.Series[0].Points[p];
-          //Console.WriteLine(s * n_points_per_chart + p);
-          arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
-          arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
-        }
-        
+        DataPoint pt = chart.Series[0].Points[p];
+        //Console.WriteLine(s * n_points_per_chart + p);
+        arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
+        arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
       }
-      
 
+      s++;
+      chart = chart2;
+      for (int p = 0; p < n_points_per_chart; p++)
+      {
+        DataPoint pt = chart.Series[0].Points[p];
+        //Console.WriteLine(s * n_points_per_chart + p);
+        arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
+        arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
+      }
+
+
+      s++;
+      chart = chart4;
+      for (int p = 0; p < n_points_per_chart; p++)
+      {
+        DataPoint pt = chart.Series[0].Points[p];
+        //Console.WriteLine(s * n_points_per_chart + p);
+        arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
+        arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
+      }
 
       List<string> paths = new List<string>();
       int counter = 0;
@@ -273,7 +271,16 @@ namespace ClassCppToCS_CS
         counter++;
       }
 
-      //pictureBox1.Invalidate();
+      Console.Write(number_of_charts);
+      Console.Write(" ");
+      Console.Write(n_points_per_chart);
+      for (int i = 0; i < number_of_charts; i++)
+      {
+        for (int p = 0; p < n_points_per_chart; p++)
+        {
+          Console.WriteLine(arraypoints[i * n_points_per_chart + p, 0] + " " + arraypoints[i * n_points_per_chart + p, 1]);
+        }
+      }
 
       double[,] input_point = new double[,] { { -0.17429880797863, 0.124405957758427 }, { 0, 0 }, { 0, 0 } };
       wrapper_inverse_projection.InverseProjection01(arraypoints, n_points_per_chart, number_of_charts, paths.ToArray(), input_point);
@@ -290,6 +297,16 @@ namespace ClassCppToCS_CS
     {
       if (wrapper_inverse_projection != null)
         wrapper_inverse_projection.SetInputColorScapeType(comboBox1.SelectedIndex);
+    }
+
+    private void button3_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void chart4_Click(object sender, EventArgs e)
+    {
+
     }
   }
 }

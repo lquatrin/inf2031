@@ -99,14 +99,6 @@ void InverseProjection::test ()
   //std::vector<std::vector<double>> m_vec;
   //getDistMatrix(m_vec);
 
-#ifdef _DEBUG
-  for (int i = 0; i < m_vec.size(); i++){
-    for (int j = 0; j < m_vec[i].size(); j++){
-      printf("%.5g ", m_vec[i][j]);
-    }
-    printf("\n");
-  }
-#endif
 }
 
 void InverseProjection::testCholesky(void)
@@ -198,26 +190,58 @@ void InverseProjection::testCholesky(void)
   }
 }
 
+void InverseProjection::testLU ()
+{  
+  int n = 3;
+  {
+    cv::Mat A = (cv::Mat_<double>(3, 3) <<
+      2, -2,   4,
+      -5, -4,  -4,
+      3, -4, -4);
+  
+    cv::Mat M = A;
+    cv::Mat P = PLUDecomp(A);
+
+    cv::Mat L = cv::Mat::zeros(n, n, cv::DataType<double>::type);
+    cv::Mat U = cv::Mat::zeros(n, n, cv::DataType<double>::type);
+    for (int i = 0; i < n; i++)
+      for (int j = i; j < n; j++)
+        U.at<double>(i, j) = A.at<double>(i, j);
+
+    for (int i = 0; i < n; i++)
+    {
+      L.at<double>(i, i) = 1.0;
+      for (int j = i + 1; j < n; j++)
+      {
+        L.at<double>(j, i) = A.at<double>(j, i);
+      }
+    }
+
+    std::cout << "Matrix LU:\n" << A << std::endl << std::endl;
+
+    std::cout << "Matrix P:\n" << P << std::endl << std::endl;
+
+    std::cout << "Matrix PLU:\n" << (P.t()*(L*U)) << std::endl << std::endl;
+  }
+  
+  {
+    cv::Mat A = (cv::Mat_<double>(3, 3) <<
+      1, 2,  4,
+      3, 8, 14,
+      2, 6, 13);
+    cv::Mat b = (cv::Mat_<double>(3, 1) << 3, 13, 4);
+
+    cv::Mat P = PLUDecomp(A);
+    cv::Mat X = LUSolve(A, P, b);
+    std::cout << "Solution:\n" << LUEvalB(A, P, X) << std::endl << std::endl;
+  }
+}
+
 void InverseProjection::Clear ()
 {
   srcs.clear();
   hsvs.clear();
 }
-
-/*
-void InverseProjection::getDistMatrix(std::vector<std::vector<double>> &vec){
-
-// cria matriz de diferenças nos InverseProjectionas baseando-se no método de correlação
-
-for (int i = 0; i < hists.size(); i++){
-std::vector<double> s_vec;
-for (int j = 0; j < hists.size(); j++){
-s_vec.push_back(cv::compareHist(hists[i], hists[j], 3));
-}
-vec.push_back(s_vec);
-}
-}
-*/
 
 double InverseProjection::RadialBasisKernel (double* X1, double* X2, double sigma)
 {
@@ -225,6 +249,227 @@ double InverseProjection::RadialBasisKernel (double* X1, double* X2, double sigm
 }
 
 void InverseProjection::CalcInverseProjection01(
+  int number_of_charts,
+  int n_points_per_chart,
+  int dimension,
+  double** points,
+  double** input,
+  std::vector<std::string> image_paths)
+{
+  printf(" - Init CalcInverseProjection with LU decomp\n");
+
+  std::vector<cv::Mat> srcs;
+  std::vector<cv::Mat> hsvs;
+
+  for (int i = 0; i < image_paths.size(); i++)
+    srcs.push_back(cv::imread(image_paths[i], 1));
+
+  for (int i = 0; i < srcs.size(); i++)
+  {
+    hsvs.push_back(ConvertBGRToInputColorSpace(srcs[i], input_colorspace));
+  }
+
+  cv::Mat fimage = hsvs[0];
+
+  cv::Mat Res = cv::Mat::zeros(fimage.rows, fimage.cols, cv::DataType<cv::Vec3b>::type);
+
+  for (int chnls = 0; chnls < number_of_charts; chnls++)
+  {
+    printf("Channel %d\n", chnls);
+    for (int i = 0 ; i < n_points_per_chart; i++)
+    {
+      printf("points: [%.4lf, %.4lf]\n", points[i + chnls*n_points_per_chart][0], points[i + chnls*n_points_per_chart][1]);
+    }
+    printf("\n");
+    cv::Mat A = cv::Mat::zeros(n_points_per_chart, n_points_per_chart, cv::DataType<double>::type);
+    for (int r = 0; r < n_points_per_chart; r++)
+    {
+      A.at<double>(r, r) = RadialBasisKernel(points[r + chnls*n_points_per_chart], points[r + chnls*n_points_per_chart], 0.75);;
+      for (int c = r + 1; c < n_points_per_chart; c++)
+      {
+        double dist = RadialBasisKernel(points[r + chnls*n_points_per_chart], points[c + chnls*n_points_per_chart], 0.75);
+
+        A.at<double>(r, c) = dist;
+        A.at<double>(c, r) = dist;
+      }
+    }
+
+    //std::cout << "Matrix  A:\n" << A << std::endl << std::endl;
+    cv::Mat P = LUDecomp(A);
+    //std::cout << "Matrix LU:\n" << A << std::endl << std::endl;
+
+    cv::Mat Ar = cv::Mat::zeros(1, n_points_per_chart, cv::DataType<double>::type);
+    for (int r = 0; r < n_points_per_chart; r++)
+      Ar.at<double>(0, r) = RadialBasisKernel(input[chnls], points[r + chnls*n_points_per_chart], 0.75);
+
+    for (int pcol = 0; pcol < fimage.cols; pcol++)
+    {
+      for (int prow = 0; prow < fimage.rows; prow++)
+      {
+        cv::Mat b = cv::Mat::zeros(n_points_per_chart, 1, cv::DataType<double>::type);
+        for (int i_imgs = 0; i_imgs < hsvs.size(); i_imgs++)
+          b.at<double>(i_imgs, 0) = ((double)hsvs[i_imgs].at<cv::Vec3b>(prow, pcol).val[chnls]);
+
+        cv::Mat X = LUSolve(A, P, b);
+        cv::Mat_<double> value_r = Ar * X;
+        
+        Res.at<cv::Vec3b>(prow, pcol).val[chnls] = (uchar)(value_r.at<double>(0, 0));
+      }
+    }
+  }
+
+  cv::Mat Res_w = ConvertInputColorSpaceToBGR(Res, input_colorspace);
+  cv::imwrite("result.jpg", Res_w);
+
+  printf(" - End CalcInverseProjection with LU decomp\n");
+}
+
+cv::Mat InverseProjection::ConvertBGRToInputColorSpace(cv::Mat ipt, int type)
+{
+  cv::Mat ret;
+  if (type == 0)
+    cv::cvtColor(ipt, ret, cv::COLOR_BGR2HSV);
+  else if (type == 1)
+    ret = ipt;
+  return ret;
+}
+
+cv::Mat InverseProjection::ConvertInputColorSpaceToBGR(cv::Mat ipt, int type)
+{
+  cv::Mat ret;
+  if (type == 0)
+    cv::cvtColor(ipt, ret, cv::COLOR_HSV2BGR);
+  else if (type == 1)
+    ret = ipt;
+  return ret;
+}
+
+cv::Mat InverseProjection::LUDecomp (cv::Mat& A)
+{
+  int n = A.rows;
+  cv::Mat P = cv::Mat::zeros(n, n, cv::DataType<double>::type);
+  for (int i = 0; i < n; i++)
+    P.at<double>(i, i) = 1;
+
+  for (int curr_row = 0; curr_row < n - 1; curr_row++)
+  {
+    for (int i = curr_row + 1; i < n; i++)
+    {
+      double factor = A.at<double>(i, curr_row) / A.at<double>(curr_row, curr_row);
+      for (int k = curr_row; k < n; k++)
+        A.at<double>(i, k) -= A.at<double>(curr_row, k) * factor;
+      A.at<double>(i, curr_row) = factor;
+    }
+  }
+  return P;
+}
+
+//Performs LU Decomposition
+cv::Mat InverseProjection::PLUDecomp(cv::Mat& A)
+{
+  int n = A.rows;
+  cv::Mat P = cv::Mat::zeros(n, n, cv::DataType<double>::type);
+  for (int i = 0; i < n; i++)
+    P.at<double>(i, i) = 1;
+
+  for (int curr_row = 0; curr_row < n - 1; curr_row++)
+  {
+    int pivot = curr_row;
+    for (int k = curr_row + 1; k < n; k++)
+    {
+      if (fabs(A.at<double>(k, curr_row)) > fabs(A.at<double>(pivot, curr_row)))
+        pivot = k;
+    }
+
+    if (pivot != curr_row)
+    {
+      for (int k = 0; k < n; k++)
+      {
+        double aux = A.at<double>(curr_row, k);
+        A.at<double>(curr_row, k) = A.at<double>(pivot, k);
+        A.at<double>(pivot, k) = aux;
+
+        double paux = P.at<double>(curr_row, k);
+        P.at<double>(curr_row, k) = P.at<double>(pivot, k);
+        P.at<double>(pivot, k) = paux;
+      }
+    }
+
+    for (int i = curr_row + 1; i < n; i++)
+    {
+      double factor = A.at<double>(i, curr_row) / A.at<double>(curr_row, curr_row);
+      for (int k = curr_row; k < n; k++)
+        A.at<double>(i, k) -= A.at<double>(curr_row, k) * factor;
+      A.at<double>(i, curr_row) = factor;
+    }
+  }
+  return P;
+}
+
+// Compute:
+// . L * U * x = P * b
+cv::Mat InverseProjection::LUSolve (cv::Mat LU, cv::Mat P, cv::Mat b)
+{
+  int n = LU.rows;
+
+  // B = P * b
+  cv::Mat B = P * b;
+
+  // Forward Substitution
+  // L * y = B, with y = U * x
+  for(int i = 0; i < n; i++)
+  {
+    double sum = 0;
+    for(int j = 0; j < i; j++)
+      sum += LU.at<double>(i, j) * B.at<double>(j, 0);
+    B.at<double>(i, 0) = (B.at<double>(i,0) - sum);
+  }
+
+  cv::Mat X = cv::Mat::zeros(n, 1, cv::DataType<double>::type);
+
+  // Backward Substitution
+  // U * x = y
+  for(int i = n-1; i >= 0; i--)
+  {
+    double sum = 0;
+    for(int j = i + 1; j < n; j++)
+    {
+      sum += LU.at<double>(i, j) * X.at<double>(j, 0);
+    }
+    X.at<double>(i, 0) = (B.at<double>(i, 0) - sum) / LU.at<double>(i, i);
+  }
+
+  return X;
+}
+
+// P^t * L * U * X = B
+// return B
+cv::Mat InverseProjection::LUEvalB (cv::Mat LU, cv::Mat P, cv::Mat X)
+{
+  int n = LU.rows;
+  
+  cv::Mat L = cv::Mat::zeros(n, n, cv::DataType<double>::type);
+  cv::Mat U = cv::Mat::zeros(n, n, cv::DataType<double>::type);
+  
+  for (int i = 0; i < n; i++)
+    for (int j = i; j < n; j++)
+      U.at<double>(i, j) = LU.at<double>(i, j);
+
+  for (int i = 0; i < n; i++)
+  {
+    L.at<double>(i, i) = 1.0;
+    for (int j = i + 1; j < n; j++)
+      L.at<double>(j, i) = LU.at<double>(j, i);
+  }
+
+  cv::Mat b = (P.t() * (L * U)) * X;
+
+  return b;
+}
+
+
+
+void InverseProjection::CalcInverseProjection02(
   int number_of_charts,
   int n_points_per_chart,
   int dimension,
@@ -264,6 +509,9 @@ void InverseProjection::CalcInverseProjection01(
       }
     }
 
+    cv::Mat M;
+    A.copyTo(M);
+
     cv::Mat Ar = cv::Mat::zeros(1, n_points_per_chart, cv::DataType<double>::type);
     for (int r = 0; r < n_points_per_chart; r++)
       Ar.at<double>(0, r) = RadialBasisKernel(input[chnls], points[r + chnls*n_points_per_chart], 0.75);
@@ -276,13 +524,11 @@ void InverseProjection::CalcInverseProjection01(
         for (int i_imgs = 0; i_imgs < hsvs.size(); i_imgs++)
           C.at<double>(i_imgs, 0) = ((double)hsvs[i_imgs].at<cv::Vec3b>(prow, pcol).val[chnls]);
 
-        cv::Mat M;
-        A.copyTo(M);
 
         cv::Cholesky(M.ptr<double>(), M.step, M.rows, C.ptr<double>(), C.step, C.cols);
 
         cv::Mat_<double> value_r = Ar * C;
-        
+
         Res.at<cv::Vec3b>(prow, pcol).val[chnls] = (uchar)(value_r.at<double>(0, 0));
       }
     }
@@ -293,26 +539,3 @@ void InverseProjection::CalcInverseProjection01(
 
   printf(" - End CalcInverseProjection01\n");
 }
-
-cv::Mat InverseProjection::ConvertBGRToInputColorSpace(cv::Mat ipt, int type)
-{
-  cv::Mat ret;
-  if (type == 0)
-    cv::cvtColor(ipt, ret, cv::COLOR_BGR2HSV);
-  else if (type == 1)
-    ret = ipt;
-  return ret;
-}
-
-cv::Mat InverseProjection::ConvertInputColorSpaceToBGR(cv::Mat ipt, int type)
-{
-  cv::Mat ret;
-  if (type == 0)
-    cv::cvtColor(ipt, ret, cv::COLOR_HSV2BGR);
-  else if (type == 1)
-    ret = ipt;
-  return ret;
-}
-
-
-
