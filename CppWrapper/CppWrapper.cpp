@@ -57,7 +57,6 @@ void CppWrapper::CppLAMPWrapper::testLamp()
 	pCC->lampTest();
 }
 
-
 CppWrapper::CppMDSWrapper::CppMDSWrapper(array<double, 2>^ tvalues, int arraySize)
 {
 	dists = tvalues;
@@ -159,19 +158,20 @@ void CppWrapper::CppInverseProjectionWrapper::SetInputColorScapeType (int type)
   pinvproj->input_colorspace = type;
 }
 
-void CppWrapper::CppInverseProjectionWrapper::InverseProjection01(array<double, 2>^ t_points,
-  int n_points_per_series,
-  int number_of_charts,
-  array<System::String^>^ bytes,
-  array<double, 2>^ input_point)
+void CppWrapper::CppInverseProjectionWrapper::InverseProjection01(
+  int n_sets,
+  int n_points_per_set,
+  array<double, 2>^ set_points,
+  array<double, 2>^ input_points,
+  array<System::String^>^ bytes)
 {
-  double **m = (double**)malloc(n_points_per_series*number_of_charts * sizeof(double*));
+  double **m = (double**)malloc(n_points_per_set*n_sets * sizeof(double*));
 
-  for (int i = 0; i < n_points_per_series*number_of_charts; i++)
+  for (int i = 0; i < n_points_per_set*n_sets; i++)
   {
     m[i] = (double*)malloc(2 * sizeof(double));
-    m[i][0] = t_points[i, 0];
-    m[i][1] = t_points[i, 1];
+    m[i][0] = set_points[i, 0];
+    m[i][1] = set_points[i, 1];
   }
 
   std::vector<std::string> image_paths;
@@ -183,39 +183,40 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjection01(array<double, 
   }
 
 
-  double **p = (double**)malloc(number_of_charts * sizeof(double*));
-  for (int i = 0; i < number_of_charts; i++)
+  double **p = (double**)malloc(n_sets * sizeof(double*));
+  for (int i = 0; i < n_sets; i++)
   {
     p[i] = (double*)malloc(2 * sizeof(double));
 
-    p[i][0] = input_point[i, 0];
-    p[i][1] = input_point[i, 1];
+    p[i][0] = input_points[i, 0];
+    p[i][1] = input_points[i, 1];
   }
 
-  pinvproj->CalcInverseProjection01(number_of_charts, n_points_per_series, 2, m, p, image_paths);
+  pinvproj->CalcInverseProjection01(n_sets, n_points_per_set, 2, m, p, image_paths);
 
-  for (int i = 0; i < n_points_per_series*number_of_charts; i++)
+  for (int i = 0; i < n_points_per_set*n_sets; i++)
     free(m[i]);
   free(m);
 
-  for (int i = 0; i < number_of_charts; i++)
+  for (int i = 0; i < n_sets; i++)
     free(p[i]);
   free(p);
 }
 
-void CppWrapper::CppInverseProjectionWrapper::InverseProjection02(array<double, 2>^ t_points,
-  int n_points_per_series,
-  int number_of_charts,
-  array<System::String^>^ bytes,
-  array<double, 2>^ input_point)
+void CppWrapper::CppInverseProjectionWrapper::InverseProjection02(
+  int n_sets,
+  int n_points_per_set,
+  array<double, 2>^ set_points,
+  array<double, 2>^ input_points,
+  array<System::String^>^ bytes)
 {
-  double **m = (double**)malloc(n_points_per_series*number_of_charts * sizeof(double*));
+  double **m = (double**)malloc(n_points_per_set*n_sets * sizeof(double*));
 
-  for (int i = 0; i < n_points_per_series*number_of_charts; i++)
+  for (int i = 0; i < n_points_per_set*n_sets; i++)
   {
     m[i] = (double*)malloc(2 * sizeof(double));
-    m[i][0] = t_points[i, 0];
-    m[i][1] = t_points[i, 1];
+    m[i][0] = set_points[i, 0];
+    m[i][1] = set_points[i, 1];
   }
 
   std::vector<std::string> image_paths;
@@ -227,22 +228,22 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjection02(array<double, 
   }
 
 
-  double **p = (double**)malloc(number_of_charts * sizeof(double*));
-  for (int i = 0; i < number_of_charts; i++)
+  double **p = (double**)malloc(n_sets * sizeof(double*));
+  for (int i = 0; i < n_sets; i++)
   {
     p[i] = (double*)malloc(2 * sizeof(double));
 
-    p[i][0] = input_point[i, 0];
-    p[i][1] = input_point[i, 1];
+    p[i][0] = input_points[i, 0];
+    p[i][1] = input_points[i, 1];
   }
 
-  pinvproj->CalcInverseProjection02(number_of_charts, n_points_per_series, 2, m, p, image_paths);
+  pinvproj->CalcInverseProjection02(n_sets, n_points_per_set, 2, m, p, image_paths);
 
-  for (int i = 0; i < n_points_per_series*number_of_charts; i++)
+  for (int i = 0; i < n_points_per_set*n_sets; i++)
     free(m[i]);
   free(m);
 
-  for (int i = 0; i < number_of_charts; i++)
+  for (int i = 0; i < n_sets; i++)
     free(p[i]);
   free(p);
 }

@@ -4,9 +4,15 @@
 
 #define MAX_UCHAR_IMAGE_VALUE 255.0
 
+double InverseProjection::RadialBasisKernel(double* X1, double* X2)
+{
+  return exp((-(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2))) / (2.0*rad_kernel_gama));
+}
+
 InverseProjection::InverseProjection ()
 {
   input_colorspace = 0;
+  rad_kernel_gama = 0.5;
 }
 
 InverseProjection::~InverseProjection ()
@@ -243,14 +249,9 @@ void InverseProjection::Clear ()
   hsvs.clear();
 }
 
-double InverseProjection::RadialBasisKernel (double* X1, double* X2, double sigma)
-{
-  return exp((-(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2))) / (2.0*sigma*sigma));
-}
-
 void InverseProjection::CalcInverseProjection01(
-  int number_of_charts,
-  int n_points_per_chart,
+  int n_sets,
+  int n_points_per_set,
   int dimension,
   double** points,
   double** input,
@@ -273,21 +274,21 @@ void InverseProjection::CalcInverseProjection01(
 
   cv::Mat Res = cv::Mat::zeros(fimage.rows, fimage.cols, cv::DataType<cv::Vec3b>::type);
 
-  for (int chnls = 0; chnls < number_of_charts; chnls++)
+  for (int chnls = 0; chnls < n_sets; chnls++)
   {
-    printf("Channel %d\n", chnls);
-    for (int i = 0 ; i < n_points_per_chart; i++)
+    //printf("Channel %d\n", chnls);
+    //for (int i = 0 ; i < n_points_per_set; i++)
+    //{
+    //  printf("points: [%.4lf, %.4lf]\n", points[i + chnls*n_points_per_set][0], points[i + chnls*n_points_per_set][1]);
+    //}
+    //printf("\n");
+    cv::Mat A = cv::Mat::zeros(n_points_per_set, n_points_per_set, cv::DataType<double>::type);
+    for (int r = 0; r < n_points_per_set; r++)
     {
-      printf("points: [%.4lf, %.4lf]\n", points[i + chnls*n_points_per_chart][0], points[i + chnls*n_points_per_chart][1]);
-    }
-    printf("\n");
-    cv::Mat A = cv::Mat::zeros(n_points_per_chart, n_points_per_chart, cv::DataType<double>::type);
-    for (int r = 0; r < n_points_per_chart; r++)
-    {
-      A.at<double>(r, r) = RadialBasisKernel(points[r + chnls*n_points_per_chart], points[r + chnls*n_points_per_chart], 0.75);;
-      for (int c = r + 1; c < n_points_per_chart; c++)
+      A.at<double>(r, r) = RadialBasisKernel(points[r + chnls*n_points_per_set], points[r + chnls*n_points_per_set]);;
+      for (int c = r + 1; c < n_points_per_set; c++)
       {
-        double dist = RadialBasisKernel(points[r + chnls*n_points_per_chart], points[c + chnls*n_points_per_chart], 0.75);
+        double dist = RadialBasisKernel(points[r + chnls*n_points_per_set], points[c + chnls*n_points_per_set]);
 
         A.at<double>(r, c) = dist;
         A.at<double>(c, r) = dist;
@@ -298,15 +299,15 @@ void InverseProjection::CalcInverseProjection01(
     cv::Mat P = LUDecomp(A);
     //std::cout << "Matrix LU:\n" << A << std::endl << std::endl;
 
-    cv::Mat Ar = cv::Mat::zeros(1, n_points_per_chart, cv::DataType<double>::type);
-    for (int r = 0; r < n_points_per_chart; r++)
-      Ar.at<double>(0, r) = RadialBasisKernel(input[chnls], points[r + chnls*n_points_per_chart], 0.75);
+    cv::Mat Ar = cv::Mat::zeros(1, n_points_per_set, cv::DataType<double>::type);
+    for (int r = 0; r < n_points_per_set; r++)
+      Ar.at<double>(0, r) = RadialBasisKernel(input[chnls], points[r + chnls*n_points_per_set]);
 
     for (int pcol = 0; pcol < fimage.cols; pcol++)
     {
       for (int prow = 0; prow < fimage.rows; prow++)
       {
-        cv::Mat b = cv::Mat::zeros(n_points_per_chart, 1, cv::DataType<double>::type);
+        cv::Mat b = cv::Mat::zeros(n_points_per_set, 1, cv::DataType<double>::type);
         for (int i_imgs = 0; i_imgs < hsvs.size(); i_imgs++)
           b.at<double>(i_imgs, 0) = ((double)hsvs[i_imgs].at<cv::Vec3b>(prow, pcol).val[chnls]);
 
@@ -467,11 +468,9 @@ cv::Mat InverseProjection::LUEvalB (cv::Mat LU, cv::Mat P, cv::Mat X)
   return b;
 }
 
-
-
 void InverseProjection::CalcInverseProjection02(
-  int number_of_charts,
-  int n_points_per_chart,
+  int n_sets,
+  int n_points_per_set,
   int dimension,
   double** points,
   double** input,
@@ -494,15 +493,15 @@ void InverseProjection::CalcInverseProjection02(
 
   cv::Mat Res = cv::Mat::zeros(fimage.rows, fimage.cols, cv::DataType<cv::Vec3b>::type);
 
-  for (int chnls = 0; chnls < number_of_charts; chnls++)
+  for (int chnls = 0; chnls < n_sets; chnls++)
   {
-    cv::Mat A = cv::Mat::zeros(n_points_per_chart, n_points_per_chart, cv::DataType<double>::type);
-    for (int r = 0; r < n_points_per_chart; r++)
+    cv::Mat A = cv::Mat::zeros(n_points_per_set, n_points_per_set, cv::DataType<double>::type);
+    for (int r = 0; r < n_points_per_set; r++)
     {
-      A.at<double>(r, r) = RadialBasisKernel(points[r + chnls*n_points_per_chart], points[r + chnls*n_points_per_chart], 0.75);;
-      for (int c = r + 1; c < n_points_per_chart; c++)
+      A.at<double>(r, r) = RadialBasisKernel(points[r + chnls*n_points_per_set], points[r + chnls*n_points_per_set]);;
+      for (int c = r + 1; c < n_points_per_set; c++)
       {
-        double dist = RadialBasisKernel(points[r + chnls*n_points_per_chart], points[c + chnls*n_points_per_chart], 0.75);
+        double dist = RadialBasisKernel(points[r + chnls*n_points_per_set], points[c + chnls*n_points_per_set]);
 
         A.at<double>(r, c) = dist;
         A.at<double>(c, r) = dist;
@@ -512,15 +511,15 @@ void InverseProjection::CalcInverseProjection02(
     cv::Mat M;
     A.copyTo(M);
 
-    cv::Mat Ar = cv::Mat::zeros(1, n_points_per_chart, cv::DataType<double>::type);
-    for (int r = 0; r < n_points_per_chart; r++)
-      Ar.at<double>(0, r) = RadialBasisKernel(input[chnls], points[r + chnls*n_points_per_chart], 0.75);
+    cv::Mat Ar = cv::Mat::zeros(1, n_points_per_set, cv::DataType<double>::type);
+    for (int r = 0; r < n_points_per_set; r++)
+      Ar.at<double>(0, r) = RadialBasisKernel(input[chnls], points[r + chnls*n_points_per_set]);
 
     for (int pcol = 0; pcol < fimage.cols; pcol++)
     {
       for (int prow = 0; prow < fimage.rows; prow++)
       {
-        cv::Mat C = cv::Mat::zeros(n_points_per_chart, 1, cv::DataType<double>::type);
+        cv::Mat C = cv::Mat::zeros(n_points_per_set, 1, cv::DataType<double>::type);
         for (int i_imgs = 0; i_imgs < hsvs.size(); i_imgs++)
           C.at<double>(i_imgs, 0) = ((double)hsvs[i_imgs].at<cv::Vec3b>(prow, pcol).val[chnls]);
 
@@ -538,4 +537,15 @@ void InverseProjection::CalcInverseProjection02(
   cv::imwrite("result.jpg", Res_w);
 
   printf(" - End CalcInverseProjection01\n");
+}
+
+void InverseProjection::GenInverseProjection (
+  int n_sets,
+  int n_points_per_set,
+  int dimension,
+  double** set_points,
+  double** input_points,
+  std::vector<std::string> image_paths)
+{
+
 }

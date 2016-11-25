@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 using CppWrapper;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -222,6 +223,9 @@ namespace ClassCppToCS_CS
 
     private void button2_Click(object sender, EventArgs e)
     {
+      label1.Text = "Start Inverse Projection";
+      label1.Update();
+
       Chart chart;
       int s = 0;
       int number_of_charts = 3;
@@ -230,37 +234,6 @@ namespace ClassCppToCS_CS
       int n_series = chart.Series.Count();
       int n_points_per_chart = chart.Series[0].Points.Count();
       double[,] arraypoints = new double[number_of_charts * n_points_per_chart, 2];
-
-      s = 0;
-      
-      for (int p = 0; p < n_points_per_chart; p++)
-      {
-        DataPoint pt = chart.Series[0].Points[p];
-        //Console.WriteLine(s * n_points_per_chart + p);
-        arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
-        arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
-      }
-
-      s++;
-      chart = chart2;
-      for (int p = 0; p < n_points_per_chart; p++)
-      {
-        DataPoint pt = chart.Series[0].Points[p];
-        //Console.WriteLine(s * n_points_per_chart + p);
-        arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
-        arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
-      }
-
-
-      s++;
-      chart = chart4;
-      for (int p = 0; p < n_points_per_chart; p++)
-      {
-        DataPoint pt = chart.Series[0].Points[p];
-        //Console.WriteLine(s * n_points_per_chart + p);
-        arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
-        arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
-      }
 
       List<string> paths = new List<string>();
       int counter = 0;
@@ -271,20 +244,68 @@ namespace ClassCppToCS_CS
         counter++;
       }
 
-      Console.Write(number_of_charts);
-      Console.Write(" ");
-      Console.Write(n_points_per_chart);
-      for (int i = 0; i < number_of_charts; i++)
+      s = 0;
+      for (int p = 0; p < n_points_per_chart; p++)
       {
-        for (int p = 0; p < n_points_per_chart; p++)
+        DataPoint pt = chart.Series[0].Points[p];
+        if (!(pt.LegendToolTip == paths[p].Split('\\').Last()))
         {
-          Console.WriteLine(arraypoints[i * n_points_per_chart + p, 0] + " " + arraypoints[i * n_points_per_chart + p, 1]);
+          throw new System.InvalidOperationException();
         }
+        arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
+        arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
       }
 
-      double[,] input_point = new double[,] { { -0.17429880797863, 0.124405957758427 }, { 0, 0 }, { 0, 0 } };
-      wrapper_inverse_projection.InverseProjection01(arraypoints, n_points_per_chart, number_of_charts, paths.ToArray(), input_point);
+      s++;
+      chart = chart2;
+      for (int p = 0; p < n_points_per_chart; p++)
+      {
+        DataPoint pt = chart.Series[0].Points[p];
+        if (!(pt.LegendToolTip == paths[p].Split('\\').Last()))
+        {
+          throw new System.InvalidOperationException();
+        }
+        arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
+        arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
+      }
 
+
+      s++;
+      chart = chart4;
+      for (int p = 0; p < n_points_per_chart; p++)
+      {
+        DataPoint pt = chart.Series[0].Points[p];
+        if (!(pt.LegendToolTip == paths[p].Split('\\').Last()))
+        {
+          throw new System.InvalidOperationException();
+        }
+        arraypoints[s * n_points_per_chart + p, 0] = pt.XValue;
+        arraypoints[s * n_points_per_chart + p, 1] = pt.YValues[0];
+      }
+      
+      //Console.Write(number_of_charts);
+      //Console.Write(" ");
+      //Console.Write(n_points_per_chart);
+      //for (int i = 0; i < number_of_charts; i++)
+      //{
+      //  for (int p = 0; p < n_points_per_chart; p++)
+      //  {
+      //    Console.WriteLine(arraypoints[i * n_points_per_chart + p, 0] + " " + arraypoints[i * n_points_per_chart + p, 1]);
+      //  }
+      //}
+
+      double[,] input_point = new double[,] { { -0.17429880797863, 0.124405957758427 }, { 0, 0 }, { 0, 0 } };
+     
+      
+      wrapper_inverse_projection.InverseProjection01(
+          number_of_charts, 
+          n_points_per_chart, 
+          arraypoints, 
+          input_point,
+          paths.ToArray() 
+          );
+
+      label1.Text = "Finished Inverse Projection";
       //pictureBox1.Image = Image.FromFile("result.jpg");
     }
 
@@ -305,6 +326,16 @@ namespace ClassCppToCS_CS
     }
 
     private void chart4_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void label1_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void Form1_Load(object sender, EventArgs e)
     {
 
     }

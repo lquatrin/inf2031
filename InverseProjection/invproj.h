@@ -14,7 +14,21 @@ public:
   void testCholesky (void);
   void testLU (void);
 
-  void CalcInverseProjection01(int number_of_charts, int n_points_per_chart, int dimension, double** points, double** input, std::vector<std::string> image_paths);
+  void GenInverseProjection (
+    int n_sets,
+    int n_points_per_set,
+    int dimension,
+    double** set_points,
+    double** input_points,
+    std::vector<std::string> image_paths);
+
+  void CalcInverseProjection01(
+    int n_sets,
+    int n_points_per_set,
+    int dimension, 
+    double** set_points,
+    double** input_points,
+    std::vector<std::string> image_paths);
 
 public:
   InverseProjection ();
@@ -26,7 +40,7 @@ public:
 
   void Clear ();
   
-  double RadialBasisKernel(double* X1, double* X2, double sigma);
+  double RadialBasisKernel(double* X1, double* X2);
   //void getDistMatrix(std::vector<std::vector<double>> &vec);
 
   int input_colorspace;
@@ -38,11 +52,19 @@ public:
 
 
 
-  void CalcInverseProjection02 (int number_of_charts, int n_points_per_chart, int dimension, double** points, double** input, std::vector<std::string> image_paths);
+  void CalcInverseProjection02(
+    int n_sets,
+    int n_points_per_set,
+    int dimension,
+    double** set_points,
+    double** input_points,
+    std::vector<std::string> image_paths);
 
 private:
   cv::Mat ConvertBGRToInputColorSpace (cv::Mat ipt, int type);
   cv::Mat ConvertInputColorSpaceToBGR (cv::Mat ipt, int type);
+
+  double rad_kernel_gama;
 
   std::vector<cv::Mat> srcs;
   std::vector<cv::Mat> hsvs;
