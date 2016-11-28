@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LAMP", "LAMP\lampcpp.vcxproj", "{274B8935-6939-44B5-BD21-4BC9198AFF3C}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Histogram", "Histogram\Histogram.vcxproj", "{DD69C493-4A6E-48BE-9D04-57D830A642C1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InverseProjection", "InverseProjection\inverse_projection.vcxproj", "{706121D8-8FC5-4304-BCE4-FDA9876E3963}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DistPixel", "DistPixel\DistPixel.vcxproj", "{8F4DFF41-C4D2-40EC-9692-C080521C9E25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +95,16 @@ Global
 		{706121D8-8FC5-4304-BCE4-FDA9876E3963}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{706121D8-8FC5-4304-BCE4-FDA9876E3963}.Release|Win32.ActiveCfg = Release|Win32
 		{706121D8-8FC5-4304-BCE4-FDA9876E3963}.Release|Win32.Build.0 = Release|Win32
+		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Debug|Win32.Build.0 = Debug|Win32
+		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Release|Any CPU.ActiveCfg = Release|Win32
+		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Release|Win32.ActiveCfg = Release|Win32
+		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
