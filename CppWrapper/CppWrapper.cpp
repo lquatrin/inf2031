@@ -247,3 +247,52 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjection02(
     free(p[i]);
   free(p);
 }
+
+
+CppWrapper::CppDistPixelWrapper::CppDistPixelWrapper(){
+  pdists = new distpixel();
+}
+
+void CppWrapper::CppDistPixelWrapper::addPath(array<System::String^>^ bytes, int channel){
+  std::vector<std::string> mpath;
+  for (int i = 0; i < bytes->Length; i++){
+    msclr::interop::marshal_context context;
+    std::string standardString = context.marshal_as<std::string>(bytes[i]);
+    mpath.push_back(standardString);
+  }
+
+  pdists->SetPaths(mpath,channel);
+}
+
+array<double, 2>^CppWrapper::CppDistPixelWrapper::GetDistances(void){
+
+  std::vector<std::vector<double>> vec;
+  std::vector<std::vector<double>>::iterator itr;
+  pdists->getDist(vec);
+  array<double, 2>^ Distances = gcnew array<double, 2>(vec.size(), vec.size());
+
+
+  for (int i = 0; i < vec.size(); i++){
+    for (int j = 0; j < vec[i].size(); j++){
+      Distances[i, j] = vec[i][j];
+#ifdef _DEBUG
+      printf("%g\n", vec[i][j]);
+#endif
+    }
+  }
+#ifdef _DEBUG
+  printf("tamanho %d\n", Distances->Length);
+#endif
+  
+  return Distances;
+}
+
+void CppWrapper::CppDistPixelWrapper::testDists()
+{
+  pdists->teste();
+}
+
+void CppWrapper::CppDistPixelWrapper::Clear()
+{
+  pdists->clear();
+}

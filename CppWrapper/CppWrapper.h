@@ -15,6 +15,9 @@
 #include "../InverseProjection/invproj.h"
 #include "../InverseProjection/invproj.cpp"
 
+#include "../DistPixel/distpixel.h"
+#include "../DistPixel/distpixel.cpp"
+
 #include <msclr\marshal_cppstd.h>
 #include <math.h>
 using namespace System;
@@ -56,9 +59,9 @@ namespace CppWrapper {
       CppHistogramWrapper();
 	  void CreateHistogram(char** ppNames, int iNbOfNames);
 	  void addPath(array<System::String^>^ bytes,int channel);
-      void testHistogram();
-      array<double, 2>^GetDistances(void);
-      void Clear();
+    void testHistogram();
+    array<double, 2>^GetDistances(void);
+    void Clear();
     private:
       Histogram* pHistogram;
   };
@@ -74,6 +77,21 @@ namespace CppWrapper {
 
   private:
     InverseProjection* pinvproj;
+  };
+
+
+  public ref class CppDistPixelWrapper
+  {
+  public:
+    CppDistPixelWrapper();
+
+    void addPath(array<System::String^>^ bytes, int channel);
+    void testDists();
+    array<double, 2>^GetDistances(void);
+    void Clear();
+  private:
+    distpixel* pdists;
+    
   };
 
 }
