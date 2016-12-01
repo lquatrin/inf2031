@@ -44,13 +44,11 @@
       this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
       this.button1 = new System.Windows.Forms.Button();
       this.button2 = new System.Windows.Forms.Button();
-      this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.comboBox1 = new System.Windows.Forms.ComboBox();
       this.label1 = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart4)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.SuspendLayout();
       // 
       // chart1
@@ -115,7 +113,7 @@
       this.MDS.Name = "MDS";
       this.MDS.Size = new System.Drawing.Size(102, 23);
       this.MDS.TabIndex = 4;
-      this.MDS.Text = "calcMDS";
+      this.MDS.Text = "MDS";
       this.MDS.UseVisualStyleBackColor = true;
       this.MDS.Click += new System.EventHandler(this.MDS_Click);
       // 
@@ -143,15 +141,6 @@
       this.button2.UseVisualStyleBackColor = true;
       this.button2.Click += new System.EventHandler(this.button2_Click);
       // 
-      // pictureBox1
-      // 
-      this.pictureBox1.Location = new System.Drawing.Point(12, 334);
-      this.pictureBox1.Name = "pictureBox1";
-      this.pictureBox1.Size = new System.Drawing.Size(1464, 349);
-      this.pictureBox1.TabIndex = 8;
-      this.pictureBox1.TabStop = false;
-      this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
-      // 
       // comboBox1
       // 
       this.comboBox1.FormattingEnabled = true;
@@ -174,10 +163,9 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(1493, 695);
+      this.ClientSize = new System.Drawing.Size(1493, 357);
       this.Controls.Add(this.label1);
       this.Controls.Add(this.comboBox1);
-      this.Controls.Add(this.pictureBox1);
       this.Controls.Add(this.button2);
       this.Controls.Add(this.button1);
       this.Controls.Add(this.MDS);
@@ -190,7 +178,6 @@
       ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart4)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -205,7 +192,6 @@
     private System.Windows.Forms.OpenFileDialog openFileDialog1;
     private System.Windows.Forms.Button button1;
     private System.Windows.Forms.Button button2;
-    private System.Windows.Forms.PictureBox pictureBox1;
     private System.Windows.Forms.ComboBox comboBox1;
     private System.Windows.Forms.Label label1;
   }

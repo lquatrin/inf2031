@@ -276,12 +276,6 @@ void InverseProjection::CalcInverseProjection01(
 
   for (int chnls = 0; chnls < n_sets; chnls++)
   {
-    //printf("Channel %d\n", chnls);
-    //for (int i = 0 ; i < n_points_per_set; i++)
-    //{
-    //  printf("points: [%.4lf, %.4lf]\n", points[i + chnls*n_points_per_set][0], points[i + chnls*n_points_per_set][1]);
-    //}
-    //printf("\n");
     cv::Mat A = cv::Mat::zeros(n_points_per_set, n_points_per_set, cv::DataType<double>::type);
     for (int r = 0; r < n_points_per_set; r++)
     {
@@ -292,12 +286,24 @@ void InverseProjection::CalcInverseProjection01(
 
         A.at<double>(r, c) = dist;
         A.at<double>(c, r) = dist;
+
       }
+
+      //double sum_dist = 0;
+      //for (int c = 0; c < n_points_per_set; c++)
+      //{
+      //  sum_dist += A.at<double>(r, c);
+      //}
+      //
+      //double sum = 0;
+      //for (int c = 0; c < n_points_per_set; c++)
+      //{
+      //  A.at<double>(r, c) = A.at<double>(r, c) / sum_dist;
+      //  sum += A.at<double>(r, c);
+      //}
     }
 
-    //std::cout << "Matrix  A:\n" << A << std::endl << std::endl;
     cv::Mat P = LUDecomp(A);
-    //std::cout << "Matrix LU:\n" << A << std::endl << std::endl;
 
     cv::Mat Ar = cv::Mat::zeros(1, n_points_per_set, cv::DataType<double>::type);
     for (int r = 0; r < n_points_per_set; r++)
