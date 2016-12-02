@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiProjectionViewerMap", 
 		{13164D1F-B805-42AD-83FC-025DB10C34A6} = {13164D1F-B805-42AD-83FC-025DB10C34A6}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiProjectionViewerProp", "MultiProjectionViewerProp\MultiProjectionViewerProp.csproj", "{1A3197D6-A217-4178-852B-8783D0E9CFAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -120,6 +122,16 @@ Global
 		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Release|Win32.ActiveCfg = Release|Any CPU
+		{1A3197D6-A217-4178-852B-8783D0E9CFAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A3197D6-A217-4178-852B-8783D0E9CFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A3197D6-A217-4178-852B-8783D0E9CFAE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1A3197D6-A217-4178-852B-8783D0E9CFAE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1A3197D6-A217-4178-852B-8783D0E9CFAE}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{1A3197D6-A217-4178-852B-8783D0E9CFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A3197D6-A217-4178-852B-8783D0E9CFAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A3197D6-A217-4178-852B-8783D0E9CFAE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1A3197D6-A217-4178-852B-8783D0E9CFAE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1A3197D6-A217-4178-852B-8783D0E9CFAE}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
