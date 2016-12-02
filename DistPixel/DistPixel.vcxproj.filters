@@ -21,9 +21,15 @@
     <ClCompile Include="distpixel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="distanceprop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="distpixel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="distanceprop.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

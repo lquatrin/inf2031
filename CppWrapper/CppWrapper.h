@@ -17,6 +17,8 @@
 
 #include "../DistPixel/distpixel.h"
 #include "../DistPixel/distpixel.cpp"
+#include "../DistPixel/distanceprop.h"
+#include "../DistPixel/distanceprop.cpp"
 
 #include <msclr\marshal_cppstd.h>
 #include <math.h>
@@ -82,6 +84,13 @@ namespace CppWrapper {
       array<double, 2>^ input_point,
       array<System::String^>^ bytes);
 
+    void InverseProjectionPropBased(
+      int n_reference_points,
+      array<double, 2>^ arraypoints,
+      array<double, 2>^ input_point,
+      array<System::String^>^ bytes,
+      int lyr_i_sz, int lyr_j_sz);
+
   private:
     InverseProjection* pinvproj;
   };
@@ -99,6 +108,27 @@ namespace CppWrapper {
   private:
     distpixel* pdists;
     
+  };
+
+  public ref class CppDistanceProp
+  {
+  public:
+    CppDistanceProp ();
+    ~CppDistanceProp ();
+
+    void SetMapSize (int i_size, int j_size);
+
+    void SetInputFilePaths (
+      array<System::String^>^ props, 
+      array<System::String^>^ filters, 
+      array<int>^ layers);
+    
+    array<double, 2>^ GetDistances ();
+
+    void Clear ();
+  
+  private:
+    DistanceProp* DProp;
   };
 
 }

@@ -2,6 +2,10 @@
 
 #include "invproj.h"
 
+#include <fstream>
+
+#include <Windows.h>
+
 #define MAX_UCHAR_IMAGE_VALUE 255.0
 
 double InverseProjection::RadialBasisKernel(double* X1, double* X2)
@@ -415,6 +419,77 @@ void InverseProjection::CalcInverseProjectionValBased (int n_ref_points
   cv::Mat Res_w = ConvertInputColorSpaceToBGR(Res, input_colorspace);
   cv::imwrite("result_ip_val.png", Res_w);
 }
+
+void InverseProjection::CalcInverseProjectionPropBased(
+  int n_ref_points
+  , double** ref_points
+  , std::vector<std::string> prop_paths
+  , double* input_point
+  , int layer_i_size
+  , int layer_j_size
+  )
+{
+  printf("%d points:\n", n_ref_points);
+  for (int i = 0; i < n_ref_points; i++)
+    printf(". %d %.2lf %.2lf - %s\n", i, ref_points[i][0], ref_points[i][1], prop_paths[i].c_str());
+  printf("Input Point: %.2lf %.2lf\n", input_point[0], input_point[1]);
+
+  int s = 15;
+
+  for (int t = 0; t < prop_paths.size(); t++)
+  {
+    cv::Mat map = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
+    cv::Mat ret = cv::Mat::zeros(layer_j_size * s, layer_i_size * s, cv::DataType<cv::Vec3b>::type);
+
+    std::ifstream propfile;
+    propfile.open(prop_paths[t]);
+
+    double val;
+    for (int l = 0; l < layer_j_size; l++)
+    {
+      for (int c = 0; c < layer_i_size && propfile >> val; c++)
+      {
+        printf("%d %d -> %lf\n", c + 1, l + 1, val);
+        Sleep(500);
+
+        map.at<double>(l, c) = val;
+    
+        for (int si = 0; si < s; si++)
+        {
+          for (int sj = 0; sj < s; sj++)
+          {
+            int local_l = l * s + sj;
+            int local_c = c * s + si;
+
+            ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(val * 255);
+            
+            if (val < 0)
+            {
+              ret.at<cv::Vec3b>(local_l, local_c).val[1] = 0;
+              ret.at<cv::Vec3b>(local_l, local_c).val[2] = 255;
+            }
+            else
+            {
+              ret.at<cv::Vec3b>(local_l, local_c).val[1] = 255;
+              ret.at<cv::Vec3b>(local_l, local_c).val[2] = 255;
+            }
+          }
+        }
+      }
+    }
+
+    cv::Mat Res_w;
+    cv::cvtColor(ret, Res_w, cv::COLOR_HSV2BGR);
+    std::string f = std::to_string(t);
+    f.append(" ");
+    f.append("file.png");
+    
+    cv::imwrite(f, Res_w);
+   
+    propfile.close();
+  }
+}
+
 
 cv::Mat InverseProjection::ConvertBGRToInputColorSpace(cv::Mat ipt, int type)
 {

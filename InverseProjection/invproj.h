@@ -22,7 +22,7 @@ public:
     double** input_points,
     std::vector<std::string> image_paths);
 
-  void CalcInverseProjection01(
+  void CalcInverseProjection01 (
     int n_sets,
     int n_points_per_set,
     int dimension, 
@@ -30,10 +30,20 @@ public:
     double** input_points,
     std::vector<std::string> image_paths);
 
-  void CalcInverseProjectionValBased(int n_ref_points
+  void CalcInverseProjectionValBased (
+      int n_ref_points
     , double** ref_points
     , std::vector<std::string> image_paths
     , double* input_point
+    );
+
+  void CalcInverseProjectionPropBased (
+      int n_ref_points
+    , double** ref_points
+    , std::vector<std::string> image_paths
+    , double* input_point
+    , int i_size
+    , int j_size
     );
 
 public:

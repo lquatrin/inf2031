@@ -93,6 +93,7 @@ namespace ClassCppToCS_CS
       DialogResult result = OpenPropDialog();
       List<string> prop_files = new List<string>();
       List<string> filter_files = new List<string>();
+      List<int> k_values = new List<int>();
       if (result == DialogResult.OK)
       {
         prop_files.Clear();
@@ -108,23 +109,23 @@ namespace ClassCppToCS_CS
           string path = file.Substring(0, file.Length - splitted_paths);
           path = path + prop.ToString() + '\\' + "k_" + idk.ToString() + ".filter";
           
-          //Console.WriteLine(path);
-          //Console.WriteLine(file);
-
           prop_files.Add(file);
           
           filter_files.Add(path);
+          k_values.Add(Int32.Parse(idk));
           
           counter++;
         }
 
-        /*
-        dist.addPath(paths.ToArray(), 0);
-        double[,] array = dist.GetDistances();
+        CppWrapper.CppDistanceProp distance_prop_eval = new CppWrapper.CppDistanceProp();
+        distance_prop_eval.SetMapSize(model_size[0], model_size[1]);
+        distance_prop_eval.SetInputFilePaths(prop_files.ToArray(), filter_files.ToArray(), k_values.ToArray());
 
-        CppWrapper.CppMDSWrapper mMDS = new CppWrapper.CppMDSWrapper(array, counter);
-        double[,] arrayMDS = mMDS.GetMDS();
-
+        double[,] array = distance_prop_eval.GetDistances();
+        
+        CppWrapper.CppMDSWrapper eval_MDS = new CppWrapper.CppMDSWrapper(array, counter);
+        double[,] arrayMDS = eval_MDS.GetMDS();
+        
         Chart chart = new Chart();
         chart = chart1;
         chart.Series[0].Points.Clear();
@@ -132,13 +133,13 @@ namespace ClassCppToCS_CS
 
         for (int i = 0; i < counter; i++)
         {
-          string name = paths[i].Split('\\').Last();
+          string name = prop_files[i].Split('\\').Last();
           chart.Series[0].Points.AddXY(Math.Round(arrayMDS[i, 0], 5), Math.Round(arrayMDS[i, 1], 5));
           chart.Series[0].Points[i].LegendToolTip = name;
-          chart.Series[0].Points[i].Tag = paths[i];
+          chart.Series[0].Points[i].Tag = prop_files[i];
           chart.Series[0].Points[i].ToolTip = name + "\n X= " + arrayMDS[i, 0] + " Y = " + arrayMDS[i, 1];
+
         }
-        */
       }
 
       label1.Text = "Finished MDS";
@@ -197,7 +198,7 @@ namespace ClassCppToCS_CS
       label1.Text = "Start Inverse Projection";
       label1.Update();
    
-      /*Chart chart = chart1;
+      Chart chart = chart1;
 
       int n_reference_points = chart.Series[0].Points.Count();
 
@@ -224,13 +225,15 @@ namespace ClassCppToCS_CS
         input_point[0, 1] = schart.Series[1].Points[0].YValues[0];
       }
 
-      wrapper_inverse_projection.InverseProjectionValBased(
+      wrapper_inverse_projection.InverseProjectionPropBased(
           n_reference_points,
           arraypoints,
           input_point,
-          paths.ToArray()
+          paths.ToArray(),
+          model_size[0],
+          model_size[1]
           );
-      */
+      
       label1.Text = "Finished Inverse Projection";
       label1.Update();
     }

@@ -14,7 +14,6 @@
 #include "../InverseProjection/invproj.h"
 #include "../InverseProjection/invproj.cpp"
 
-
 CppWrapper::CppLAMPWrapper::CppLAMPWrapper()
 {
   pCC = new LAMPClass();
@@ -289,6 +288,41 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjectionValBased (int n_r
   free(p);
 }
 
+void CppWrapper::CppInverseProjectionWrapper::InverseProjectionPropBased(int n_reference_points,
+                                                                        array<double, 2>^ arraypoints,
+                                                                        array<double, 2>^ input_point,
+                                                                        array<System::String^>^ bytes, 
+                                                                        int lyr_i_sz, int lyr_j_sz)
+{
+  double **m = (double**)malloc(n_reference_points * sizeof(double*));
+
+  for (int i = 0; i < n_reference_points; i++)
+  {
+    m[i] = (double*)malloc(2 * sizeof(double));
+    m[i][0] = arraypoints[i, 0];
+    m[i][1] = arraypoints[i, 1];
+  }
+
+  std::vector<std::string> image_paths;
+  for (int i = 0; i < bytes->Length; i++)
+  {
+    msclr::interop::marshal_context context;
+    std::string standardString = context.marshal_as<std::string>(bytes[i]);
+    image_paths.push_back(standardString);
+  }
+
+  double *p = (double*)malloc(2 * sizeof(double));
+  p[0] = input_point[0, 0];
+  p[1] = input_point[0, 1];
+
+  pinvproj->CalcInverseProjectionPropBased(n_reference_points, m, image_paths, p, lyr_i_sz, lyr_j_sz);
+
+  for (int i = 0; i < n_reference_points; i++)
+    free(m[i]);
+  free(m);
+  free(p);
+}
+
 CppWrapper::CppDistPixelWrapper::CppDistPixelWrapper(){
   pdists = new distpixel();
 }
@@ -327,12 +361,83 @@ array<double, 2>^CppWrapper::CppDistPixelWrapper::GetDistances(void){
   return Distances;
 }
 
-void CppWrapper::CppDistPixelWrapper::testDists()
+void CppWrapper::CppDistPixelWrapper::testDists ()
 {
   pdists->teste();
 }
 
-void CppWrapper::CppDistPixelWrapper::Clear()
+void CppWrapper::CppDistPixelWrapper::Clear ()
 {
   pdists->clear();
+}
+
+CppWrapper::CppDistanceProp::CppDistanceProp ()
+{
+  DProp = new DistanceProp();
+}
+
+CppWrapper::CppDistanceProp::~CppDistanceProp ()
+{
+  delete DProp;
+}
+
+void CppWrapper::CppDistanceProp::SetMapSize (int i_size, int j_size)
+{
+  DProp->SetMapSize(i_size, j_size);
+}
+
+void CppWrapper::CppDistanceProp::SetInputFilePaths (array<System::String^>^ props, array<System::String^>^ filters, array<int>^ layers)
+{
+  DProp->Clear();
+
+  std::vector<std::string> p_path;
+  std::vector<std::string> f_path;
+  std::vector<int> l_list;
+ 
+  for (int i = 0; i < props->Length; i++)
+  {
+    {
+      msclr::interop::marshal_context context;
+      std::string standardString = context.marshal_as<std::string>(props[i]);
+      p_path.push_back(standardString);
+    }
+
+    {
+      msclr::interop::marshal_context context;
+      std::string standardString = context.marshal_as<std::string>(filters[i]);
+      f_path.push_back(standardString);
+    }
+    
+    {
+      int standardString = layers[i];
+      l_list.push_back(standardString);
+    }
+  }
+
+  DProp->SetPaths(p_path, f_path, l_list);
+}
+
+array<double, 2>^ CppWrapper::CppDistanceProp::GetDistances()
+{
+  std::vector<std::vector<double>> vec;
+  std::vector<std::vector<double>>::iterator itr;
+  
+  DProp->GetDistance(vec);
+
+  array<double, 2>^ Distances = gcnew array<double, 2>(vec.size(), vec.size());
+
+  for (int i = 0; i < vec.size(); i++)
+  {
+    for (int j = 0; j < vec[i].size(); j++)
+    {
+      Distances[i, j] = vec[i][j];
+    }
+  }
+
+  return Distances;
+}
+
+void CppWrapper::CppDistanceProp::Clear ()
+{
+  DProp->Clear();
 }

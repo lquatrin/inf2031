@@ -8,7 +8,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppWrapper", "CppWrapper\cppwrapper.vcxproj", "{13164D1F-B805-42AD-83FC-025DB10C34A6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{274B8935-6939-44B5-BD21-4BC9198AFF3C} = {274B8935-6939-44B5-BD21-4BC9198AFF3C}
+		{8F4DFF41-C4D2-40EC-9692-C080521C9E25} = {8F4DFF41-C4D2-40EC-9692-C080521C9E25}
 		{DD69C493-4A6E-48BE-9D04-57D830A642C1} = {DD69C493-4A6E-48BE-9D04-57D830A642C1}
+		{706121D8-8FC5-4304-BCE4-FDA9876E3963} = {706121D8-8FC5-4304-BCE4-FDA9876E3963}
 		{E08D40E8-1784-4FDC-B4BB-F6DE2D2C733F} = {E08D40E8-1784-4FDC-B4BB-F6DE2D2C733F}
 	EndProjectSection
 EndProject
@@ -23,7 +25,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Histogram", "Histogram\Hist
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InverseProjection", "InverseProjection\inverse_projection.vcxproj", "{706121D8-8FC5-4304-BCE4-FDA9876E3963}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DistPixel", "DistPixel\DistPixel.vcxproj", "{8F4DFF41-C4D2-40EC-9692-C080521C9E25}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DistanceModels", "DistPixel\DistPixel.vcxproj", "{8F4DFF41-C4D2-40EC-9692-C080521C9E25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiProjectionViewerMap", "MultiProjectionViewerMap\MultiProjectionViewerMap.csproj", "{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -31,6 +33,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiProjectionViewerMap", 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiProjectionViewerProp", "MultiProjectionViewerProp\MultiProjectionViewerProp.csproj", "{1A3197D6-A217-4178-852B-8783D0E9CFAE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{13164D1F-B805-42AD-83FC-025DB10C34A6} = {13164D1F-B805-42AD-83FC-025DB10C34A6}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
