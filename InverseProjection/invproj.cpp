@@ -449,8 +449,8 @@ void InverseProjection::CalcInverseProjectionPropBased(
     {
       for (int c = 0; c < layer_i_size && propfile >> val; c++)
       {
-        printf("%d %d -> %lf\n", c + 1, l + 1, val);
-        Sleep(500);
+        //printf("%d %d -> %lf\n", c + 1, l + 1, val);
+        //Sleep(500);
 
         map.at<double>(l, c) = val;
     
