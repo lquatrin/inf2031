@@ -11,6 +11,10 @@
 
 #define TOLERANCE 1E-003
 
+LAMPClass::LAMPClass ()
+{
+}
+
 LAMPClass::LAMPClass(int* pInt, int arrSize)
 {
   for (int i = 0; i < arrSize; i++)

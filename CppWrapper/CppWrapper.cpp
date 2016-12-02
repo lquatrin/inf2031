@@ -14,6 +14,12 @@
 #include "../InverseProjection/invproj.h"
 #include "../InverseProjection/invproj.cpp"
 
+
+CppWrapper::CppLAMPWrapper::CppLAMPWrapper()
+{
+  pCC = new LAMPClass();
+}
+
 CppWrapper::CppLAMPWrapper::CppLAMPWrapper(int *pInt, int arraySize)
 {
 	pCC = new LAMPClass(pInt, arraySize);

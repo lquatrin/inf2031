@@ -59,7 +59,7 @@ namespace ClassCppToCS_CS
 
       // Allow the user to select multiple images.
       this.openFileDialog1.Multiselect = true;
-      this.openFileDialog1.Title = "My Image Browser";
+      this.openFileDialog1.Title = "File input selection";
     }
 
     private DialogResult OpenFileImageDialog()
@@ -70,7 +70,7 @@ namespace ClassCppToCS_CS
 
       // Allow the user to select multiple images.
       openFileDialog1.Multiselect = true;
-      openFileDialog1.Title = "My Image Browser";
+      openFileDialog1.Title = "File input selection";
       return openFileDialog1.ShowDialog();
     }
 
@@ -126,80 +126,43 @@ namespace ClassCppToCS_CS
 
     private void button1_Click(object sender, EventArgs e)
     {
-      /*DialogResult result = OpenFileImageDialog();
-      List<string> paths = new List<string>();
-      if (result == DialogResult.OK) // Test result.
+      label1.Text = "Start LAMP";
+      label1.Update();
+
+      Chart chart = new Chart();
+      chart = chart1;
+
+      if (checkBox1.Checked)
       {
-        CppWrapper.CppHistogramWrapper histo = new CppWrapper.CppHistogramWrapper();
-        for (int k = 0; k < 3; k++)
+        DialogResult result = OpenFileImageDialog();
+        List<string> file_paths = new List<string>();
+        if (result == DialogResult.OK)
         {
-          histo.Clear();
-          paths.Clear();
+          file_paths.Clear();
           int counter = 0;
-          textBox1.Clear();
           foreach (String file in openFileDialog1.FileNames)
           {
-            textBox1.AppendText(file);
-            textBox1.AppendText("\n");
+            Console.WriteLine(file);
             string files = openFileDialog1.InitialDirectory + file;
-            paths.Add(files);
+            file_paths.Add(files);
             counter++;
           }
-
-          histo.addPath(paths.ToArray(), k);
-          double[,] array = histo.GetDistances();
-
-          Console.WriteLine("Distância entre histogramas:");
-          for (int i = 0; i < counter; i++)
-          {
-            for (int j = 0; j < counter; j++)
-            {
-              Console.Write(" " + array[i, j]);
-            }
-            Console.Write("\n");
-          }
-
-
-          CppWrapper.CppLAMPWrapper mlamp = new CppWrapper.CppLAMPWrapper(array, counter);*/
-      //double[,] arrayMDS = mlamp.GetMDS();
-
-      /*
-      //TO DO - refinar!
-      Chart chart = new Chart();
-      switch (k)
-      {
-        case 0:
-          chart = chart1;
-          chart.Series.RemoveAt(0);
-          chart.Series.Add("MDS HUE");
-          break;
-        case 1:
-          chart = chart2;
-          chart.Series.RemoveAt(0);
-          chart.Series.Add("MDS Saturation");
-          break;
-        case 2:
-          chart = chart4;
-          chart.Series.RemoveAt(0);
-          chart.Series.Add("MDS Values");
-          break;
+        }
       }
-      //chart.ChartAreas[0].Area3DStyle.Enable3D = true;
-      chart.ChartAreas[0].AxisX.Minimum = -1;
-      chart.ChartAreas[0].AxisX.Maximum = 1;
-      for (int i = 0; i < counter; i++)
-      {
-        string name = paths[i].Split('\\').Last();
-        chart.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-        chart.Series[0].Points.AddXY(Math.Round(arrayMDS[i, 0], 1), Math.Round(arrayMDS[i, 1], 3));
-        chart.Series[0].Points[i].LegendToolTip = name;
-        chart.Series[0].Points[i].ToolTip = name + "\n X= " + arrayMDS[i, 0] + " Y = " + arrayMDS[i, 1];
 
+      int n_points = chart.Series[2].Points.Count();
+      if (n_points > 0)
+      {
+        foreach (DataPoint pt in chart.Series[2].Points)
+        {
+          Console.WriteLine(pt.Tag);
+        }
+        //double[,] array = new double[4, 2];
+        //CppWrapper.CppLAMPWrapper mlamp = new CppWrapper.CppLAMPWrapper();
       }
-    }
-  }
-  Console.WriteLine("LAMP");
-      */
+
+      label1.Text = "Finished LAMP";
+      label1.Update();
     }
 
     private void textBox1_TextChanged(object sender, EventArgs e)
@@ -399,6 +362,11 @@ namespace ClassCppToCS_CS
     private void chart4_MouseClick(object sender, MouseEventArgs e)
     {
      
+    }
+
+    private void checkBox1_CheckedChanged(object sender, EventArgs e)
+    {
+
     }
     
   }

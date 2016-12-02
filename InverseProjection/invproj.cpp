@@ -337,10 +337,10 @@ void InverseProjection::CalcInverseProjectionValBased (int n_ref_points
   , double* input_point
   )
 {
-  printf("%d points:\n", n_ref_points);
-  for (int i = 0; i < n_ref_points; i++)
-    printf(". %.2lf %.2lf - %s\n", ref_points[i][0], ref_points[i][1], image_paths[i].c_str());
-  printf("Input Point: %.2lf %.2lf\n", input_point[0], input_point[1]);
+  //printf("%d points:\n", n_ref_points);
+  //for (int i = 0; i < n_ref_points; i++)
+  //  printf(". %.2lf %.2lf - %s\n", ref_points[i][0], ref_points[i][1], image_paths[i].c_str());
+  //printf("Input Point: %.2lf %.2lf\n", input_point[0], input_point[1]);
 
   std::vector<cv::Mat> srcs;
   for (int i = 0; i < image_paths.size(); i++)
@@ -352,18 +352,18 @@ void InverseProjection::CalcInverseProjectionValBased (int n_ref_points
   
   cv::Mat fimage = hsvs[0];
 
-  for (int i = 0; i < hsvs.size(); i++)
-  {
-    for (int pcol = 0; pcol < hsvs[i].cols; pcol++)
-    {
-      for (int prow = 0; prow < hsvs[i].rows; prow++)
-      {
-        std::cout << hsvs[i].at<cv::Vec3b>(prow, pcol) << std::endl;
-        break;
-      }
-      break;
-    }
-  }
+  //for (int i = 0; i < hsvs.size(); i++)
+  //{
+  //  for (int pcol = 0; pcol < hsvs[i].cols; pcol++)
+  //  {
+  //    for (int prow = 0; prow < hsvs[i].rows; prow++)
+  //    {
+  //      std::cout << hsvs[i].at<cv::Vec3b>(prow, pcol) << std::endl;
+  //      break;
+  //    }
+  //    break;
+  //  }
+  //}
 
   cv::Mat Res = cv::Mat::zeros(fimage.rows, fimage.cols, cv::DataType<cv::Vec3b>::type);
 
@@ -407,8 +407,8 @@ void InverseProjection::CalcInverseProjectionValBased (int n_ref_points
   {
     for (int prow = 0; prow < Res.rows; prow++)
     {
-      Res.at<cv::Vec3b>(prow, pcol).val[1] = 190;
-      Res.at<cv::Vec3b>(prow, pcol).val[2] = 220;
+      Res.at<cv::Vec3b>(prow, pcol).val[1] = 205;
+      Res.at<cv::Vec3b>(prow, pcol).val[2] = 255;
     }
   }
 

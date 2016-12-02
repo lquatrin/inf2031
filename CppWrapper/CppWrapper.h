@@ -27,6 +27,7 @@ namespace CppWrapper {
 	public ref class CppLAMPWrapper
 	{
   public:
+    CppLAMPWrapper();
     CppLAMPWrapper(int* pInt, int arraySize);
     CppLAMPWrapper(array<double, 2>^ tvalues, int arraySize);
 

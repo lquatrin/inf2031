@@ -7,6 +7,7 @@
 class LAMPClass
 {
 public:
+  LAMPClass();
   LAMPClass(int* pInt, int arrSize);
   LAMPClass(double** pInt, int arrSize);
   ~LAMPClass() {}
