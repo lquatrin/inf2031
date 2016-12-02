@@ -248,6 +248,40 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjection02(
   free(p);
 }
 
+void CppWrapper::CppInverseProjectionWrapper::InverseProjectionValBased (int n_reference_points,
+                                                                         array<double, 2>^ arraypoints,
+                                                                         array<double, 2>^ input_point,
+                                                                         array<System::String^>^ bytes)
+{
+  double **m = (double**)malloc(n_reference_points * sizeof(double*));
+
+  for (int i = 0; i < n_reference_points; i++)
+  {
+    m[i] = (double*)malloc(2 * sizeof(double));
+    m[i][0] = arraypoints[i, 0];
+    m[i][1] = arraypoints[i, 1];
+  }
+
+  std::vector<std::string> image_paths;
+  for (int i = 0; i < bytes->Length; i++)
+  {
+    msclr::interop::marshal_context context;
+    std::string standardString = context.marshal_as<std::string>(bytes[i]);
+    image_paths.push_back(standardString);
+  }
+
+
+  double *p = (double*)malloc(2 * sizeof(double));
+  p[0] = input_point[0, 0];
+  p[1] = input_point[0, 1];
+
+  pinvproj->CalcInverseProjectionValBased(n_reference_points, m, image_paths, p);
+
+  for (int i = 0; i < n_reference_points; i++)
+    free(m[i]);
+  free(m);
+  free(p);
+}
 
 CppWrapper::CppDistPixelWrapper::CppDistPixelWrapper(){
   pdists = new distpixel();

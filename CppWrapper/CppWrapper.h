@@ -75,6 +75,12 @@ namespace CppWrapper {
     void InverseProjection01(int n_sets, int n_points_per_set, array<double, 2>^ set_points, array<double, 2>^ input_points, array<System::String^>^ bytes);
     void InverseProjection02(int n_sets, int n_points_per_set, array<double, 2>^ set_points, array<double, 2>^ input_points, array<System::String^>^ bytes);
 
+    void InverseProjectionValBased(
+      int n_reference_points,
+      array<double, 2>^ arraypoints,
+      array<double, 2>^ input_point,
+      array<System::String^>^ bytes);
+
   private:
     InverseProjection* pinvproj;
   };

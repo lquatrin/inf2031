@@ -30,6 +30,12 @@ public:
     double** input_points,
     std::vector<std::string> image_paths);
 
+  void CalcInverseProjectionValBased(int n_ref_points
+    , double** ref_points
+    , std::vector<std::string> image_paths
+    , double* input_point
+    );
+
 public:
   InverseProjection ();
   ~InverseProjection ();

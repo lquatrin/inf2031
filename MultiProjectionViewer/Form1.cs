@@ -40,7 +40,7 @@ namespace ClassCppToCS_CS
     {
       // Set the file dialog to filter for graphics files.
       this.openFileDialog1.Filter =
-          "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|" +
+          "Images (*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG|" +
           "All files (*.*)|*.*";
 
       // Allow the user to select multiple images.
@@ -51,7 +51,7 @@ namespace ClassCppToCS_CS
     private DialogResult OpenFileImageDialog()
     {
       openFileDialog1.Filter =
-      "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|" +
+      "Images (*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG|" +
       "All files (*.*)|*.*";
 
       // Allow the user to select multiple images.

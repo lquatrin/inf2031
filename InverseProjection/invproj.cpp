@@ -331,6 +331,91 @@ void InverseProjection::CalcInverseProjection01(
   printf(" - End CalcInverseProjection with LU decomp\n");
 }
 
+void InverseProjection::CalcInverseProjectionValBased (int n_ref_points
+  , double** ref_points
+  , std::vector<std::string> image_paths
+  , double* input_point
+  )
+{
+  printf("%d points:\n", n_ref_points);
+  for (int i = 0; i < n_ref_points; i++)
+    printf(". %.2lf %.2lf - %s\n", ref_points[i][0], ref_points[i][1], image_paths[i].c_str());
+  printf("Input Point: %.2lf %.2lf\n", input_point[0], input_point[1]);
+
+  std::vector<cv::Mat> srcs;
+  for (int i = 0; i < image_paths.size(); i++)
+    srcs.push_back(cv::imread(image_paths[i], 1));
+  
+  std::vector<cv::Mat> hsvs;
+  for (int i = 0; i < srcs.size(); i++)
+    hsvs.push_back(ConvertBGRToInputColorSpace(srcs[i], input_colorspace));
+  
+  cv::Mat fimage = hsvs[0];
+
+  for (int i = 0; i < hsvs.size(); i++)
+  {
+    for (int pcol = 0; pcol < hsvs[i].cols; pcol++)
+    {
+      for (int prow = 0; prow < hsvs[i].rows; prow++)
+      {
+        std::cout << hsvs[i].at<cv::Vec3b>(prow, pcol) << std::endl;
+        break;
+      }
+      break;
+    }
+  }
+
+  cv::Mat Res = cv::Mat::zeros(fimage.rows, fimage.cols, cv::DataType<cv::Vec3b>::type);
+
+  // Matriz de dissimilaridade
+  cv::Mat A = cv::Mat::zeros(n_ref_points, n_ref_points, cv::DataType<double>::type);
+  for (int r = 0; r < n_ref_points; r++)
+  {
+    A.at<double>(r, r) = RadialBasisKernel(ref_points[r], ref_points[r]);
+    for (int c = r + 1; c < n_ref_points; c++)
+    {
+      double dist = RadialBasisKernel(ref_points[r], ref_points[c]);
+  
+      A.at<double>(r, c) = dist;
+      A.at<double>(c, r) = dist;
+    }
+  }
+  
+  cv::Mat P = LUDecomp(A);
+  
+  // Vetor de dissimilaridade entre o ponto de entrada e os pontos de referência
+  cv::Mat Ar = cv::Mat::zeros(1, n_ref_points, cv::DataType<double>::type);
+  for (int r = 0; r < n_ref_points; r++)
+    Ar.at<double>(0, r) = RadialBasisKernel(input_point, ref_points[r]);
+ 
+  for (int pcol = 0; pcol < fimage.cols; pcol++)
+  {
+    for (int prow = 0; prow < fimage.rows; prow++)
+    {
+      cv::Mat b = cv::Mat::zeros(n_ref_points, 1, cv::DataType<double>::type);
+      for (int i_imgs = 0; i_imgs < hsvs.size(); i_imgs++)
+        b.at<double>(i_imgs, 0) = ((double)hsvs[i_imgs].at<cv::Vec3b>(prow, pcol).val[0] / 255.0);
+      
+      cv::Mat X = LUSolve(A, P, b);
+      cv::Mat_<double> value_r = Ar * X;
+      
+      Res.at<cv::Vec3b>(prow, pcol).val[0] = (uchar)(value_r.at<double>(0, 0) * 255.0);
+    }
+  }
+
+  for (int pcol = 0; pcol < Res.cols; pcol++)
+  {
+    for (int prow = 0; prow < Res.rows; prow++)
+    {
+      Res.at<cv::Vec3b>(prow, pcol).val[1] = 190;
+      Res.at<cv::Vec3b>(prow, pcol).val[2] = 220;
+    }
+  }
+
+  cv::Mat Res_w = ConvertInputColorSpaceToBGR(Res, input_colorspace);
+  cv::imwrite("result_ip_val.png", Res_w);
+}
+
 cv::Mat InverseProjection::ConvertBGRToInputColorSpace(cv::Mat ipt, int type)
 {
   cv::Mat ret;

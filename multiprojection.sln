@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LAMP", "LAMP\lampcpp.vcxproj", "{274B8935-6939-44B5-BD21-4BC9198AFF3C}"
 EndProject
@@ -24,6 +24,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InverseProjection", "InverseProjection\inverse_projection.vcxproj", "{706121D8-8FC5-4304-BCE4-FDA9876E3963}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DistPixel", "DistPixel\DistPixel.vcxproj", "{8F4DFF41-C4D2-40EC-9692-C080521C9E25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiProjectionViewerMap", "MultiProjectionViewerMap\MultiProjectionViewerMap.csproj", "{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{13164D1F-B805-42AD-83FC-025DB10C34A6} = {13164D1F-B805-42AD-83FC-025DB10C34A6}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +110,16 @@ Global
 		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Release|Win32.ActiveCfg = Release|Win32
 		{8F4DFF41-C4D2-40EC-9692-C080521C9E25}.Release|Win32.Build.0 = Release|Win32
+		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A13F5691-ED28-48E7-B5FF-6032AB9BB04D}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
