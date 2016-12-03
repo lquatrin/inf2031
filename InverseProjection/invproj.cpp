@@ -678,7 +678,7 @@ void InverseProjection::CalcInverseProjectionPropBased(
 
       propfile.close();
 
-      GenerateImage(layer_j_size, layer_i_size, 15, map, std::to_string(t) + "_file.png");
+      GenerateImage(layer_j_size, layer_i_size, 15, map, std::to_string(t + 1) + "_file.png");
     }
   }
 
