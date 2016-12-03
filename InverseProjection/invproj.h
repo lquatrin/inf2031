@@ -77,6 +77,8 @@ public:
     std::vector<std::string> image_paths);
 
 private:
+  void GenerateImage(int j_size, int i_size, int s, cv::Mat map, std::string name);
+
   cv::Mat ConvertBGRToInputColorSpace (cv::Mat ipt, int type);
   cv::Mat ConvertInputColorSpaceToBGR (cv::Mat ipt, int type);
 

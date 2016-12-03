@@ -10,13 +10,13 @@
 
 double InverseProjection::RadialBasisKernel(double* X1, double* X2)
 {
-  return exp((-(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2))) / (2.0*rad_kernel_gama));
+  return exp((-(sqrt(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2)))) / (2.0*rad_kernel_gama));
 }
 
 InverseProjection::InverseProjection ()
 {
   input_colorspace = 0;
-  rad_kernel_gama = 0.2;
+  rad_kernel_gama = 0.5;
 }
 
 InverseProjection::~InverseProjection ()
@@ -661,65 +661,24 @@ void InverseProjection::CalcInverseProjectionPropBased(
 
   std::vector<cv::Mat> f_maps;
 
-  int s = 15;
   {
     for (int t = 0; t < prop_paths.size(); t++)
     {
       cv::Mat map = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
-      cv::Mat ret = cv::Mat::zeros(layer_j_size * s, layer_i_size * s, cv::DataType<cv::Vec3b>::type);
-
+      
       std::ifstream propfile;
       propfile.open(prop_paths[t]);
-
+      
       double val;
       for (int l = 0; l < layer_j_size; l++)
-      {
         for (int c = 0; c < layer_i_size && propfile >> val; c++)
-        {
-          //printf("%d %d -> %lf\n", c + 1, l + 1, val);
-          //Sleep(500);
-
           map.at<double>(l, c) = val;
-
-          for (int si = 0; si < s; si++)
-          {
-            for (int sj = 0; sj < s; sj++)
-            {
-              int local_l = l * s + sj;
-              int local_c = c * s + si;
-
-              ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(val * 255); //(val * 179);
-
-              if (val < 0)
-              {
-                ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(255);
-                ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(255);//0;
-                ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(255);//255;
-              }
-              else
-              {
-                ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(val * 255);//255;
-                ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(val * 255);//255;
-              }
-            }
-          }
-        }
-      }
 
       f_maps.push_back(map);
 
-      cv::Mat Res_w;
-
-      Res_w = ret;
-      //cv::cvtColor(ret, Res_w, cv::COLOR_HSV2BGR);
-
-      std::string f = std::to_string(t);
-      f.append(" ");
-      f.append("file.png");
-
-      cv::imwrite(f, Res_w);
-
       propfile.close();
+
+      GenerateImage(layer_j_size, layer_i_size, 15, map, std::to_string(t) + "_file.png");
     }
   }
 
@@ -738,7 +697,7 @@ void InverseProjection::CalcInverseProjectionPropBased(
       A.at<double>(r, c) = dist;
       A.at<double>(c, r) = dist;
 
-      max_dist = max(max_dist, dist);
+      printf("%lf ", dist);
     }
   }
 
@@ -756,8 +715,8 @@ void InverseProjection::CalcInverseProjectionPropBased(
     Ar.at<double>(0, r) = RadialBasisKernel(input_point, ref_points[r]);
     max_dist_r = max(max_dist_r, Ar.at<double>(0, r));
   }
-  for (int r = 0; r < n_ref_points; r++)
-    Ar.at<double>(0, r) /= max_dist_r;
+  //for (int r = 0; r < n_ref_points; r++)
+  //  Ar.at<double>(0, r) /= max_dist_r;
 
   for (int pcol = 0; pcol < layer_i_size; pcol++)
   {
@@ -787,12 +746,19 @@ void InverseProjection::CalcInverseProjectionPropBased(
     }
   }
 
-  cv::Mat ret = cv::Mat::zeros(layer_j_size * s, layer_i_size * s, cv::DataType<cv::Vec3b>::type);
-  for (int l = 0; l < layer_j_size; l++)
+  GenerateImage(layer_j_size, layer_i_size, 15, Res, "result_image.png");
+}
+
+
+void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat map, std::string name)
+{
+  cv::Mat ret = cv::Mat::zeros(j_size * s, i_size * s, cv::DataType<cv::Vec3b>::type);
+  
+  for (int l = 0; l < j_size; l++)
   {
-    for (int c = 0; c < layer_i_size; c++)
+    for (int c = 0; c < i_size; c++)
     {
-      double val = Res.at<double>(l, c);
+      double val = map.at<double>(l, c);
 
       for (int si = 0; si < s; si++)
       {
@@ -805,25 +771,19 @@ void InverseProjection::CalcInverseProjectionPropBased(
 
           if (val < 0)
           {
-            ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)0;
-            ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)0; //0;
-            ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)255; //255;
+            ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(0);
+            ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(0);//0;
+            ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(180);//255;
           }
           else
           {
-            ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(val * 255); //255;
-            ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(val * 255); //255;
+            ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(val * 255);//255;
+            ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(val * 255);//255;
           }
         }
       }
     }
   }
 
-  cv::Mat Res_w;
-
-  Res_w = ret;
-  //cv::cvtColor(ret, Res_w, cv::COLOR_HSV2BGR);
-
-  cv::imwrite("result_image.png", Res_w);
+  cv::imwrite(name, ret);
 }
-
