@@ -16,7 +16,7 @@ double InverseProjection::RadialBasisKernel(double* X1, double* X2)
 InverseProjection::InverseProjection ()
 {
   input_colorspace = 0;
-  rad_kernel_gama = 0.5;
+  rad_kernel_gama = 0.2;
 }
 
 InverseProjection::~InverseProjection ()
@@ -434,60 +434,160 @@ void InverseProjection::CalcInverseProjectionPropBased(
     printf(". %d %.2lf %.2lf - %s\n", i, ref_points[i][0], ref_points[i][1], prop_paths[i].c_str());
   printf("Input Point: %.2lf %.2lf\n", input_point[0], input_point[1]);
 
+  std::vector<cv::Mat> f_maps;
+
   int s = 15;
-
-  for (int t = 0; t < prop_paths.size(); t++)
   {
-    cv::Mat map = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
-    cv::Mat ret = cv::Mat::zeros(layer_j_size * s, layer_i_size * s, cv::DataType<cv::Vec3b>::type);
-
-    std::ifstream propfile;
-    propfile.open(prop_paths[t]);
-
-    double val;
-    for (int l = 0; l < layer_j_size; l++)
+    for (int t = 0; t < prop_paths.size(); t++)
     {
-      for (int c = 0; c < layer_i_size && propfile >> val; c++)
+      cv::Mat map = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
+      cv::Mat ret = cv::Mat::zeros(layer_j_size * s, layer_i_size * s, cv::DataType<cv::Vec3b>::type);
+
+      std::ifstream propfile;
+      propfile.open(prop_paths[t]);
+
+      double val;
+      for (int l = 0; l < layer_j_size; l++)
       {
-        //printf("%d %d -> %lf\n", c + 1, l + 1, val);
-        //Sleep(500);
-
-        map.at<double>(l, c) = val;
-    
-        for (int si = 0; si < s; si++)
+        for (int c = 0; c < layer_i_size && propfile >> val; c++)
         {
-          for (int sj = 0; sj < s; sj++)
-          {
-            int local_l = l * s + sj;
-            int local_c = c * s + si;
+          //printf("%d %d -> %lf\n", c + 1, l + 1, val);
+          //Sleep(500);
 
-            ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(val * 255);
+          map.at<double>(l, c) = val;
+
+          for (int si = 0; si < s; si++)
+          {
+            for (int sj = 0; sj < s; sj++)
+            {
+              int local_l = l * s + sj;
+              int local_c = c * s + si;
+
+              ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(val * 255); //(val * 179);
             
-            if (val < 0)
-            {
-              ret.at<cv::Vec3b>(local_l, local_c).val[1] = 0;
-              ret.at<cv::Vec3b>(local_l, local_c).val[2] = 255;
-            }
-            else
-            {
-              ret.at<cv::Vec3b>(local_l, local_c).val[1] = 255;
-              ret.at<cv::Vec3b>(local_l, local_c).val[2] = 255;
+              if (val < 0)
+              {
+                ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(255);
+                ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(255);//0;
+                ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(255);//255;
+              }
+              else
+              {
+                ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(val * 255);//255;
+                ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(val * 255);//255;
+              }
             }
           }
         }
       }
-    }
 
-    cv::Mat Res_w;
-    cv::cvtColor(ret, Res_w, cv::COLOR_HSV2BGR);
-    std::string f = std::to_string(t);
-    f.append(" ");
-    f.append("file.png");
+      f_maps.push_back(map);
+
+      cv::Mat Res_w;
+
+      Res_w = ret;
+      //cv::cvtColor(ret, Res_w, cv::COLOR_HSV2BGR);
+
+      std::string f = std::to_string(t);
+      f.append(" ");
+      f.append("file.png");
     
-    cv::imwrite(f, Res_w);
+      cv::imwrite(f, Res_w);
    
-    propfile.close();
+      propfile.close();
+    }
   }
+
+  cv::Mat Res = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
+
+  // Matriz de dissimilaridade
+  cv::Mat A = cv::Mat::zeros(n_ref_points, n_ref_points, cv::DataType<double>::type);
+  for (int r = 0; r < n_ref_points; r++)
+  {
+    A.at<double>(r, r) = RadialBasisKernel(ref_points[r], ref_points[r]);
+    for (int c = r + 1; c < n_ref_points; c++)
+    {
+      double dist = RadialBasisKernel(ref_points[r], ref_points[c]);
+
+      A.at<double>(r, c) = dist;
+      A.at<double>(c, r) = dist;
+    }
+  }
+
+  cv::Mat P = LUDecomp(A);
+
+  // Vetor de dissimilaridade entre o ponto de entrada e os pontos de referência
+  cv::Mat Ar = cv::Mat::zeros(1, n_ref_points, cv::DataType<double>::type);
+  for (int r = 0; r < n_ref_points; r++)
+    Ar.at<double>(0, r) = RadialBasisKernel(input_point, ref_points[r]);
+
+  for (int pcol = 0; pcol < layer_i_size; pcol++)
+  {
+    for (int prow = 0; prow < layer_j_size; prow++)
+    {
+      double v0 = f_maps[0].at<double>(prow, pcol);
+      if (v0 < 0)
+      {
+        Res.at<double>(prow, pcol) = -1;
+      }
+      else
+      {
+        cv::Mat b = cv::Mat::zeros(n_ref_points, 1, cv::DataType<double>::type);
+        for (int i_inp = 0; i_inp < f_maps.size(); i_inp++)
+          b.at<double>(i_inp, 0) = f_maps[i_inp].at<double>(prow, pcol);
+
+        cv::Mat X = LUSolve(A, P, b);
+        cv::Mat_<double> value_r = Ar * X;
+        Res.at<double>(prow, pcol) = value_r.at<double>(0, 0);
+
+        if (Res.at<double>(prow, pcol) < 0) Res.at<double>(prow, pcol) = 0;
+        if (Res.at<double>(prow, pcol) > 1)
+        {
+          printf("%.4lf ", Res.at<double>(prow, pcol));
+          Res.at<double>(prow, pcol) = 1;
+        }
+      }
+    }
+  }
+
+  cv::Mat ret = cv::Mat::zeros(layer_j_size * s, layer_i_size * s, cv::DataType<cv::Vec3b>::type);
+  for (int l = 0; l < layer_j_size; l++)
+  {
+    for (int c = 0; c < layer_i_size; c++)
+    {
+      double val = Res.at<double>(l, c);
+
+      for (int si = 0; si < s; si++)
+      {
+        for (int sj = 0; sj < s; sj++)
+        {
+          int local_l = l * s + sj;
+          int local_c = c * s + si;
+
+          ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(val * 255); //(val * 179);
+
+          if (val < 0)
+          {
+            ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)255;
+            ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)255; //0;
+            ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)255; //255;
+          }
+          else
+          {
+            ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(val * 255); //255;
+            ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(val * 255); //255;
+          }
+        }
+      }
+    }
+  }
+
+  cv::Mat Res_w;
+
+  Res_w = ret;
+  //cv::cvtColor(ret, Res_w, cv::COLOR_HSV2BGR);
+
+  cv::imwrite("result_image.png", Res_w);
 }
 
 
