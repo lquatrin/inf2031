@@ -21,9 +21,15 @@
     <ClCompile Include="invproj.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="transferfunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="invproj.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="transferfunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

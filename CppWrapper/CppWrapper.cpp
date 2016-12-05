@@ -13,6 +13,8 @@
 
 #include "../InverseProjection/invproj.h"
 #include "../InverseProjection/invproj.cpp"
+#include "../InverseProjection/transferfunction.h"
+#include "../InverseProjection/transferfunction.cpp"
 
 CppWrapper::CppLAMPWrapper::CppLAMPWrapper()
 {

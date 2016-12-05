@@ -7,6 +7,8 @@
 #include <iostream>
 #include <stdio.h>
 
+#include "transferfunction.h"
+
 class InverseProjection
 {
 public:
@@ -78,6 +80,8 @@ public:
 
 private:
   void GenerateImage(int j_size, int i_size, int s, cv::Mat map, std::string name);
+
+  vr::TransferFunction1D tf_1D;
 
   cv::Mat ConvertBGRToInputColorSpace (cv::Mat ipt, int type);
   cv::Mat ConvertInputColorSpaceToBGR (cv::Mat ipt, int type);

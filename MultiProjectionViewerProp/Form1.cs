@@ -283,6 +283,8 @@ namespace ClassCppToCS_CS
             chart1.Series[1].Points.AddXY(Math.Round(xVal, 5), Math.Round(yVal, 5));
             chart1.Series[1].Points[0].LegendToolTip = "userpoint";
             chart1.Series[1].Points[0].ToolTip = "userpoint" + "\n X= " + xVal + " Y = " + yVal;
+          
+            this.button2_Click(sender,e);
           }
         }
       }

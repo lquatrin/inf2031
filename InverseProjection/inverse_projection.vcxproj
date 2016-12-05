@@ -73,9 +73,11 @@
   <ItemGroup>
     <ClCompile Include="invproj.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="transferfunction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="invproj.h" />
+    <ClInclude Include="transferfunction.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

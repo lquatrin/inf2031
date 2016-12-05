@@ -10,13 +10,23 @@
 
 double InverseProjection::RadialBasisKernel(double* X1, double* X2)
 {
-  return exp((-(sqrt(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2)))) / (2.0*rad_kernel_gama));
+  return 
+    exp(-sqrt(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2)) / (2.0*rad_kernel_gama*rad_kernel_gama))
+    //exp(- pow(sqrt (pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2)) / (2.0*rad_kernel_gama), 2))
+    //exp((-(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2))) / (2.0*rad_kernel_gama*rad_kernel_gama))
+  ;
 }
 
 InverseProjection::InverseProjection ()
 {
+  tf_1D.AddRGBControlPoint(vr::TransferControlPoint(1, 0, 0, 0));
+  tf_1D.AddRGBControlPoint(vr::TransferControlPoint(0, 1, 0, 128));
+  tf_1D.AddRGBControlPoint(vr::TransferControlPoint(0, 0, 1, 256));
+
+  tf_1D.Build();
+
   input_colorspace = 0;
-  rad_kernel_gama = 0.5;
+  rad_kernel_gama = 1.0;
 }
 
 InverseProjection::~InverseProjection ()
@@ -661,6 +671,8 @@ void InverseProjection::CalcInverseProjectionPropBased(
 
   std::vector<cv::Mat> f_maps;
 
+  double max_val = 0;
+
   {
     for (int t = 0; t < prop_paths.size(); t++)
     {
@@ -671,8 +683,12 @@ void InverseProjection::CalcInverseProjectionPropBased(
       
       double val;
       for (int l = 0; l < layer_j_size; l++)
+      {
         for (int c = 0; c < layer_i_size && propfile >> val; c++)
+        {
           map.at<double>(l, c) = val;
+        }
+      }
 
       f_maps.push_back(map);
 
@@ -684,7 +700,6 @@ void InverseProjection::CalcInverseProjectionPropBased(
 
   cv::Mat Res = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
 
-  double max_dist = 0.0;
   // Matriz de dissimilaridade
   cv::Mat A = cv::Mat::zeros(n_ref_points, n_ref_points, cv::DataType<double>::type);
   for (int r = 0; r < n_ref_points; r++)
@@ -696,27 +711,35 @@ void InverseProjection::CalcInverseProjectionPropBased(
 
       A.at<double>(r, c) = dist;
       A.at<double>(c, r) = dist;
-
-      printf("%lf ", dist);
     }
   }
 
-  //std::cout << A << std::endl;
+  // Matriz de dissimilaridade
+  //cv::Mat A = cv::Mat::zeros(n_ref_points, n_ref_points, cv::DataType<double>::type);
+  //for (int r = 0; r < n_ref_points; r++)
+  //{
+  //  A.at<double>(r, r) = RadialBasisKernel(ref_points[r], ref_points[r]);
+  //  for (int c = r + 1; c < n_ref_points; c++)
+  //  {
+  //    double dist = RadialBasisKernel(ref_points[r], ref_points[c]);
+  //
+  //    A.at<double>(r, c) = dist;
+  //    A.at<double>(c, r) = dist;
+  //  }
+  //}
 
   cv::Mat P = LUDecomp(A);
 
-  // std::cout << P << std::endl;
-
-  double max_dist_r = 0.0;
+  //double sum_mat_dist_r = 0;
   // Vetor de dissimilaridade entre o ponto de entrada e os pontos de referência
   cv::Mat Ar = cv::Mat::zeros(1, n_ref_points, cv::DataType<double>::type);
   for (int r = 0; r < n_ref_points; r++)
   {
     Ar.at<double>(0, r) = RadialBasisKernel(input_point, ref_points[r]);
-    max_dist_r = max(max_dist_r, Ar.at<double>(0, r));
+    //sum_mat_dist_r += Ar.at<double>(0, r);
   }
   //for (int r = 0; r < n_ref_points; r++)
-  //  Ar.at<double>(0, r) /= max_dist_r;
+  //  Ar.at<double>(0, r) /= sum_mat_dist_r;
 
   for (int pcol = 0; pcol < layer_i_size; pcol++)
   {
@@ -724,9 +747,7 @@ void InverseProjection::CalcInverseProjectionPropBased(
     {
       double v0 = f_maps[0].at<double>(prow, pcol);
       if (v0 < 0)
-      {
         Res.at<double>(prow, pcol) = -1;
-      }
       else
       {
         cv::Mat b = cv::Mat::zeros(n_ref_points, 1, cv::DataType<double>::type);
@@ -734,18 +755,15 @@ void InverseProjection::CalcInverseProjectionPropBased(
           b.at<double>(i_inp, 0) = f_maps[i_inp].at<double>(prow, pcol);
 
         cv::Mat X = LUSolve(A, P, b);
-        cv::Mat_<double> value_r = Ar *  X;
+
+        cv::Mat_<double> value_r = (Ar * P.t()) *  X;
 
         Res.at<double>(prow, pcol) = value_r.at<double>(0, 0);
-
-        if (Res.at<double>(prow, pcol) < 0)
-          Res.at<double>(prow, pcol) = -1;
-        if (Res.at<double>(prow, pcol) > 1)
-          Res.at<double>(prow, pcol) = -1;
       }
     }
   }
 
+  //printf("Max Val: %lf\n", max_val);
   GenerateImage(layer_j_size, layer_i_size, 15, Res, "result_image.png");
 }
 
@@ -767,19 +785,10 @@ void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat ma
           int local_l = l * s + sj;
           int local_c = c * s + si;
 
-          ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(val * 255); //(val * 179);
-
-          if (val < 0)
-          {
-            ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(0);
-            ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(0);//0;
-            ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(180);//255;
-          }
-          else
-          {
-            ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(val * 255);//255;
-            ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(val * 255);//255;
-          }
+          glm::vec4 colr = tf_1D.Get((val / 0.85) * 255.0);
+          ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(colr.x * 255);
+          ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(colr.y * 255);
+          ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(colr.z * 255);
         }
       }
     }

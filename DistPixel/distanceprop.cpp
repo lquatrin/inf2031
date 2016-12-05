@@ -74,12 +74,14 @@ void DistanceProp::GetDistance (std::vector<std::vector<double>> &distMat)
       //Calcula a soma apenas dos valores que são positivos
       for (int k = 0; k < s_j; k++)
         for (int w = 0; w < s_i; w++)
-          if (!(prop_maps[i].at<double>(k, w) < 0) && !(prop_maps[j].at<double>(k, w) < 0))
+          if (prop_maps[i].at<double>(k, w) >= 0 && prop_maps[j].at<double>(k, w) >= 0)
             sum += pow(prop_maps[i].at<double>(k, w) - prop_maps[j].at<double>(k, w), 2);
-  
+      
       sum = sqrt(sum);
+
       if (max < sum) max = sum;
       if (min > sum) min = sum;
+
       d.push_back(sum);
     }
     distMat.push_back(d);

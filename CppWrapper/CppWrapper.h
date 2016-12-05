@@ -14,6 +14,8 @@
 
 #include "../InverseProjection/invproj.h"
 #include "../InverseProjection/invproj.cpp"
+#include "../InverseProjection/transferfunction.h"
+#include "../InverseProjection/transferfunction.cpp"
 
 #include "../DistPixel/distpixel.h"
 #include "../DistPixel/distpixel.cpp"
