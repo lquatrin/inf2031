@@ -150,38 +150,42 @@ namespace ClassCppToCS_CS
     {
       label1.Text = "Start LAMP";
       label1.Update();
-/*
+
       Chart chart = new Chart();
       chart = chart1;
 
-      if (checkBox1.Checked)
+      double[,] array_input = new double[chart.Series[2].Points.Count, 2];
+      List<string> array_prop_files = new List<string>();
+      List<string> array_other_files = new List<string>();
+      int count = 0;
+      foreach (DataPoint pt in chart.Series[2].Points)
       {
-        DialogResult result = OpenFileImageDialog();
-        List<string> file_paths = new List<string>();
-        if (result == DialogResult.OK)
-        {
-          file_paths.Clear();
-          int counter = 0;
-          foreach (String file in openFileDialog1.FileNames)
-          {
-            Console.WriteLine(file);
-            string files = openFileDialog1.InitialDirectory + file;
-            file_paths.Add(files);
-            counter++;
-          }
-        }
+        array_input[count, 0] = pt.XValue;
+        array_input[count, 1] = pt.YValues[0];
+
+        array_prop_files.Add(pt.Tag as string);
+        count++;
+      }
+      
+      foreach (DataPoint pt in chart.Series[0].Points)
+      {
+        array_other_files.Add(pt.Tag as string);
       }
 
-      int n_points = chart.Series[2].Points.Count();
-      if (n_points > 0)
-      {
-        foreach (DataPoint pt in chart.Series[2].Points)
-        {
-          Console.WriteLine(pt.Tag);
-        }
-        //double[,] array = new double[4, 2];
-        //CppWrapper.CppLAMPWrapper mlamp = new CppWrapper.CppLAMPWrapper();
-      }*/
+      CppWrapper.CppLAMPWrapper mlamp = new CppWrapper.CppLAMPWrapper();
+      double[,] arrayLAMP = mlamp.GetLAMP();
+
+      chart.Series[0].Points.Clear();
+      chart.Series[2].Points.Clear();
+
+      //for (int i = 0; i < array_prop_files.Count(); i++)
+      //{
+      //  string name = array_prop_files[i].Split('\\').Last();
+      //  chart.Series[0].Points.AddXY(Math.Round(arrayLAMP[i, 0], 5), Math.Round(arrayLAMP[i, 1], 5));
+      //  chart.Series[0].Points[i].LegendToolTip = name;
+      //  chart.Series[0].Points[i].Tag = array_prop_files[i];
+      //  chart.Series[0].Points[i].ToolTip = name + "\n X= " + arrayLAMP[i, 0] + " Y = " + arrayLAMP[i, 1];
+      //}
 
       label1.Text = "Finished LAMP";
       label1.Update();
