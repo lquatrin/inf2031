@@ -47,9 +47,9 @@ namespace ClassCppToCS_CS
       chart.Series[1].Tag = "InputPoints";
       chart.Series[1].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
 
-      chart.Series.Add("Reference Points");
-      chart.Series[2].Tag = "ReferencePoints";
-      chart.Series[2].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+      //chart.Series.Add("Reference Points");
+      //chart.Series[2].Tag = "ReferencePoints";
+      //chart.Series[2].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
     }
 
     private void InitializeOpenFileDialog()
@@ -129,7 +129,7 @@ namespace ClassCppToCS_CS
         Chart chart = new Chart();
         chart = chart1;
         chart.Series[0].Points.Clear();
-        chart.Series[2].Points.Clear();
+        //chart.Series[2].Points.Clear();
 
         for (int i = 0; i < counter; i++)
         {

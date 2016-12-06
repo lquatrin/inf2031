@@ -11,9 +11,16 @@
 double InverseProjection::RadialBasisKernel(double* X1, double* X2)
 {
   return 
-    exp(-sqrt(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2)) / (2.0*rad_kernel_gama*rad_kernel_gama))
-    //exp(- pow(sqrt (pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2)) / (2.0*rad_kernel_gama), 2))
-    //exp((-(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2))) / (2.0*rad_kernel_gama*rad_kernel_gama))
+    exp(- 
+    //pow(
+    sqrt(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2)) / (rad_kernel_gama)
+    //, 2)
+    )
+
+    //1/
+    //sqrt(
+    //4 + 1.0 * sqrt(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2))
+    //)
   ;
 }
 
@@ -26,7 +33,7 @@ InverseProjection::InverseProjection ()
   tf_1D.Build();
 
   input_colorspace = 0;
-  rad_kernel_gama = 1.0;
+  rad_kernel_gama = 10.0;
 }
 
 InverseProjection::~InverseProjection ()
@@ -666,8 +673,8 @@ void InverseProjection::CalcInverseProjectionPropBased(
 {
   printf("%d points:\n", n_ref_points);
   for (int i = 0; i < n_ref_points; i++)
-    printf(". %d %.2lf %.2lf - %s\n", i, ref_points[i][0], ref_points[i][1], prop_paths[i].c_str());
-  printf("Input Point: %.2lf %.2lf\n", input_point[0], input_point[1]);
+    printf(". %d %.5lf %.5lf - %s\n", i, ref_points[i][0], ref_points[i][1], prop_paths[i].c_str());
+  printf("Input Point: %.5lf %.5lf\n", input_point[0], input_point[1]);
 
   std::vector<cv::Mat> f_maps;
 
@@ -701,45 +708,27 @@ void InverseProjection::CalcInverseProjectionPropBased(
   cv::Mat Res = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
 
   // Matriz de dissimilaridade
+
   cv::Mat A = cv::Mat::zeros(n_ref_points, n_ref_points, cv::DataType<double>::type);
   for (int r = 0; r < n_ref_points; r++)
   {
-    A.at<double>(r, r) = RadialBasisKernel(ref_points[r], ref_points[r]);
+    A.at<double>(r, r) = 1.0;
     for (int c = r + 1; c < n_ref_points; c++)
     {
       double dist = RadialBasisKernel(ref_points[r], ref_points[c]);
-
       A.at<double>(r, c) = dist;
       A.at<double>(c, r) = dist;
     }
   }
+  cv::Mat CA;
+  A.copyTo(CA);
 
-  // Matriz de dissimilaridade
-  //cv::Mat A = cv::Mat::zeros(n_ref_points, n_ref_points, cv::DataType<double>::type);
-  //for (int r = 0; r < n_ref_points; r++)
-  //{
-  //  A.at<double>(r, r) = RadialBasisKernel(ref_points[r], ref_points[r]);
-  //  for (int c = r + 1; c < n_ref_points; c++)
-  //  {
-  //    double dist = RadialBasisKernel(ref_points[r], ref_points[c]);
-  //
-  //    A.at<double>(r, c) = dist;
-  //    A.at<double>(c, r) = dist;
-  //  }
-  //}
-
-  cv::Mat P = LUDecomp(A);
-
-  //double sum_mat_dist_r = 0;
+  cv::Mat P = PLUDecomp(A);
+  
   // Vetor de dissimilaridade entre o ponto de entrada e os pontos de referência
   cv::Mat Ar = cv::Mat::zeros(1, n_ref_points, cv::DataType<double>::type);
   for (int r = 0; r < n_ref_points; r++)
-  {
     Ar.at<double>(0, r) = RadialBasisKernel(input_point, ref_points[r]);
-    //sum_mat_dist_r += Ar.at<double>(0, r);
-  }
-  //for (int r = 0; r < n_ref_points; r++)
-  //  Ar.at<double>(0, r) /= sum_mat_dist_r;
 
   for (int pcol = 0; pcol < layer_i_size; pcol++)
   {
@@ -754,12 +743,12 @@ void InverseProjection::CalcInverseProjectionPropBased(
         for (int i_inp = 0; i_inp < f_maps.size(); i_inp++)
           b.at<double>(i_inp, 0) = f_maps[i_inp].at<double>(prow, pcol);
 
-        cv::Mat X = LUSolve(A, P, b);
+        cv::Mat_<double> X = LUSolve(A, P, b);
 
-        cv::Mat_<double> value_r = (Ar * P.t()) *  X;
+        cv::Mat_<double> value_r = Ar *  X;
 
         Res.at<double>(prow, pcol) = value_r.at<double>(0, 0);
-      }
+      } 
     }
   }
 
