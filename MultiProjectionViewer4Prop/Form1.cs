@@ -23,7 +23,7 @@ namespace ClassCppToCS_CS
     private string model_name;
     private int[] model_size = new int[3];
     private string model_path;
-    private double[] input_property;
+    private double[,] input_property;
 
     public Form1()
     {
@@ -78,6 +78,8 @@ namespace ClassCppToCS_CS
       chart.Series.Add("Input Points");
       chart.Series[1].Tag = "InputPoints";
       chart.Series[1].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+
+      input_property = new double[4, 2];
     }
 
     private void InitializeOpenFileDialog()
@@ -156,10 +158,13 @@ namespace ClassCppToCS_CS
 
     private void button2_Click(object sender, EventArgs e)
     {
+      InverseProjection (chart1, 1);
+    }
+
+    private void InverseProjection (Chart chart, int index_chart)
+    {
       label1.Text = "Start Inverse Projection";
       label1.Update();
-   
-      Chart chart = chart1;
 
       int n_reference_points = chart.Series[0].Points.Count();
 
@@ -177,14 +182,18 @@ namespace ClassCppToCS_CS
         arraypoints[p, 1] = pt.YValues[0];
       }
 
-      double[,] input_point = new double[,] { {0,0} };
-      
-      Chart schart = chart1;
-      if (schart.Series[1].Points.Count() > 0)
+      double[,] input_point = new double[,] { { 0, 0 } };
+
+      if (chart.Series[1].Points.Count() > 0)
       {
-        input_point[0, 0] = schart.Series[1].Points[0].XValue;
-        input_point[0, 1] = schart.Series[1].Points[0].YValues[0];
+        input_point[0, 0] = chart.Series[1].Points[0].XValue;
+        input_point[0, 1] = chart.Series[1].Points[0].YValues[0];
       }
+
+      double[] input_prop = new double[2];
+      input_prop[0] = input_property[index_chart, 0];
+      input_prop[1] = input_property[index_chart, 1];
+
 
       wrapper_inverse_projection.InverseProjectionPropBased(
           n_reference_points,
@@ -193,9 +202,9 @@ namespace ClassCppToCS_CS
           paths.ToArray(),
           model_size[0],
           model_size[1],
-          input_property
+          input_prop
           );
-      
+
       label1.Text = "Finished Inverse Projection";
       label1.Update();
     }
@@ -411,25 +420,25 @@ namespace ClassCppToCS_CS
 
     private void MDS_CHART_1(object sender, EventArgs e)
     {
-      BuildMDSToChart(chart1);
+      BuildMDSToChart(chart1, 1);
     }
 
     private void MDS_CHART_2(object sender, EventArgs e)
     {
-      BuildMDSToChart(chart2);
+      BuildMDSToChart(chart2, 2);
     }
 
     private void MDS_CHART_3(object sender, EventArgs e)
     {
-      BuildMDSToChart(chart3);
+      BuildMDSToChart(chart3, 3);
     }
 
     private void MDS_CHART_4(object sender, EventArgs e)
     {
-      BuildMDSToChart(chart4);
+      BuildMDSToChart(chart4, 4);
     }
 
-    private void BuildMDSToChart(Chart chart)
+    private void BuildMDSToChart(Chart chart, int chart_index)
     {
       label1.Text = "Start MDS";
       label1.Update();
@@ -463,7 +472,11 @@ namespace ClassCppToCS_CS
 
         CppWrapper.CppDistanceProp distance_prop_eval = new CppWrapper.CppDistanceProp();
         distance_prop_eval.SetMapSize(model_size[0], model_size[1]);
-        input_property = distance_prop_eval.SetInputFilePaths(prop_files.ToArray(), filter_files.ToArray(), k_values.ToArray());
+
+        double [] ret_property = distance_prop_eval.SetInputFilePaths(prop_files.ToArray(), filter_files.ToArray(), k_values.ToArray());
+
+        input_property[chart_index, 0] = ret_property[0];
+        input_property[chart_index, 1] = ret_property[1];
 
         double[,] array = distance_prop_eval.GetDistances();
 
@@ -507,6 +520,36 @@ namespace ClassCppToCS_CS
           chart.Series[1].Points[0].ToolTip = "userpoint" + "\n X= " + xVal + " Y = " + yVal;
         }
       }
+    }
+
+    private void button6_Click(object sender, EventArgs e)
+    {
+      InverseProjection(chart2, 2);
+    }
+
+    private void button7_Click(object sender, EventArgs e)
+    {
+      InverseProjection(chart3, 3);
+    }
+
+    private void button8_Click(object sender, EventArgs e)
+    {
+      InverseProjection(chart4, 4);
+    }
+
+    private void label4_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void button1_Click_1(object sender, EventArgs e)
+    {
+
+    }
+
+    private void radioButton1_CheckedChanged(object sender, EventArgs e)
+    {
+
     }
 
   }
