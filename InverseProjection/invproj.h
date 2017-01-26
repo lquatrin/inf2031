@@ -46,6 +46,7 @@ public:
     , double* input_point
     , int i_size
     , int j_size
+    , double* limits_pro_val
     );
 
 public:
@@ -79,7 +80,7 @@ public:
     std::vector<std::string> image_paths);
 
 private:
-  void GenerateImage(int j_size, int i_size, int s, cv::Mat map, std::string name);
+  void GenerateImage(int j_size, int i_size, int s, cv::Mat map, std::string name, double* limits_pro_val);
 
   vr::TransferFunction1D tf_1D;
 
