@@ -23,7 +23,8 @@ namespace ClassCppToCS_CS
     private string model_name;
     private int[] model_size = new int[3];
     private string model_path;
-    
+    private double[] input_property;
+
     public Form1()
     {
       InitializeComponent();
@@ -119,8 +120,8 @@ namespace ClassCppToCS_CS
 
         CppWrapper.CppDistanceProp distance_prop_eval = new CppWrapper.CppDistanceProp();
         distance_prop_eval.SetMapSize(model_size[0], model_size[1]);
-        distance_prop_eval.SetInputFilePaths(prop_files.ToArray(), filter_files.ToArray(), k_values.ToArray());
-
+        input_property = distance_prop_eval.SetInputFilePaths(prop_files.ToArray(), filter_files.ToArray(), k_values.ToArray());
+       
         double[,] array = distance_prop_eval.GetDistances();
         
         CppWrapper.CppMDSWrapper eval_MDS = new CppWrapper.CppMDSWrapper(array, counter);
@@ -235,7 +236,8 @@ namespace ClassCppToCS_CS
           input_point,
           paths.ToArray(),
           model_size[0],
-          model_size[1]
+          model_size[1],
+          input_property
           );
       
       label1.Text = "Finished Inverse Projection";

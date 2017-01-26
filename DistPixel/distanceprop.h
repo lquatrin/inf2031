@@ -15,7 +15,7 @@ public:
 
   void SetMapSize (int is, int js);
 
-  void SetPaths (std::vector<std::string> property_paths, std::vector<std::string> filter_paths, std::vector<int> layers);
+  void SetPaths (std::vector<std::string> property_paths, std::vector<std::string> filter_paths, std::vector<int> layers, double* data_limits);
 
   void GetDistance (std::vector<std::vector<double>> &distMat);
   

@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * https://www.siam.org/students/siuro/vol4/S01084.pdf
+**/
+
 #include "invproj.h"
 
 #include <fstream>
@@ -10,18 +14,22 @@
 
 double InverseProjection::RadialBasisKernel(double* X1, double* X2)
 {
-  return 
-    exp(- 
-    //pow(
-    sqrt(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2)) / (rad_kernel_gama)
-    //, 2)
-    )
+  double err = 1.0;
+  double sed = sqrt(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2));
+  double c = 0.0;
 
-    //1/
-    //sqrt(
-    //4 + 1.0 * sqrt(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2))
-    //)
-  ;
+  double kbf = 
+    //C^0 Matern
+    exp(-err*sed)
+    
+    //RBF
+    //exp(-pow(err*sed, 2.0))
+
+	//Multiquadratic
+    //sqrt(c + pow(err * sed, 2.0));
+    ;
+
+  return kbf;
 }
 
 InverseProjection::InverseProjection ()
@@ -33,7 +41,7 @@ InverseProjection::InverseProjection ()
   tf_1D.Build();
 
   input_colorspace = 0;
-  rad_kernel_gama = 10.0;
+  rad_kernel_gama = 2.0;
 }
 
 InverseProjection::~InverseProjection ()
@@ -662,19 +670,27 @@ void InverseProjection::GenInverseProjection (
 
 }
 
-void InverseProjection::CalcInverseProjectionPropBased(
+void InverseProjection::CalcInverseProjectionPropBased (
   int n_ref_points
   , double** ref_points
   , std::vector<std::string> prop_paths
   , double* input_point
   , int layer_i_size
   , int layer_j_size
+  , double* limits_pro_val
   )
 {
+
   printf("%d points:\n", n_ref_points);
   for (int i = 0; i < n_ref_points; i++)
     printf(". %d %.5lf %.5lf - %s\n", i, ref_points[i][0], ref_points[i][1], prop_paths[i].c_str());
   printf("Input Point: %.5lf %.5lf\n", input_point[0], input_point[1]);
+  printf("MinMax = %.5lf %.5lf\n", limits_pro_val[0], limits_pro_val[1]);
+
+  limits_pro_val[1] = limits_pro_val[1] + (limits_pro_val[1] - limits_pro_val[0]) * 0.05;
+  limits_pro_val[0] = limits_pro_val[0] - (limits_pro_val[1] - limits_pro_val[0]) * 0.05;
+  
+  printf("Recalculated MinMax = %.5lf %.5lf\n", limits_pro_val[0], limits_pro_val[1]);
 
   std::vector<cv::Mat> f_maps;
 
@@ -701,7 +717,7 @@ void InverseProjection::CalcInverseProjectionPropBased(
 
       propfile.close();
 
-      GenerateImage(layer_j_size, layer_i_size, 15, map, std::to_string(t + 1) + "_file.png");
+      GenerateImage(layer_j_size, layer_i_size, 15, map, std::to_string(t + 1) + "_file.png", limits_pro_val);
     }
   }
 
@@ -753,11 +769,11 @@ void InverseProjection::CalcInverseProjectionPropBased(
   }
 
   //printf("Max Val: %lf\n", max_val);
-  GenerateImage(layer_j_size, layer_i_size, 15, Res, "result_image.png");
+  GenerateImage(layer_j_size, layer_i_size, 15, Res, "0_result_image.png", limits_pro_val);
 }
 
 
-void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat map, std::string name)
+void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat map, std::string name, double* limits_pro_val)
 {
   cv::Mat ret = cv::Mat::zeros(j_size * s, i_size * s, cv::DataType<cv::Vec3b>::type);
   
@@ -773,8 +789,9 @@ void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat ma
         {
           int local_l = l * s + sj;
           int local_c = c * s + si;
+          
+          glm::vec4 colr = tf_1D.Get(((val - limits_pro_val[0]) / (limits_pro_val[1] - limits_pro_val[0])) * 255.0);
 
-          glm::vec4 colr = tf_1D.Get((val / 0.85) * 255.0);
           ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(colr.x * 255);
           ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(colr.y * 255);
           ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(colr.z * 255);

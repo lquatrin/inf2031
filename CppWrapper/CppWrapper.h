@@ -91,7 +91,8 @@ namespace CppWrapper {
       array<double, 2>^ arraypoints,
       array<double, 2>^ input_point,
       array<System::String^>^ bytes,
-      int lyr_i_sz, int lyr_j_sz);
+      int lyr_i_sz, int lyr_j_sz,
+      array<double, 1>^ limits_prop_value);
 
   private:
     InverseProjection* pinvproj;
@@ -120,7 +121,7 @@ namespace CppWrapper {
 
     void SetMapSize (int i_size, int j_size);
 
-    void SetInputFilePaths (
+    array<double, 1>^ SetInputFilePaths(
       array<System::String^>^ props, 
       array<System::String^>^ filters, 
       array<int>^ layers);

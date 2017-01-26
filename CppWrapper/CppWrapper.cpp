@@ -294,7 +294,8 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjectionPropBased(int n_r
                                                                         array<double, 2>^ arraypoints,
                                                                         array<double, 2>^ input_point,
                                                                         array<System::String^>^ bytes, 
-                                                                        int lyr_i_sz, int lyr_j_sz)
+                                                                        int lyr_i_sz, int lyr_j_sz,
+                                                                        array<double, 1>^ limits_prop_val)
 {
   double **m = (double**)malloc(n_reference_points * sizeof(double*));
 
@@ -317,7 +318,11 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjectionPropBased(int n_r
   p[0] = input_point[0, 0];
   p[1] = input_point[0, 1];
 
-  pinvproj->CalcInverseProjectionPropBased(n_reference_points, m, image_paths, p, lyr_i_sz, lyr_j_sz);
+  double *limits = (double*)malloc(2 * sizeof(double));
+  limits[0] = limits_prop_val[0];
+  limits[1] = limits_prop_val[1];
+
+  pinvproj->CalcInverseProjectionPropBased(n_reference_points, m, image_paths, p, lyr_i_sz, lyr_j_sz, limits);
 
   for (int i = 0; i < n_reference_points; i++)
     free(m[i]);
@@ -337,7 +342,7 @@ void CppWrapper::CppDistPixelWrapper::addPath(array<System::String^>^ bytes, int
     mpath.push_back(standardString);
   }
 
-  pdists->SetPaths(mpath,channel);
+  pdists->SetPaths(mpath, channel);
 }
 
 array<double, 2>^CppWrapper::CppDistPixelWrapper::GetDistances(void){
@@ -388,7 +393,7 @@ void CppWrapper::CppDistanceProp::SetMapSize (int i_size, int j_size)
   DProp->SetMapSize(i_size, j_size);
 }
 
-void CppWrapper::CppDistanceProp::SetInputFilePaths (array<System::String^>^ props, array<System::String^>^ filters, array<int>^ layers)
+array<double, 1>^ CppWrapper::CppDistanceProp::SetInputFilePaths(array<System::String^>^ props, array<System::String^>^ filters, array<int>^ layers)
 {
   DProp->Clear();
 
@@ -416,7 +421,17 @@ void CppWrapper::CppDistanceProp::SetInputFilePaths (array<System::String^>^ pro
     }
   }
 
-  DProp->SetPaths(p_path, f_path, l_list);
+  double* data_limits = new double[2];
+
+  DProp->SetPaths(p_path, f_path, l_list, data_limits);
+
+  array<double, 1>^ Distances = gcnew array<double, 1>(2);
+
+  Distances[0] = data_limits[0];
+  Distances[1] = data_limits[1];
+  delete[] data_limits;
+
+  return Distances;
 }
 
 array<double, 2>^ CppWrapper::CppDistanceProp::GetDistances()
