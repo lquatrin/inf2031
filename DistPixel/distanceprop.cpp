@@ -112,7 +112,9 @@ void DistanceProp::GetDistance (std::vector<std::vector<double>> &distMat)
     for (int j = 0; j < distMat[i].size(); j++){
       double z = (distMat[i][j] - min) / (max - min);
       distMat[i][j] = z;
+      printf("%g ", z);
     }
+    printf("\n ");
   }
 }
 

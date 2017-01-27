@@ -93,6 +93,8 @@ namespace CppWrapper {
       array<System::String^>^ bytes,
       int lyr_i_sz, int lyr_j_sz,
       array<double, 1>^ limits_prop_value);
+    
+    void CalcNewPropGridByInverse();
 
   private:
     InverseProjection* pinvproj;

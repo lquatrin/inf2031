@@ -330,6 +330,10 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjectionPropBased(int n_r
   free(p);
 }
 
+void CppWrapper::CppInverseProjectionWrapper::CalcNewPropGridByInverse(void){
+  pinvproj->CalcNewPropGridByInverse();
+}
+
 CppWrapper::CppDistPixelWrapper::CppDistPixelWrapper(){
   pdists = new distpixel();
 }

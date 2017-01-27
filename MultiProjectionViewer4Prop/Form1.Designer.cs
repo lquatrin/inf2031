@@ -28,18 +28,18 @@
     /// </summary>
     private void InitializeComponent()
     {
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea49 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend49 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.Series series49 = new System.Windows.Forms.DataVisualization.Charting.Series();
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea50 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend50 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.Series series50 = new System.Windows.Forms.DataVisualization.Charting.Series();
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea51 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend51 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.Series series51 = new System.Windows.Forms.DataVisualization.Charting.Series();
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea52 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend52 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.Series series52 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.MDS = new System.Windows.Forms.Button();
       this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -60,9 +60,9 @@
       this.button7 = new System.Windows.Forms.Button();
       this.button8 = new System.Windows.Forms.Button();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
-      this.radioButton1 = new System.Windows.Forms.RadioButton();
-      this.radioButton2 = new System.Windows.Forms.RadioButton();
       this.radioButton3 = new System.Windows.Forms.RadioButton();
+      this.radioButton2 = new System.Windows.Forms.RadioButton();
+      this.radioButton1 = new System.Windows.Forms.RadioButton();
       ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart3)).BeginInit();
@@ -72,19 +72,19 @@
       // 
       // chart1
       // 
-      chartArea49.Name = "ChartArea1";
-      this.chart1.ChartAreas.Add(chartArea49);
-      legend49.Name = "Legend1";
-      this.chart1.Legends.Add(legend49);
+      chartArea1.Name = "ChartArea1";
+      this.chart1.ChartAreas.Add(chartArea1);
+      legend1.Name = "Legend1";
+      this.chart1.Legends.Add(legend1);
       this.chart1.Location = new System.Drawing.Point(12, 93);
       this.chart1.Name = "chart1";
-      series49.ChartArea = "ChartArea1";
-      series49.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-      series49.LabelToolTip = "#SERIESNAME";
-      series49.Legend = "Legend1";
-      series49.Name = "Series1";
-      series49.ToolTip = "#SERIESNAME";
-      this.chart1.Series.Add(series49);
+      series1.ChartArea = "ChartArea1";
+      series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+      series1.LabelToolTip = "#SERIESNAME";
+      series1.Legend = "Legend1";
+      series1.Name = "Series1";
+      series1.ToolTip = "#SERIESNAME";
+      this.chart1.Series.Add(series1);
       this.chart1.Size = new System.Drawing.Size(620, 356);
       this.chart1.TabIndex = 0;
       this.chart1.Text = "chart1";
@@ -159,19 +159,19 @@
       // 
       // chart2
       // 
-      chartArea50.Name = "ChartArea1";
-      this.chart2.ChartAreas.Add(chartArea50);
-      legend50.Name = "Legend1";
-      this.chart2.Legends.Add(legend50);
+      chartArea2.Name = "ChartArea1";
+      this.chart2.ChartAreas.Add(chartArea2);
+      legend2.Name = "Legend1";
+      this.chart2.Legends.Add(legend2);
       this.chart2.Location = new System.Drawing.Point(636, 93);
       this.chart2.Name = "chart2";
-      series50.ChartArea = "ChartArea1";
-      series50.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-      series50.LabelToolTip = "#SERIESNAME";
-      series50.Legend = "Legend1";
-      series50.Name = "Series1";
-      series50.ToolTip = "#SERIESNAME";
-      this.chart2.Series.Add(series50);
+      series2.ChartArea = "ChartArea1";
+      series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+      series2.LabelToolTip = "#SERIESNAME";
+      series2.Legend = "Legend1";
+      series2.Name = "Series1";
+      series2.ToolTip = "#SERIESNAME";
+      this.chart2.Series.Add(series2);
       this.chart2.Size = new System.Drawing.Size(620, 356);
       this.chart2.TabIndex = 16;
       this.chart2.Text = "chart2";
@@ -180,19 +180,19 @@
       // 
       // chart3
       // 
-      chartArea51.Name = "ChartArea1";
-      this.chart3.ChartAreas.Add(chartArea51);
-      legend51.Name = "Legend1";
-      this.chart3.Legends.Add(legend51);
+      chartArea3.Name = "ChartArea1";
+      this.chart3.ChartAreas.Add(chartArea3);
+      legend3.Name = "Legend1";
+      this.chart3.Legends.Add(legend3);
       this.chart3.Location = new System.Drawing.Point(12, 455);
       this.chart3.Name = "chart3";
-      series51.ChartArea = "ChartArea1";
-      series51.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-      series51.LabelToolTip = "#SERIESNAME";
-      series51.Legend = "Legend1";
-      series51.Name = "Series1";
-      series51.ToolTip = "#SERIESNAME";
-      this.chart3.Series.Add(series51);
+      series3.ChartArea = "ChartArea1";
+      series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+      series3.LabelToolTip = "#SERIESNAME";
+      series3.Legend = "Legend1";
+      series3.Name = "Series1";
+      series3.ToolTip = "#SERIESNAME";
+      this.chart3.Series.Add(series3);
       this.chart3.Size = new System.Drawing.Size(620, 356);
       this.chart3.TabIndex = 18;
       this.chart3.Text = "chart3";
@@ -201,19 +201,19 @@
       // 
       // chart4
       // 
-      chartArea52.Name = "ChartArea1";
-      this.chart4.ChartAreas.Add(chartArea52);
-      legend52.Name = "Legend1";
-      this.chart4.Legends.Add(legend52);
+      chartArea4.Name = "ChartArea1";
+      this.chart4.ChartAreas.Add(chartArea4);
+      legend4.Name = "Legend1";
+      this.chart4.Legends.Add(legend4);
       this.chart4.Location = new System.Drawing.Point(636, 455);
       this.chart4.Name = "chart4";
-      series52.ChartArea = "ChartArea1";
-      series52.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-      series52.LabelToolTip = "#SERIESNAME";
-      series52.Legend = "Legend1";
-      series52.Name = "Series1";
-      series52.ToolTip = "#SERIESNAME";
-      this.chart4.Series.Add(series52);
+      series4.ChartArea = "ChartArea1";
+      series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+      series4.LabelToolTip = "#SERIESNAME";
+      series4.Legend = "Legend1";
+      series4.Name = "Series1";
+      series4.ToolTip = "#SERIESNAME";
+      this.chart4.Series.Add(series4);
       this.chart4.Size = new System.Drawing.Size(620, 356);
       this.chart4.TabIndex = 17;
       this.chart4.Text = "chart4";
@@ -260,6 +260,7 @@
       this.button1.Text = "Inverse Projection all Charts";
       this.button1.UseVisualStyleBackColor = true;
       this.button1.Click += new System.EventHandler(this.button1_Click_1);
+      this.button1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.button1_MouseClick);
       // 
       // button6
       // 
@@ -303,18 +304,16 @@
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Equation to compose the Inverse Projection using all charts";
       // 
-      // radioButton1
+      // radioButton3
       // 
-      this.radioButton1.AutoSize = true;
-      this.radioButton1.Cursor = System.Windows.Forms.Cursors.Default;
-      this.radioButton1.Location = new System.Drawing.Point(6, 16);
-      this.radioButton1.Name = "radioButton1";
-      this.radioButton1.Size = new System.Drawing.Size(103, 17);
-      this.radioButton1.TabIndex = 0;
-      this.radioButton1.TabStop = true;
-      this.radioButton1.Text = "c1 * c2 * c3 * c4";
-      this.radioButton1.UseVisualStyleBackColor = true;
-      this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+      this.radioButton3.AutoSize = true;
+      this.radioButton3.Location = new System.Drawing.Point(6, 62);
+      this.radioButton3.Name = "radioButton3";
+      this.radioButton3.Size = new System.Drawing.Size(110, 17);
+      this.radioButton3.TabIndex = 2;
+      this.radioButton3.TabStop = true;
+      this.radioButton3.Text = "(c1 * c2 * c3) / c4";
+      this.radioButton3.UseVisualStyleBackColor = true;
       // 
       // radioButton2
       // 
@@ -327,16 +326,18 @@
       this.radioButton2.Text = "(c1 * c2) / (c3 * c4)";
       this.radioButton2.UseVisualStyleBackColor = true;
       // 
-      // radioButton3
+      // radioButton1
       // 
-      this.radioButton3.AutoSize = true;
-      this.radioButton3.Location = new System.Drawing.Point(6, 62);
-      this.radioButton3.Name = "radioButton3";
-      this.radioButton3.Size = new System.Drawing.Size(110, 17);
-      this.radioButton3.TabIndex = 2;
-      this.radioButton3.TabStop = true;
-      this.radioButton3.Text = "(c1 * c2 * c3) / c4";
-      this.radioButton3.UseVisualStyleBackColor = true;
+      this.radioButton1.AutoSize = true;
+      this.radioButton1.Cursor = System.Windows.Forms.Cursors.Default;
+      this.radioButton1.Location = new System.Drawing.Point(6, 16);
+      this.radioButton1.Name = "radioButton1";
+      this.radioButton1.Size = new System.Drawing.Size(103, 17);
+      this.radioButton1.TabIndex = 0;
+      this.radioButton1.TabStop = true;
+      this.radioButton1.Text = "c1 * c2 * c3 * c4";
+      this.radioButton1.UseVisualStyleBackColor = true;
+      this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
       // 
       // Form1
       // 

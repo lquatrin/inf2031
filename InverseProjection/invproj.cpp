@@ -276,6 +276,7 @@ void InverseProjection::Clear ()
 {
   srcs.clear();
   hsvs.clear();
+  arrayResps.clear();
 }
 
 void InverseProjection::CalcInverseProjection01(
@@ -768,6 +769,10 @@ void InverseProjection::CalcInverseProjectionPropBased (
     }
   }
 
+
+  arrayResps.push_back(Res);
+  ws = layer_j_size;
+  hs = layer_i_size;
   //printf("Max Val: %lf\n", max_val);
   GenerateImage(layer_j_size, layer_i_size, 15, Res, "0_result_image.png", limits_pro_val);
 }
@@ -801,4 +806,38 @@ void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat ma
   }
 
   cv::imwrite(name, ret);
+}
+
+
+
+// apenas um teste -> verificar melhor celulas inválidas e limites
+void InverseProjection::CalcNewPropGridByInverse(void){
+
+  cv::Size s = arrayResps[0].size();
+
+  cv::Mat result = cv::Mat::zeros(ws, hs, cv::DataType<double>::type);
+  
+  for (int j = 0; j < hs; j++){
+    for (int i = 0; i < ws; i++){
+      if (arrayResps[0].at<double>(i, j) < 0 || arrayResps[1].at<double>(i, j) < 0 || arrayResps[2].at<double>(i, j) < 0 || arrayResps[3].at<double>(i, j) < 0)
+        result.at<double>(i, j) = -1;
+      else
+        result.at<double>(i, j) = arrayResps[0].at<double>(i, j) * arrayResps[1].at<double>(i, j) * arrayResps[2].at<double>(i, j) * arrayResps[3].at<double>(i, j);
+    }
+  }
+
+  double min, max;
+  double* vec = (double*)malloc(2 * sizeof(double));
+  
+  cv::minMaxLoc(result, &min, &max);
+  vec[0] = min;
+  vec[1] = max;
+
+
+  vec[1] = vec[1] + (vec[1] - vec[0]) * 0.05;
+  vec[0] = -0.5;//vec[0] - (vec[1] - vec[0]) * 0.05;
+
+
+  printf("max min da composta %g %g\n", vec[0], vec[1]);
+  GenerateImage(ws,hs, 15, result, "novaprop.png", vec);
 }

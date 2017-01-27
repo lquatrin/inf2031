@@ -48,6 +48,8 @@ public:
     , int j_size
     , double* limits_pro_val
     );
+    
+  void CalcNewPropGridByInverse(void);
 
 public:
   InverseProjection ();
@@ -79,6 +81,8 @@ public:
     double** input_points,
     std::vector<std::string> image_paths);
 
+
+
 private:
   void GenerateImage(int j_size, int i_size, int s, cv::Mat map, std::string name, double* limits_pro_val);
 
@@ -88,8 +92,9 @@ private:
   cv::Mat ConvertInputColorSpaceToBGR (cv::Mat ipt, int type);
 
   double rad_kernel_gama;
-
+  double ws, hs;
   std::vector<cv::Mat> srcs;
   std::vector<cv::Mat> hsvs;
+  std::vector<cv::Mat> arrayResps;
 };
 

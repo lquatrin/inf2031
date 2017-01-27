@@ -116,7 +116,9 @@ namespace ClassCppToCS_CS
 
     private void button1_Click(object sender, EventArgs e)
     {
-      label1.Text = "Start LAMP";
+
+      Console.Out.Write("niga");
+      /*label1.Text = "Start LAMP";
       label1.Update();
 
       Chart chart = new Chart();
@@ -147,7 +149,7 @@ namespace ClassCppToCS_CS
       chart.Series[2].Points.Clear();
       
       label1.Text = "Finished LAMP";
-      label1.Update();
+      label1.Update();*/
     }
 
     private void textBox1_TextChanged(object sender, EventArgs e)
@@ -158,7 +160,7 @@ namespace ClassCppToCS_CS
 
     private void button2_Click(object sender, EventArgs e)
     {
-      InverseProjection (chart1, 1);
+      InverseProjection (chart1, 0);
     }
 
     private void InverseProjection (Chart chart, int index_chart)
@@ -420,22 +422,22 @@ namespace ClassCppToCS_CS
 
     private void MDS_CHART_1(object sender, EventArgs e)
     {
-      BuildMDSToChart(chart1, 1);
+      BuildMDSToChart(chart1, 0);
     }
 
     private void MDS_CHART_2(object sender, EventArgs e)
     {
-      BuildMDSToChart(chart2, 2);
+      BuildMDSToChart(chart2, 1);
     }
 
     private void MDS_CHART_3(object sender, EventArgs e)
     {
-      BuildMDSToChart(chart3, 3);
+      BuildMDSToChart(chart3, 2);
     }
 
     private void MDS_CHART_4(object sender, EventArgs e)
     {
-      BuildMDSToChart(chart4, 4);
+      BuildMDSToChart(chart4, 3);
     }
 
     private void BuildMDSToChart(Chart chart, int chart_index)
@@ -524,22 +526,22 @@ namespace ClassCppToCS_CS
 
     private void button6_Click(object sender, EventArgs e)
     {
-      InverseProjection(chart2, 2);
+      InverseProjection(chart2, 1);
     }
 
     private void button7_Click(object sender, EventArgs e)
     {
-      InverseProjection(chart3, 3);
+      InverseProjection(chart3, 2);
     }
 
     private void button8_Click(object sender, EventArgs e)
     {
-      InverseProjection(chart4, 4);
+      InverseProjection(chart4, 3);
     }
 
     private void label4_Click(object sender, EventArgs e)
     {
-
+      
     }
 
     private void button1_Click_1(object sender, EventArgs e)
@@ -550,6 +552,17 @@ namespace ClassCppToCS_CS
     private void radioButton1_CheckedChanged(object sender, EventArgs e)
     {
 
+    }
+
+    private void button1_MouseClick(object sender, MouseEventArgs e)
+    {
+      InverseProjection(chart1, 0);
+      InverseProjection(chart2, 1);
+      InverseProjection(chart3, 2);
+      InverseProjection(chart4, 3);
+
+      wrapper_inverse_projection.CalcNewPropGridByInverse();
+    
     }
 
   }
