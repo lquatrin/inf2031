@@ -331,7 +331,9 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjectionPropBased(int n_r
 }
 
 void CppWrapper::CppInverseProjectionWrapper::CalcNewPropGridByInverse(void){
+  
   pinvproj->CalcNewPropGridByInverse();
+  pinvproj->ClearInverseArray();
 }
 
 CppWrapper::CppDistPixelWrapper::CppDistPixelWrapper(){

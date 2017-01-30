@@ -560,7 +560,6 @@ namespace ClassCppToCS_CS
       InverseProjection(chart2, 1);
       InverseProjection(chart3, 2);
       InverseProjection(chart4, 3);
-
       wrapper_inverse_projection.CalcNewPropGridByInverse();
     
     }

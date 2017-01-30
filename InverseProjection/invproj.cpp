@@ -671,6 +671,11 @@ void InverseProjection::GenInverseProjection (
 
 }
 
+
+void InverseProjection::ClearInverseArray(){
+  arrayResps.clear();
+}
+
 void InverseProjection::CalcInverseProjectionPropBased (
   int n_ref_points
   , double** ref_points
@@ -809,8 +814,6 @@ void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat ma
 }
 
 
-
-// apenas um teste -> verificar melhor celulas inválidas e limites
 void InverseProjection::CalcNewPropGridByInverse(void){
 
   cv::Size s = arrayResps[0].size();
@@ -819,7 +822,7 @@ void InverseProjection::CalcNewPropGridByInverse(void){
   
   for (int j = 0; j < hs; j++){
     for (int i = 0; i < ws; i++){
-      if (arrayResps[0].at<double>(i, j) < 0 || arrayResps[1].at<double>(i, j) < 0 || arrayResps[2].at<double>(i, j) < 0 || arrayResps[3].at<double>(i, j) < 0)
+      if (arrayResps[0].at<double>(i, j) < 0 || arrayResps[1].at<double>(i, j) < 0 || arrayResps[2].at<double>(i, j) < 0 || arrayResps[3].at<double>(i, j) < 0 )
         result.at<double>(i, j) = -1;
       else
         result.at<double>(i, j) = arrayResps[0].at<double>(i, j) * arrayResps[1].at<double>(i, j) * arrayResps[2].at<double>(i, j) * arrayResps[3].at<double>(i, j);
@@ -835,7 +838,8 @@ void InverseProjection::CalcNewPropGridByInverse(void){
 
 
   vec[1] = vec[1] + (vec[1] - vec[0]) * 0.05;
-  vec[0] = -0.5;//vec[0] - (vec[1] - vec[0]) * 0.05;
+  vec[0] = (vec[0]-0.5f)-(vec[1] - vec[0]) * 0.05;
+
 
 
   printf("max min da composta %g %g\n", vec[0], vec[1]);

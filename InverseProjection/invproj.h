@@ -60,7 +60,7 @@ public:
   void CalcInverseProjection (void);
 
   void Clear ();
-  
+  void ClearInverseArray();
   double RadialBasisKernel(double* X1, double* X2);
   //void getDistMatrix(std::vector<std::vector<double>> &vec);
 

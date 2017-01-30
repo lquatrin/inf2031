@@ -102,16 +102,24 @@ void DistanceProp::GetDistance (std::vector<std::vector<double>> &distMat)
 
       if (max < sum) max = sum;
       if (min > sum) min = sum;
+      if (max == min){
+        min -= 1;
+        max += 1;
+      }
 
       d.push_back(sum);
+
     }
     distMat.push_back(d);
   }
 
   for (int i = 0; i < distMat.size(); i++){
     for (int j = 0; j < distMat[i].size(); j++){
+     
       double z = (distMat[i][j] - min) / (max - min);
+
       distMat[i][j] = z;
+      
       printf("%g ", z);
     }
     printf("\n ");
