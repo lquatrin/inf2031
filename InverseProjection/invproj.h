@@ -82,6 +82,16 @@ public:
     std::vector<std::string> image_paths);
 
 
+  /*
+    u: vetor com pontos(modelos carregados) xy no gráfico
+    p: power parameter (duas dimensões = 2)
+    x: ponto selecionado pelo usuário
+    value: valor arbitrário selecionado dentro da renge do domínio
+    return an interpolated value u at a given point x based on samples u{i}= u(x{i})
+    */
+  double Shepard(std::vector<std::vector<double>> u, std::vector<double> x, double value, double p = 2);
+
+  double dist(std::vector<double>x1, std::vector<double>x2);
 
 private:
   void GenerateImage(int j_size, int i_size, int s, cv::Mat map, std::string name, double* limits_pro_val);

@@ -799,8 +799,9 @@ void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat ma
         {
           int local_l = l * s + sj;
           int local_c = c * s + si;
-          
-          glm::vec4 colr = tf_1D.Get(((val - limits_pro_val[0]) / (limits_pro_val[1] - limits_pro_val[0])) * 255.0);
+          glm::vec4 colr;
+          if (val < 0) colr = glm::vec4(0, 0, 0,0);
+          else colr = tf_1D.Get(((val - limits_pro_val[0]) / (limits_pro_val[1] - limits_pro_val[0])) * 255.0);
 
           ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(colr.x * 255);
           ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(colr.y * 255);
@@ -813,6 +814,33 @@ void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat ma
   cv::imwrite(name, ret);
 }
 
+
+double InverseProjection::dist(std::vector<double> x1, std::vector<double> x2){
+  double dist = 0;
+  for (int i = 0; i < x1.size(); i++){
+    dist += pow(x1[i] - x2[i], 2);
+  }
+  return sqrt(dist);
+}
+
+/* https://pt.wikipedia.org/wiki/Inverso_da_pot%C3%AAncia_das_dist%C3%A2ncias*/
+double InverseProjection::Shepard(std::vector<std::vector<double>> u, std::vector<double> x, double value,double p){
+  
+  std::vector<double> dist_matrix;
+  double result = 0;
+  double sum = 0;
+  for (int i = 0; i < u.size(); i++){
+    dist_matrix.push_back(dist(x, u[i]));
+    sum += (1 / pow(dist_matrix[i], p));
+    if (dist_matrix[i] == 0) return value;
+  }
+
+  for (int i = 0; i < dist_matrix.size(); i++){
+    result += ((1 / pow(dist_matrix[i], p))*value)/sum;
+  }
+  
+  return result;
+}
 
 void InverseProjection::CalcNewPropGridByInverse(void){
 
@@ -842,6 +870,6 @@ void InverseProjection::CalcNewPropGridByInverse(void){
 
 
 
-  printf("max min da composta %g %g\n", vec[0], vec[1]);
+  printf("max min da composta %g %g\n max min %g %g", vec[0], vec[1], max,min);
   GenerateImage(ws,hs, 15, result, "novaprop.png", vec);
 }
