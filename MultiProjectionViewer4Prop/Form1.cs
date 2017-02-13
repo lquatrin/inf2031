@@ -554,63 +554,13 @@ namespace ClassCppToCS_CS
 
     }
 
-
-    private void CalcByLambdas(Chart chart, int index_chart)
-    {
-      label1.Text = "Start Inverse Projection";
-      label1.Update();
-
-      int n_reference_points = chart.Series[0].Points.Count();
-
-      double[,] arraypoints = new double[n_reference_points, 2];
-
-      List<string> paths = new List<string>();
-      int counter = 0;
-      for (int p = 0; p < n_reference_points; p++)
-      {
-        DataPoint pt = chart.Series[0].Points[p];
-        paths.Add(pt.Tag.ToString());
-        counter++;
-
-        arraypoints[p, 0] = pt.XValue;
-        arraypoints[p, 1] = pt.YValues[0];
-      }
-
-      double[,] input_point = new double[,] { { 0, 0 } };
-
-      if (chart.Series[1].Points.Count() > 0)
-      {
-        input_point[0, 0] = chart.Series[1].Points[0].XValue;
-        input_point[0, 1] = chart.Series[1].Points[0].YValues[0];
-      }
-
-      double[] input_prop = new double[2];
-      input_prop[0] = input_property[index_chart, 0];
-      input_prop[1] = input_property[index_chart, 1];
-
-
-      wrapper_inverse_projection.InverseProjectionByLambda(
-          n_reference_points,
-          arraypoints,
-          input_point,
-          paths.ToArray(),
-          model_size[0],
-          model_size[1],
-          input_prop
-          );
-
-      label1.Text = "Finished Inverse Projection";
-      label1.Update();
-    }
-
     private void button1_MouseClick(object sender, MouseEventArgs e)
     {
       InverseProjection(chart1, 0);
-      
-      CalcByLambdas(chart2, 1);
-      CalcByLambdas(chart3, 2);
-      CalcByLambdas(chart4, 3);
-      //wrapper_inverse_projection.CalcNewPropGridByInverse();
+      InverseProjection(chart2, 1);
+      InverseProjection(chart3, 2);
+      InverseProjection(chart4, 3);
+      wrapper_inverse_projection.CalcNewPropGridByInverse();
     
     }
 

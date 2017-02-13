@@ -83,36 +83,15 @@ public:
 
 
   /*
-    D: num points
     u: vetor com pontos(modelos carregados) xy no gráfico
     p: power parameter (duas dimensões = 2)
     x: ponto selecionado pelo usuário
     value: valor arbitrário selecionado dentro da renge do domínio
     return an interpolated value u at a given point x based on samples u{i}= u(x{i})
     */
-  double Shepard(int D,int start, double** u, double* x, double value, double p = 2);
+  double Shepard(std::vector<std::vector<double>> u, std::vector<double> x, double value, double p = 2);
 
-  void CalcInverseProjectionShepard(
-    int n_ref_points
-    , double** ref_points
-    , std::vector<std::string> image_paths
-    , double* input_point
-    , int i_size
-    , int j_size
-    , double* limits_pro_val
-    );
-
-  void CalcByLambdas(
-    int n_ref_points
-    , double** ref_points
-    , std::vector<std::string> image_paths
-    , double* input_point
-    , int i_size
-    , int j_size
-    , double* limits_pro_val
-    );
-
-  double dist(double *x1, double *x2);
+  double dist(std::vector<double>x1, std::vector<double>x2);
 
 private:
   void GenerateImage(int j_size, int i_size, int s, cv::Mat map, std::string name, double* limits_pro_val);
@@ -127,8 +106,5 @@ private:
   std::vector<cv::Mat> srcs;
   std::vector<cv::Mat> hsvs;
   std::vector<cv::Mat> arrayResps;
-  std::vector<double> lambdas;
-
-
 };
 

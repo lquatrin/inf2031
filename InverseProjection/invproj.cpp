@@ -310,7 +310,6 @@ void InverseProjection::CalcInverseProjection01(
     for (int r = 0; r < n_points_per_set; r++)
     {
       A.at<double>(r, r) = RadialBasisKernel(points[r + chnls*n_points_per_set], points[r + chnls*n_points_per_set]);;
-     
       for (int c = r + 1; c < n_points_per_set; c++)
       {
         double dist = RadialBasisKernel(points[r + chnls*n_points_per_set], points[c + chnls*n_points_per_set]);
@@ -319,6 +318,19 @@ void InverseProjection::CalcInverseProjection01(
         A.at<double>(c, r) = dist;
 
       }
+
+      //double sum_dist = 0;
+      //for (int c = 0; c < n_points_per_set; c++)
+      //{
+      //  sum_dist += A.at<double>(r, c);
+      //}
+      //
+      //double sum = 0;
+      //for (int c = 0; c < n_points_per_set; c++)
+      //{
+      //  A.at<double>(r, c) = A.at<double>(r, c) / sum_dist;
+      //  sum += A.at<double>(r, c);
+      //}
     }
 
     cv::Mat P = LUDecomp(A);
@@ -674,16 +686,7 @@ void InverseProjection::CalcInverseProjectionPropBased (
   , double* limits_pro_val
   )
 {
-  
-  printf("chamando shepard!");
-  CalcInverseProjectionShepard(n_ref_points
-    ,  ref_points
-    , prop_paths
-    , input_point
-    , layer_i_size
-    , layer_j_size
-    , limits_pro_val);
-  /*
+
   printf("%d points:\n", n_ref_points);
   for (int i = 0; i < n_ref_points; i++)
     printf(". %d %.5lf %.5lf - %s\n", i, ref_points[i][0], ref_points[i][1], prop_paths[i].c_str());
@@ -754,7 +757,6 @@ void InverseProjection::CalcInverseProjectionPropBased (
     for (int prow = 0; prow < layer_j_size; prow++)
     {
       double v0 = f_maps[0].at<double>(prow, pcol);
-      printf("%g\n", v0);
       if (v0 < 0)
         Res.at<double>(prow, pcol) = -1;
       else
@@ -777,7 +779,7 @@ void InverseProjection::CalcInverseProjectionPropBased (
   ws = layer_j_size;
   hs = layer_i_size;
   //printf("Max Val: %lf\n", max_val);
-  GenerateImage(layer_j_size, layer_i_size, 15, Res, "0_result_image.png", limits_pro_val);*/
+  GenerateImage(layer_j_size, layer_i_size, 15, Res, "0_result_image.png", limits_pro_val);
 }
 
 
@@ -813,24 +815,21 @@ void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat ma
 }
 
 
-double InverseProjection::dist(double* x1, double* x2){
+double InverseProjection::dist(std::vector<double> x1, std::vector<double> x2){
   double dist = 0;
-  for (int i = 0; i < 2; i++){
+  for (int i = 0; i < x1.size(); i++){
     dist += pow(x1[i] - x2[i], 2);
   }
   return sqrt(dist);
 }
 
 /* https://pt.wikipedia.org/wiki/Inverso_da_pot%C3%AAncia_das_dist%C3%A2ncias*/
-/*http://www.scielo.br/scielo.php?script=sci_arttext&pid=S1679-78252013000200004*/
-double InverseProjection::Shepard(int D,int start,double **u, double *x, double value,double p){
+double InverseProjection::Shepard(std::vector<std::vector<double>> u, std::vector<double> x, double value,double p){
   
   std::vector<double> dist_matrix;
-  
   double result = 0;
   double sum = 0;
-  
-  for (int i = start; i < D ; i++){
+  for (int i = 0; i < u.size(); i++){
     dist_matrix.push_back(dist(x, u[i]));
     sum += (1 / pow(dist_matrix[i], p));
     if (dist_matrix[i] == 0) return value;
@@ -840,153 +839,7 @@ double InverseProjection::Shepard(int D,int start,double **u, double *x, double 
     result += ((1 / pow(dist_matrix[i], p))*value)/sum;
   }
   
- 
   return result;
-}
-
-void InverseProjection::CalcInverseProjectionShepard(int n_ref_points
-  , double** ref_points
-  , std::vector<std::string> prop_paths
-  , double* input_point
-  , int layer_i_size
-  , int layer_j_size
-  , double* limits_pro_val){
-
-  printf("%d points:\n", n_ref_points);
-  for (int i = 0; i < n_ref_points; i++)
-    printf(". %d %.5lf %.5lf - %s\n", i, ref_points[i][0], ref_points[i][1], prop_paths[i].c_str());
-  printf("Input Point: %.5lf %.5lf\n", input_point[0], input_point[1]);
-  printf("MinMax = %.5lf %.5lf\n", limits_pro_val[0], limits_pro_val[1]);
-
-  limits_pro_val[1] = limits_pro_val[1] + (limits_pro_val[1] - limits_pro_val[0]) * 0.05;
-  limits_pro_val[0] = limits_pro_val[0] - (limits_pro_val[1] - limits_pro_val[0]) * 0.05;
-
-  printf("Recalculated MinMax = %.5lf %.5lf\n", limits_pro_val[0], limits_pro_val[1]);
-
-  std::vector<cv::Mat> f_maps;
-
-  double max_val = 0;
-
-  {
-    for (int t = 0; t < prop_paths.size(); t++)
-    {
-      cv::Mat map = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
-
-      std::ifstream propfile;
-      propfile.open(prop_paths[t]);
-
-      double val;
-      for (int l = 0; l < layer_j_size; l++)
-      {
-        for (int c = 0; c < layer_i_size && propfile >> val; c++)
-        {
-          map.at<double>(l, c) = val;
-        }
-      }
-
-      f_maps.push_back(map);
-
-      propfile.close();
-
-      GenerateImage(layer_j_size, layer_i_size, 15, map, std::to_string(t + 1) + "_file.png", limits_pro_val);
-    }
-  }
-
- 
-  std::vector<double> values;
-  std::vector<double> input;
-  
-  cv::Mat result = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
-  double sum = 0;
-  cv::Mat map = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
-  bool zero = false;
-  for (int i = 0; i < n_ref_points; i++){
-    double dist = sqrt(pow(input_point[0] - ref_points[i][0], 2) + pow(input_point[1] - ref_points[i][1], 2));
-    if (dist != 0){
-      map += (1.0/pow(dist,2)) *  f_maps[i];
-      sum += 1.0/pow(dist,2);
-      lambdas.push_back((1.0 / pow(dist, 2)));
-    }
-    else{
-      zero = true;
-      for (int j = 0; j < lambdas.size(); j++) lambdas[i] = 0.f;
-      lambdas[i] = 1.0f;
-      map = f_maps[i];
-      break;
-    }
-  }
-  if (zero == false){
-    result = map / sum;
-    for (int i = 0; i < lambdas.size(); i++) lambdas[i] = lambdas[i] / sum;
-  }
-  else result = map;
-  std::size_t found = prop_paths[0].find_last_of("/\\");
-  GenerateImage(layer_j_size, layer_i_size, 15, result, prop_paths[0].substr(found + 1) +"propinverse.png", limits_pro_val);
-
-}
-
-void InverseProjection::CalcByLambdas(
-  int n_ref_points
-  , double** ref_points
-  , std::vector<std::string> prop_paths
-  , double* input_point
-  , int layer_i_size
-  , int layer_j_size
-  , double* limits_pro_val
-  ){
-
-
-  printf("%d points:\n", n_ref_points);
-  for (int i = 0; i < n_ref_points; i++)
-    printf(". %d %.5lf %.5lf - %s\n", i, ref_points[i][0], ref_points[i][1], prop_paths[i].c_str());
-  printf("Input Point: %.5lf %.5lf\n", input_point[0], input_point[1]);
-  printf("MinMax = %.5lf %.5lf\n", limits_pro_val[0], limits_pro_val[1]);
-
-  limits_pro_val[1] = limits_pro_val[1] + (limits_pro_val[1] - limits_pro_val[0]) * 0.05;
-  limits_pro_val[0] = limits_pro_val[0] - (limits_pro_val[1] - limits_pro_val[0]) * 0.05;
-
-  printf("Recalculated MinMax = %.5lf %.5lf\n", limits_pro_val[0], limits_pro_val[1]);
-
-  std::vector<cv::Mat> f_maps;
-
-  double max_val = 0;
-
-  {
-    for (int t = 0; t < prop_paths.size(); t++)
-    {
-      cv::Mat map = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
-
-      std::ifstream propfile;
-      propfile.open(prop_paths[t]);
-
-      double val;
-      for (int l = 0; l < layer_j_size; l++)
-      {
-        for (int c = 0; c < layer_i_size && propfile >> val; c++)
-        {
-          map.at<double>(l, c) = val;
-        }
-      }
-
-      f_maps.push_back(map);
-
-      propfile.close();
-
-      GenerateImage(layer_j_size, layer_i_size, 15, map, std::to_string(t + 1) + "_file.png", limits_pro_val);
-    }
-  }
-
-  cv::Mat result = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
-  cv::Mat map = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
-  bool zero = false;
-  for (int i = 0; i < n_ref_points; i++){
-      map += lambdas[i] *  f_maps[i];
-
-  }
-  result = map;
-  std::size_t found = prop_paths[0].find_last_of("/\\");
-  GenerateImage(layer_j_size, layer_i_size, 15, result, prop_paths[0].substr(found + 1) + "inverse.png", limits_pro_val);
-
 }
 
 void InverseProjection::CalcNewPropGridByInverse(void){

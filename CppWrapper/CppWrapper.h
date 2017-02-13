@@ -94,14 +94,6 @@ namespace CppWrapper {
       int lyr_i_sz, int lyr_j_sz,
       array<double, 1>^ limits_prop_value);
     
-   void InverseProjectionByLambda(
-      int n_reference_points,
-      array<double, 2>^ arraypoints,
-      array<double, 2>^ input_point,
-      array<System::String^>^ bytes,
-      int lyr_i_sz, int lyr_j_sz,
-      array<double, 1>^ limits_prop_value);
-
     void CalcNewPropGridByInverse();
 
   private:
