@@ -22,6 +22,7 @@ namespace ClassCppToCS_CS
     private bool model_loaded = false;
     private string model_name;
     private int[] model_size = new int[3];
+    private int[] id_mouse_aux = new int[5];
     private string model_path;
     private double[,] input_property;
 
@@ -357,6 +358,168 @@ namespace ClassCppToCS_CS
       }
     }
 
+    private Chart GetChartByID (int c_id)
+    {
+      if (c_id == 1)
+        return chart1;
+      else if (c_id == 2)
+        return chart2;
+      else if (c_id == 3)
+        return chart3;
+      else if (c_id == 4)
+        return chart4;
+      return chart1;
+    }
+
+    private void chart_MouseDown(object sender, MouseEventArgs e)
+    {
+      Chart chart = (Chart)sender;
+      int chart_id = int.Parse(chart.Text);
+      MouseDownChartCallback(chart_id, GetChartByID(chart_id), e);
+    }
+
+    private void chart_MouseMove(object sender, MouseEventArgs e)
+    {
+      Chart chart = (Chart)sender;
+      int chart_id = int.Parse(chart.Text);
+      MouseMoveChartCallback(chart_id, GetChartByID(chart_id), e);
+    }
+
+    private void chart_MouseUp(object sender, MouseEventArgs e)
+    {
+      Chart chart = (Chart)sender;
+      int chart_id = int.Parse(chart.Text);
+      MouseUpChartCallback(chart_id, GetChartByID(chart_id), e);
+    }
+      private void MouseDownChartCallback(int chart_id, Chart chart, MouseEventArgs e)
+    {
+      if (e.Button == MouseButtons.Right)
+      {
+        MouseDownRightButtonProcess(chart, e.Location, chart_id - 1);
+      }
+    }
+
+    private void MouseMoveChartCallback(int chart_id, Chart chart, MouseEventArgs e)
+    {
+      if (e.Button == MouseButtons.Right)
+      {
+        MouseMoveRightButtonProcess(chart, e.Location, chart_id - 1);
+      }
+    }
+    private void MouseUpChartCallback(int chart_id, Chart chart, MouseEventArgs e)
+    {
+      if (e.Button == MouseButtons.Left)
+      {
+        MouseLeftButtonProcess(chart, e.Location);
+      }
+      if (e.Button == MouseButtons.Right)
+      {
+        MouseUpRightButtonProcess(chart, e.Location, chart_id - 1);
+      }
+    }
+
+    private void MouseLeftButtonProcess(Chart chart, Point clickPosition)
+    {
+
+      var results = chart.HitTest(clickPosition.X, clickPosition.Y, false,
+                                   ChartElementType.PlottingArea);
+      foreach (var result in results)
+      {
+        if (result.ChartElementType == ChartElementType.PlottingArea)
+        {
+          chart.Series[1].Points.Clear();
+
+          var xVal = result.ChartArea.AxisX.PixelPositionToValue(clickPosition.X);
+          var yVal = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
+
+          chart.Series[1].Points.AddXY(Math.Round(xVal, 5), Math.Round(yVal, 5));
+          chart.Series[1].Points[0].LegendToolTip = "userpoint";
+          chart.Series[1].Points[0].ToolTip = "userpoint" + "\n X= " + xVal + " Y = " + yVal;
+        }
+      }
+    }
+
+    private void MouseDownRightButtonProcess(Chart chart, Point clickPosition, int chart_id)
+    {
+      id_mouse_aux[chart_id] = -1;
+      Series scol = chart.Series[0];
+      if (scol.Points.Count > 0)
+      {
+        var results = chart.HitTest(clickPosition.X, clickPosition.Y, false, ChartElementType.PlottingArea);
+
+        foreach (var result in results)
+        {
+          if (result.ChartElementType == ChartElementType.PlottingArea)
+          {
+            var xpos = result.ChartArea.AxisX.PixelPositionToValue(clickPosition.X);
+            var ypos = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
+
+            int m_id = -1;
+            double m_dist = Math.Sqrt(
+              Math.Pow(scol.Points[0].XValue - xpos, 2.0)
+              +
+              Math.Pow(scol.Points[0].YValues[0] - ypos, 2.0)
+            );
+
+            int n_reference_points = scol.Points.Count();
+            for (int p = 1; p < n_reference_points; p++)
+            {
+              DataPoint pt = scol.Points[p];
+
+              double dist = Math.Sqrt(
+                Math.Pow(scol.Points[p].XValue - xpos, 2.0)
+                +
+                Math.Pow(scol.Points[p].YValues[0] - ypos, 2.0)
+              );
+
+              if (dist < m_dist && dist < 0.01)
+              {
+                m_dist = dist;
+                m_id = p;
+              }
+            }
+
+            if (m_id >= 0)
+            {
+              chart.Series[0].Points[m_id].XValue = xpos;
+              chart.Series[0].Points[m_id].YValues[0] = ypos;
+
+              id_mouse_aux[chart_id] = m_id;
+            }
+          }
+        }
+      }
+    }
+
+    private void MouseMoveRightButtonProcess(Chart chart, Point clickPosition, int chart_id)
+    {
+      if (id_mouse_aux[chart_id] >= 0)
+      {
+        Series scol = chart.Series[0];
+        if (scol.Points.Count > 0)
+        {
+          var results = chart.HitTest(clickPosition.X, clickPosition.Y, false, ChartElementType.PlottingArea);
+
+          foreach (var result in results)
+          {
+            if (result.ChartElementType == ChartElementType.PlottingArea)
+            {
+              var xpos = result.ChartArea.AxisX.PixelPositionToValue(clickPosition.X);
+              var ypos = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
+
+              chart.Series[0].Points[id_mouse_aux[chart_id]].XValue = xpos;
+              chart.Series[0].Points[id_mouse_aux[chart_id]].YValues[0] = ypos;
+            }
+          }
+        }
+      }
+    }
+
+    private void MouseUpRightButtonProcess(Chart chart, Point clickPosition, int chart_id)
+    {
+      id_mouse_aux[chart_id] = -1;
+    }
+
     private void checkBox1_CheckedChanged(object sender, EventArgs e)
     {
 
@@ -487,42 +650,51 @@ namespace ClassCppToCS_CS
         chart.Series[0].Points.Clear();
         //chart.Series[2].Points.Clear();
 
+        double[] min_max_axis_limits = new Double[4];
+        min_max_axis_limits[0] = Double.MaxValue;
+        min_max_axis_limits[1] = Double.MinValue;
+        min_max_axis_limits[2] = Double.MaxValue;
+        min_max_axis_limits[3] = Double.MinValue;
+
+        double expand_limtis = 1.2;
+
         for (int i = 0; i < counter; i++)
         {
           string name = prop_files[i].Split('\\').Last();
-          chart.Series[0].Points.AddXY(Math.Round(arrayMDS[i, 0], 5), Math.Round(arrayMDS[i, 1], 5));
+
+          double mm_x = Math.Round(arrayMDS[i, 0], 5);
+          double mm_y = Math.Round(arrayMDS[i, 1], 5);
+
+          chart.Series[0].Points.AddXY(mm_x, mm_y);
+
           chart.Series[0].Points[i].LegendToolTip = name;
           chart.Series[0].Points[i].Tag = prop_files[i];
           chart.Series[0].Points[i].ToolTip = name + "\n X= " + arrayMDS[i, 0] + " Y = " + arrayMDS[i, 1];
 
+          min_max_axis_limits[0] = Math.Min(min_max_axis_limits[0], mm_x);
+          min_max_axis_limits[1] = Math.Max(min_max_axis_limits[1], mm_x);
+
+          min_max_axis_limits[2] = Math.Min(min_max_axis_limits[2], mm_y);
+          min_max_axis_limits[3] = Math.Max(min_max_axis_limits[3], mm_y);
         }
+
+        min_max_axis_limits[0] *= expand_limtis;
+        min_max_axis_limits[1] *= expand_limtis;
+
+        min_max_axis_limits[2] *= expand_limtis;
+        min_max_axis_limits[3] *= expand_limtis;
+
+        chart.ChartAreas[0].AxisX.Minimum = min_max_axis_limits[0];
+        chart.ChartAreas[0].AxisX.Maximum = min_max_axis_limits[1];
+
+        chart.ChartAreas[0].AxisY.Minimum = min_max_axis_limits[2];
+        chart.ChartAreas[0].AxisY.Maximum = min_max_axis_limits[3];
       }
 
       label1.Text = "Finished MDS";
       label1.Update();
     }
   
-    private void MouseLeftButtonProcess (Chart chart, Point clickPosition)
-    {
-      
-      var results = chart.HitTest(clickPosition.X, clickPosition.Y, false,
-                                   ChartElementType.PlottingArea);
-      foreach (var result in results)
-      {
-        if (result.ChartElementType == ChartElementType.PlottingArea)
-        {
-          chart.Series[1].Points.Clear();
-
-          var xVal = result.ChartArea.AxisX.PixelPositionToValue(clickPosition.X);
-          var yVal = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
-
-          chart.Series[1].Points.AddXY(Math.Round(xVal, 5), Math.Round(yVal, 5));
-          chart.Series[1].Points[0].LegendToolTip = "userpoint";
-          chart.Series[1].Points[0].ToolTip = "userpoint" + "\n X= " + xVal + " Y = " + yVal;
-        }
-      }
-    }
-
     private void button6_Click(object sender, EventArgs e)
     {
       InverseProjection(chart2, 1);
