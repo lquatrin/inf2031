@@ -22,6 +22,8 @@ namespace ClassCppToCS_CS
     private bool model_loaded = false;
     private string model_name;
     private int[] model_size = new int[3];
+    private int[] id_mouse_aux = new int[5];
+
     private string model_path;
     private double[,] input_property;
 
@@ -232,130 +234,63 @@ namespace ClassCppToCS_CS
 
     }
 
-    private void chart1_MouseClick(object sender, MouseEventArgs e)
+    private void chart1_MouseDown (object sender, MouseEventArgs e)
     {
-      if (e.Button == MouseButtons.Left)
-      {
-        MouseLeftButtonProcess(chart1, e.Location);
-      }
-      /*if (e.Button == MouseButtons.Right)
-      {
-        Chart chart = chart1;
-        Series scol = chart.Series[0];
-        if (scol.Points.Count > 0)
-        {
-          var pos = e.Location;
-          Point clickPosition = pos;
-          var results = chart1.HitTest(pos.X, pos.Y, false, ChartElementType.PlottingArea);
- 
-          foreach (var result in results)
-          {
-            if (result.ChartElementType == ChartElementType.PlottingArea)
-            {
-              var xpos = result.ChartArea.AxisX.PixelPositionToValue(pos.X);
-              var ypos = result.ChartArea.AxisY.PixelPositionToValue(pos.Y);
-
-              int m_id = 0;
-              double m_dist = Math.Sqrt(
-                Math.Pow(scol.Points[0].XValue - xpos, 2.0)
-                +
-                Math.Pow(scol.Points[0].YValues[0] - ypos, 2.0)
-              );
-              
-              int n_reference_points = scol.Points.Count();
-              for (int p = 1; p < n_reference_points; p++)
-              {
-                DataPoint pt = scol.Points[p];
-
-                double dist = Math.Sqrt(
-                  Math.Pow(scol.Points[p].XValue - xpos, 2.0)
-                  +
-                  Math.Pow(scol.Points[p].YValues[0] - ypos, 2.0)
-                );
-                if (dist < m_dist)
-                {
-                  m_dist = dist;
-                  m_id = p;
-                }
-              }
-              
-              chart.Series[2].Points.Add(chart.Series[0].Points[m_id]);
-              chart.Series[0].Points.RemoveAt(m_id);
-            }
-          }
-        }
-      }*/
-      /*if (e.Button == MouseButtons.Middle)
-      {
-        Chart chart = chart1;
-        Series scol = chart.Series[2];
-        if (scol.Points.Count > 0)
-        {
-          var pos = e.Location;
-          Point clickPosition = pos;
-          var results = chart1.HitTest(pos.X, pos.Y, false, ChartElementType.PlottingArea);
-
-          foreach (var result in results)
-          {
-            if (result.ChartElementType == ChartElementType.PlottingArea)
-            {
-              var xpos = result.ChartArea.AxisX.PixelPositionToValue(pos.X);
-              var ypos = result.ChartArea.AxisY.PixelPositionToValue(pos.Y);
-
-              int m_id = 0;
-              double m_dist = Math.Sqrt(
-                Math.Pow(scol.Points[0].XValue - xpos, 2.0)
-                +
-                Math.Pow(scol.Points[0].YValues[0] - ypos, 2.0)
-              );
-
-              int n_reference_points = scol.Points.Count();
-              for (int p = 1; p < n_reference_points; p++)
-              {
-                DataPoint pt = scol.Points[p];
-
-                double dist = Math.Sqrt(
-                  Math.Pow(scol.Points[p].XValue - xpos, 2.0)
-                  +
-                  Math.Pow(scol.Points[p].YValues[0] - ypos, 2.0)
-                );
-                if (dist < m_dist)
-                {
-                  m_dist = dist;
-                  m_id = p;
-                }
-              }
-
-              chart.Series[0].Points.Add(chart.Series[2].Points[m_id]);
-              chart.Series[2].Points.RemoveAt(m_id);
-            }
-          }
-        }
-      }*/
+      MouseDownChartCallback(1, chart1, e);
     }
 
-    private void chart2_MouseClick(object sender, MouseEventArgs e)
+    private void chart1_MouseMove (object sender, MouseEventArgs e)
     {
-      if (e.Button == MouseButtons.Left)
-      {
-        MouseLeftButtonProcess(chart2, e.Location);
-      }
+      MouseMoveChartCallback(1, chart1, e);
     }
 
-    private void chart3_MouseClick(object sender, MouseEventArgs e)
+    private void chart1_MouseUp (object sender, MouseEventArgs e)
     {
-      if (e.Button == MouseButtons.Left)
-      {
-        MouseLeftButtonProcess(chart3, e.Location);
-      }
+      MouseUpChartCallback(1, chart1, e);
     }
 
-    private void chart4_MouseClick(object sender, MouseEventArgs e)
+    private void chart2_MouseDown (object sender, MouseEventArgs e)
     {
-      if (e.Button == MouseButtons.Left)
-      {
-        MouseLeftButtonProcess(chart4, e.Location);
-      }
+      MouseDownChartCallback(2, chart2, e);
+    }
+
+    private void chart2_MouseMove (object sender, MouseEventArgs e)
+    {
+      MouseMoveChartCallback(2, chart2, e);
+    }
+
+    private void chart2_MouseUp (object sender, MouseEventArgs e)
+    {
+      MouseUpChartCallback(2, chart2, e);
+    }
+
+    private void chart3_MouseDown(object sender, MouseEventArgs e)
+    {
+      MouseDownChartCallback(3, chart3, e);
+    }
+
+    private void chart3_MouseMove(object sender, MouseEventArgs e)
+    {
+      MouseMoveChartCallback(3, chart3, e);
+    }
+
+    private void chart3_MouseUp(object sender, MouseEventArgs e)
+    {
+      MouseUpChartCallback(3, chart3, e);
+    }
+    private void chart4_MouseDown(object sender, MouseEventArgs e)
+    {
+      MouseDownChartCallback(4, chart4, e);
+    }
+
+    private void chart4_MouseMove(object sender, MouseEventArgs e)
+    {
+      MouseMoveChartCallback(4, chart4, e);
+    }
+
+    private void chart4_MouseUp(object sender, MouseEventArgs e)
+    {
+      MouseUpChartCallback(4, chart4, e);
     }
 
     private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -502,7 +437,33 @@ namespace ClassCppToCS_CS
       label1.Text = "Finished MDS";
       label1.Update();
     }
-  
+    private void MouseDownChartCallback (int chart_id, Chart chart, MouseEventArgs e)
+    {
+      if (e.Button == MouseButtons.Right)
+      {
+        MouseDownRightButtonProcess(chart, e.Location, chart_id);
+      }
+    }
+
+    private void MouseMoveChartCallback (int chart_id, Chart chart, MouseEventArgs e)
+    {
+      if (e.Button == MouseButtons.Right)
+      {
+        MouseMoveRightButtonProcess(chart, e.Location, chart_id);
+      }
+    }
+    private void MouseUpChartCallback (int chart_id, Chart chart, MouseEventArgs e)
+    {
+      if (e.Button == MouseButtons.Left)
+      {
+        MouseLeftButtonProcess(chart, e.Location);
+      }
+      if (e.Button == MouseButtons.Right)
+      {
+        MouseUpRightButtonProcess(chart, e.Location, chart_id);
+      }
+    }
+
     private void MouseLeftButtonProcess (Chart chart, Point clickPosition)
     {
       
@@ -522,6 +483,87 @@ namespace ClassCppToCS_CS
           chart.Series[1].Points[0].ToolTip = "userpoint" + "\n X= " + xVal + " Y = " + yVal;
         }
       }
+    }
+
+    private void MouseDownRightButtonProcess (Chart chart, Point clickPosition, int chart_id)
+    {
+      id_mouse_aux[chart_id] = -1;
+      Series scol = chart.Series[0];
+      if (scol.Points.Count > 0)
+      {
+        var results = chart.HitTest(clickPosition.X, clickPosition.Y, false, ChartElementType.PlottingArea);
+
+        foreach (var result in results)
+        {
+          if (result.ChartElementType == ChartElementType.PlottingArea)
+          {
+            var xpos = result.ChartArea.AxisX.PixelPositionToValue(clickPosition.X);
+            var ypos = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
+
+            int m_id = -1;
+            double m_dist = Math.Sqrt(
+              Math.Pow(scol.Points[0].XValue - xpos, 2.0)
+              +
+              Math.Pow(scol.Points[0].YValues[0] - ypos, 2.0)
+            );
+
+            int n_reference_points = scol.Points.Count();
+            for (int p = 1; p < n_reference_points; p++)
+            {
+              DataPoint pt = scol.Points[p];
+
+              double dist = Math.Sqrt(
+                Math.Pow(scol.Points[p].XValue - xpos, 2.0)
+                +
+                Math.Pow(scol.Points[p].YValues[0] - ypos, 2.0)
+              );
+
+              if (dist < m_dist && dist < 0.01)
+              {
+                m_dist = dist;
+                m_id = p;
+              }
+            }
+
+            if (m_id >= 0)
+            {
+              chart.Series[0].Points[m_id].XValue = xpos;
+              chart.Series[0].Points[m_id].YValues[0] = ypos;
+
+              id_mouse_aux[chart_id] = m_id;
+            }
+          }
+        }
+      }
+    }
+
+    private void MouseMoveRightButtonProcess (Chart chart, Point clickPosition, int chart_id)
+    {
+      if (id_mouse_aux[chart_id] >= 0)
+      {
+        Series scol = chart.Series[0];
+        if (scol.Points.Count > 0)
+        {
+          var results = chart.HitTest(clickPosition.X, clickPosition.Y, false, ChartElementType.PlottingArea);
+
+          foreach (var result in results)
+          {
+            if (result.ChartElementType == ChartElementType.PlottingArea)
+            {
+              var xpos = result.ChartArea.AxisX.PixelPositionToValue(clickPosition.X);
+              var ypos = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
+              
+              chart.Series[0].Points[id_mouse_aux[chart_id]].XValue     = xpos;
+              chart.Series[0].Points[id_mouse_aux[chart_id]].YValues[0] = ypos;
+            }
+          }
+        }
+      }
+    }
+
+    private void MouseUpRightButtonProcess (Chart chart, Point clickPosition, int chart_id)
+    {
+      id_mouse_aux[chart_id] = -1;
     }
 
     private void button6_Click(object sender, EventArgs e)

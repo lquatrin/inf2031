@@ -88,7 +88,9 @@
       this.chart1.Size = new System.Drawing.Size(620, 356);
       this.chart1.TabIndex = 0;
       this.chart1.Text = "chart1";
-      this.chart1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseClick);
+      this.chart1.MouseUp   += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseUp);
+      this.chart1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseDown);
+      this.chart1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseMove);
       // 
       // MDS
       // 
@@ -176,7 +178,9 @@
       this.chart2.TabIndex = 16;
       this.chart2.Text = "chart2";
       this.chart2.Click += new System.EventHandler(this.chart2_Click);
-      this.chart2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.chart2_MouseClick);
+      this.chart2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart2_MouseUp);
+      this.chart2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart2_MouseDown);
+      this.chart2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart2_MouseMove);
       // 
       // chart3
       // 
@@ -197,7 +201,9 @@
       this.chart3.TabIndex = 18;
       this.chart3.Text = "chart3";
       this.chart3.Click += new System.EventHandler(this.chart3_Click);
-      this.chart3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.chart3_MouseClick);
+      this.chart3.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart3_MouseUp);
+      this.chart3.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart3_MouseDown);
+      this.chart3.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart3_MouseMove);
       // 
       // chart4
       // 
@@ -218,7 +224,9 @@
       this.chart4.TabIndex = 17;
       this.chart4.Text = "chart4";
       this.chart4.Click += new System.EventHandler(this.chart4_Click);
-      this.chart4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.chart4_MouseClick);
+      this.chart4.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart4_MouseUp);
+      this.chart4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart4_MouseDown);
+      this.chart4.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart4_MouseMove);
       // 
       // MDS_CHART2
       // 
