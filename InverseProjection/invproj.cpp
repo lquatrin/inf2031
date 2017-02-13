@@ -920,6 +920,9 @@ void InverseProjection::CalcInverseProjectionShepard(int n_ref_points
     for (int i = 0; i < lambdas.size(); i++) lambdas[i] = lambdas[i] / sum;
   }
   else result = map;
+  arrayResps.push_back(result);
+  ws = layer_j_size;
+  hs = layer_i_size;
   std::size_t found = prop_paths[0].find_last_of("/\\");
   GenerateImage(layer_j_size, layer_i_size, 15, result, prop_paths[0].substr(found + 1) +"propinverse.png", limits_pro_val);
 
@@ -984,6 +987,9 @@ void InverseProjection::CalcByLambdas(
 
   }
   result = map;
+  arrayResps.push_back(result);
+  ws = layer_j_size;
+  hs = layer_i_size;
   std::size_t found = prop_paths[0].find_last_of("/\\");
   GenerateImage(layer_j_size, layer_i_size, 15, result, prop_paths[0].substr(found + 1) + "inverse.png", limits_pro_val);
 

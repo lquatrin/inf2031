@@ -33,7 +33,6 @@ namespace ClassCppToCS_CS
 
       wrapper_inverse_projection = new CppWrapper.CppInverseProjectionWrapper();
       wrapper_inverse_projection.SetInputColorScapeType(0);
-
       Chart chart = new Chart();
       chart = chart1;
       chart.Series.Clear();
@@ -610,7 +609,7 @@ namespace ClassCppToCS_CS
       CalcByLambdas(chart2, 1);
       CalcByLambdas(chart3, 2);
       CalcByLambdas(chart4, 3);
-      //wrapper_inverse_projection.CalcNewPropGridByInverse();
+      wrapper_inverse_projection.CalcNewPropGridByInverse();
     
     }
 
