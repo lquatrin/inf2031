@@ -795,7 +795,7 @@ void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat ma
       {
         for (int sj = 0; sj < s; sj++)
         {
-          int local_l = l * s + sj;
+          int local_l = (j_size - (l + 1)) * s + sj;
           int local_c = c * s + si;
           glm::vec4 colr;
           if (val < 0) colr = glm::vec4(0, 0, 0,0);
