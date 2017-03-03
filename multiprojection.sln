@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LAMP", "LAMP\lampcpp.vcxproj", "{274B8935-6939-44B5-BD21-4BC9198AFF3C}"
 EndProject
@@ -44,6 +44,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiProjectionViewer4Prop"
 		{DD69C493-4A6E-48BE-9D04-57D830A642C1} = {DD69C493-4A6E-48BE-9D04-57D830A642C1}
 		{706121D8-8FC5-4304-BCE4-FDA9876E3963} = {706121D8-8FC5-4304-BCE4-FDA9876E3963}
 		{E08D40E8-1784-4FDC-B4BB-F6DE2D2C733F} = {E08D40E8-1784-4FDC-B4BB-F6DE2D2C733F}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiProjectionViewerMultiProp", "MultiProjectionViewerMultiProp\MultiProjectionViewerMultiProp.csproj", "{DC53D44A-B16C-4293-9C72-03FA30783EC0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{13164D1F-B805-42AD-83FC-025DB10C34A6} = {13164D1F-B805-42AD-83FC-025DB10C34A6}
+		{8F4DFF41-C4D2-40EC-9692-C080521C9E25} = {8F4DFF41-C4D2-40EC-9692-C080521C9E25}
+		{706121D8-8FC5-4304-BCE4-FDA9876E3963} = {706121D8-8FC5-4304-BCE4-FDA9876E3963}
 	EndProjectSection
 EndProject
 Global
@@ -156,6 +163,16 @@ Global
 		{5FAA4639-0B6C-4D2A-8E94-34E334FA4A80}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{5FAA4639-0B6C-4D2A-8E94-34E334FA4A80}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{5FAA4639-0B6C-4D2A-8E94-34E334FA4A80}.Release|Win32.ActiveCfg = Release|Any CPU
+		{DC53D44A-B16C-4293-9C72-03FA30783EC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC53D44A-B16C-4293-9C72-03FA30783EC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC53D44A-B16C-4293-9C72-03FA30783EC0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DC53D44A-B16C-4293-9C72-03FA30783EC0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DC53D44A-B16C-4293-9C72-03FA30783EC0}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{DC53D44A-B16C-4293-9C72-03FA30783EC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC53D44A-B16C-4293-9C72-03FA30783EC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC53D44A-B16C-4293-9C72-03FA30783EC0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DC53D44A-B16C-4293-9C72-03FA30783EC0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DC53D44A-B16C-4293-9C72-03FA30783EC0}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
