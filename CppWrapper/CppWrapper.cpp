@@ -436,6 +436,30 @@ CppWrapper::CppDistanceProp::~CppDistanceProp ()
   delete DProp;
 }
 
+void CppWrapper::CppDistanceProp::SetEnvironmentType (int env_type)
+{ 
+  DProp->SetEnvironmentType(env_type);
+}
+
+void CppWrapper::CppDistanceProp::SetNumberOfPropertiesAndCases (int props, int cases)
+{
+  DProp->SetNumberOfPropertiesAndCases(props, cases);
+}
+
+void CppWrapper::CppDistanceProp::SetMultiProjectionInputFilePaths (int prop, array<System::String^>^ props)
+{
+  std::vector<std::string> p_path;
+  for (int i = 0; i < props->Length; i++)
+  {
+    {
+      msclr::interop::marshal_context context;
+      std::string standardString = context.marshal_as<std::string>(props[i]);
+      p_path.push_back(standardString);
+    }
+  }
+  DProp->AddMultiPropPaths(p_path);
+}
+
 void CppWrapper::CppDistanceProp::SetMapSize (int i_size, int j_size)
 {
   DProp->SetMapSize(i_size, j_size);

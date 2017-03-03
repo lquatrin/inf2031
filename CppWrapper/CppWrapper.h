@@ -129,6 +129,10 @@ namespace CppWrapper {
     CppDistanceProp ();
     ~CppDistanceProp ();
 
+    void SetEnvironmentType (int env_type);
+    void SetNumberOfPropertiesAndCases (int props, int cases);
+    void SetMultiProjectionInputFilePaths (int prop, array<System::String^>^ props);
+
     void SetMapSize (int i_size, int j_size);
 
     array<double, 1>^ SetInputFilePaths(

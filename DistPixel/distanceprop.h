@@ -19,13 +19,33 @@ public:
 
   void GetDistance (std::vector<std::vector<double>> &distMat);
   
+  void SetEnvironmentType (int env_type);
+  void SetNumberOfPropertiesAndCases (int props, int cases);
+  void AddMultiPropPaths (std::vector<std::string> props);
+
   void Clear ();
 private:
+  void GetMultiPropertyDistance (std::vector<std::vector<double>> &distMat);
   std::vector<std::string> prop_paths;
   std::vector<std::string> fltr_paths;
   std::vector<int> lyrs_array;
 
   std::vector<cv::Mat> prop_maps;
+
+  // 0 -> Single Property
+  // 1 -> Multi Properties
+  int environment_type;
+
+  class MinMaxDistanceMP
+  {
+  public:
+    double min;
+    double max;
+  };
+  std::vector<MinMaxDistanceMP> mp_min_max_values;
+
+  int env_props;
+  int env_cases;
 
   unsigned int i_size, j_size;
 };
