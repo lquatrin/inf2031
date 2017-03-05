@@ -26,14 +26,15 @@ CppWrapper::CppLAMPWrapper::CppLAMPWrapper(int *pInt, int arraySize)
 	pCC = new LAMPClass(pInt, arraySize);
 }
 
-CppWrapper::CppLAMPWrapper::CppLAMPWrapper (array<double, 2>^ tvalues, int arraySize)
+CppWrapper::CppLAMPWrapper::CppLAMPWrapper(array<double, 2>^ tvalues, array<double, 2>^ controlPoints, array<int>^controlsidx,int controlsize, int arraySize)
 {
   dists = tvalues;
   double **m = (double**)malloc(arraySize * sizeof(double*));
+  double **cpoints = (double**)malloc(controlsize * sizeof(double*));
 
   for (int i = 0; i < arraySize; i++){
-    m[i] = (double*)malloc(arraySize * sizeof(double));
-    for (int j = 0; j < arraySize; j++){
+    m[i] = (double*)malloc(2 * sizeof(double));
+    for (int j = 0; j < 2; j++){
       m[i][j] = tvalues[i, j];
     }
   }
