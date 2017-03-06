@@ -28,10 +28,44 @@ LAMPClass::LAMPClass(double** pInt, int arrSize)
 
 }
 
-std::vector<std::vector<double>> LAMPClass::calcLAMP (void)
-{
+std::vector<std::vector<double>> LAMPClass::calcLAMP(double** X, int* cp_index, double** Ys, int numPoints, int numCPoints)
+{  
+  cv::Mat mpoints = cv::Mat(numPoints, 2, CV_32FC1, **X);
+  cv::Mat mcpoints = cv::Mat(numCPoints, 2, CV_32FC1, **Ys);
+
+  std::vector<int> index;
+  printf("matriz de distancias iniciais\n");
+
+  for (int k = 0; k < mpoints.rows; ++k)
+  {
+	  for (int c = 0; c < mpoints.cols; ++c)
+	  {
+		  mpoints.at<double>(k, c) = X[k][c];
+	  }
+  }
+
+  for (int k = 0; k < mcpoints.rows; ++k)
+  {
+	  index.push_back(cp_index[k]);
+	  for (int c = 0; c < mcpoints.cols; ++c)
+	  {
+		  mcpoints.at<double>(k, c) = Ys[k][c];
+	  }
+  }
+
+  m_lampRes = lamp(mpoints,index, mcpoints);
+
   std::vector<std::vector<double>> vect;
-  printf("TODO: calcLAMP\n");
+  for (int k = 0; k < m_lampRes.rows; ++k)
+  {
+	  std::vector<double> aux;
+	  for (int c = 0; c < m_lampRes.cols; ++c)
+	  {
+		  aux.push_back(m_lampRes.at<float>(k, c));
+
+	  }
+	  vect.push_back(aux);
+  }
   return vect;
 }
 

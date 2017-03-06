@@ -33,9 +33,7 @@ namespace CppWrapper {
   public:
     CppLAMPWrapper();
     CppLAMPWrapper(int* pInt, int arraySize);
-	CppLAMPWrapper(array<double, 2>^ tvalues, array<double, 2>^ controlPoints,array<int>^controlsidx,int controlsize, int arraySize);
-
-    array<double, 2>^ GetLAMP();
+	array<double, 2>^ GetLAMP(array<double, 2>^ tvalues, array<double, 2>^ controlPoints, array<int>^controlsidx, int controlsize, int arraySize);
 
     double GetSum();
     double sum;

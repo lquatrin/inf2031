@@ -26,11 +26,12 @@ CppWrapper::CppLAMPWrapper::CppLAMPWrapper(int *pInt, int arraySize)
 	pCC = new LAMPClass(pInt, arraySize);
 }
 
-CppWrapper::CppLAMPWrapper::CppLAMPWrapper(array<double, 2>^ tvalues, array<double, 2>^ controlPoints, array<int>^controlsidx,int controlsize, int arraySize)
+array<double, 2>^ CppWrapper::CppLAMPWrapper::GetLAMP(array<double, 2>^ tvalues, array<double, 2>^ controlPoints, array<int>^controlsidx, int controlsize, int arraySize)
 {
   dists = tvalues;
   double **m = (double**)malloc(arraySize * sizeof(double*));
   double **cpoints = (double**)malloc(controlsize * sizeof(double*));
+  int *cindex = (int*)malloc(controlsize * sizeof(int));
 
   for (int i = 0; i < arraySize; i++){
     m[i] = (double*)malloc(2 * sizeof(double));
@@ -39,19 +40,27 @@ CppWrapper::CppLAMPWrapper::CppLAMPWrapper(array<double, 2>^ tvalues, array<doub
     }
   }
 
-  pCC = new LAMPClass(m, arraySize);
-  std::vector<std::vector<double>> vec = pCC->calcLAMP();
+  for (int i = 0; i < controlsize; i++){
+	  cpoints[i] = (double*)malloc(2 * sizeof(double));
+	  cindex[i] = controlsidx[i];
+	  for (int j = 0; j < 2; j++){
+		  cpoints[i][j] = controlPoints[i, j];
+	  }
+  }
+
+  pCC = new LAMPClass();
+  std::vector<std::vector<double>> vec = pCC->calcLAMP(m,cindex,cpoints,arraySize,controlsize);
+  
   for (int i = 0; i < vec.size(); i++){
     for (int j = 0; j < vec[i].size(); j++){
       dists[i, j] = vec[i][j];
     }
   }
-}
 
-array<double, 2>^ CppWrapper::CppLAMPWrapper::GetLAMP ()
-{
   return dists;
 }
+
+
 
 double CppWrapper::CppLAMPWrapper::GetSum()
 {

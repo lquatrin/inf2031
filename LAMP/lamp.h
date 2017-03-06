@@ -16,7 +16,7 @@ public:
 
   cv::Mat lamp(const cv::Mat& X, const std::vector<int> cp_index, const cv::Mat& Ys);
 
-  std::vector<std::vector<double>> calcLAMP(void);
+  std::vector<std::vector<double>> calcLAMP(double** X, int* cp_index, double** Ys,int numPoints,int numCPoints);
 
   void lampTest();
   void PrintCVMAT(cv::Mat m);
@@ -24,4 +24,5 @@ public:
 
 private:
   std::vector<int> vec;
+  cv::Mat m_lampRes;
 };

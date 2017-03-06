@@ -27,14 +27,20 @@ namespace ClassCppToCS_CS
         private double[,] input_property;
         private List<List<List<double>>> controls;
         private List<List<int>> controls_idx;
-
+        private bool add;
         public Form1()
         {
             InitializeComponent();
+            add = false;
             controls = new List<List<List<double>>>();
+            controls_idx = new List<List<int>>();
             for (int i = 0; i < 4; i++)
             {
-                controls.Add(new List<List<double>>());
+                List<List<double>> aux = new List<List<double>>();
+                List<double> t = new List<double>();
+                aux.Add(t);
+                controls.Add(aux);
+                controls_idx.Add(new List<int>());
             }
 
             current_colorspace_input = 0;
@@ -507,6 +513,11 @@ namespace ClassCppToCS_CS
                             chart.Series[0].Points[m_id].XValue = xpos;
                             chart.Series[0].Points[m_id].YValues[0] = ypos;
                             id_mouse_aux[chart_id] = m_id;
+                            if (!controls_idx[chart_id].Contains(m_id))
+                            {
+                                controls_idx[chart_id].Add(m_id);
+                                add = true;
+                            }
                         }
                     }
                 }
@@ -528,7 +539,6 @@ namespace ClassCppToCS_CS
                         {
                             var xpos = result.ChartArea.AxisX.PixelPositionToValue(clickPosition.X);
                             var ypos = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
-
                             chart.Series[0].Points[id_mouse_aux[chart_id]].XValue = xpos;
                             chart.Series[0].Points[id_mouse_aux[chart_id]].YValues[0] = ypos;
                             chart.Series[0].Points[id_mouse_aux[chart_id]].Color = Color.Red;
@@ -541,10 +551,34 @@ namespace ClassCppToCS_CS
 
         private void MouseUpRightButtonProcess(Chart chart, Point clickPosition, int chart_id)
         {
-            List<double> t = new List<double>();
-            t.Add(clickPosition.X);
-            t.Add(clickPosition.Y);
-            controls[chart_id].Add(t);
+            if (id_mouse_aux[chart_id] >= 0)
+            {
+                Series scol = chart.Series[0];
+                if (scol.Points.Count > 0)
+                {
+                    var results = chart.HitTest(clickPosition.X, clickPosition.Y, false, ChartElementType.PlottingArea);
+
+                    foreach (var result in results)
+                    {
+                        if (result.ChartElementType == ChartElementType.PlottingArea)
+                        {
+                            List<double> t = new List<double>();
+                            t.Add(result.ChartArea.AxisX.PixelPositionToValue(clickPosition.X));
+                            t.Add(result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y));
+                            if (add)
+                            {
+                                controls[chart_id].Add(t);
+                                add = false;
+                            }
+                            else
+                            {
+                                controls[chart_id].RemoveAt(controls[chart_id].Count - 1);
+                                controls[chart_id].Add(t);
+                            }
+                        }
+                    }
+                }
+            }
             id_mouse_aux[chart_id] = -1;
         }
 
@@ -814,6 +848,126 @@ namespace ClassCppToCS_CS
             CalcByLambdas(chart3, 2);
             CalcByLambdas(chart4, 3);
             wrapper_inverse_projection.CalcNewPropGridByInverse();
+
+        }
+
+        private void generateLamp(Chart chart, int index_chart)
+        {
+            label1.Text = "Start Inverse Projection";
+            label1.Update();
+
+            int n_reference_points = chart.Series[0].Points.Count();
+
+            double[,] arraypoints = new double[n_reference_points, 2];
+
+            List<string> paths = new List<string>();
+            int counter = 0;
+            for (int p = 0; p < n_reference_points; p++)
+            {
+                DataPoint pt = chart.Series[0].Points[p];
+                paths.Add(pt.Tag.ToString());
+                counter++;
+
+                arraypoints[p, 0] = pt.XValue;
+                arraypoints[p, 1] = pt.YValues[0];
+            }
+
+            int[] indexPoints = new int[controls_idx[index_chart].Count];
+            int k = 0;
+
+            foreach (int val in controls_idx[index_chart])
+            {
+                indexPoints[k] = val;
+                k++;
+            }
+            List<List<double>> tcontrol = controls[index_chart];
+            double[,] controlPoints = new double[controls[index_chart].Count, 2];
+            k = 0;
+            foreach (var a in tcontrol)
+            {
+                controlPoints[k, 0] = a[0];
+                controlPoints[k, 1] = a[1];
+                k++;
+            }
+            CppWrapper.CppLAMPWrapper lamp = new CppWrapper.CppLAMPWrapper();
+            double[,] proj = lamp.GetLAMP(arraypoints, controlPoints, indexPoints, controls_idx[index_chart].Count, n_reference_points);
+
+
+            List<string> prop_files = new List<string>();
+            List<string> filter_files = new List<string>();
+            List<int> k_values = new List<int>();
+
+            prop_files.Clear();
+            filter_files.Clear();
+
+            int count = 0;
+            foreach (String file in openFileDialog1.FileNames)
+            {
+                string idk = file.Split('\\').Last().Split('_').Last().Split('.').First();
+                string prop = file.Split('\\').Last().Split('_').First();
+                int splitted_paths = file.Split('\\').Last().Length;
+
+                string path = file.Substring(0, file.Length - splitted_paths);
+                path = path + prop.ToString() + '\\' + "k_" + idk.ToString() + ".filter";
+
+                prop_files.Add(file);
+
+                filter_files.Add(path);
+                k_values.Add(Int32.Parse(idk));
+
+                count++;
+            }
+
+            chart.Series[0].Points.Clear();
+            //chart.Series[2].Points.Clear();
+
+            double[] min_max_axis_limits = new Double[4];
+            min_max_axis_limits[0] = Double.MaxValue;
+            min_max_axis_limits[1] = Double.MinValue;
+            min_max_axis_limits[2] = Double.MaxValue;
+            min_max_axis_limits[3] = Double.MinValue;
+
+            double expand_limtis = 1.2;
+
+            for (int i = 0; i < counter; i++)
+            {
+                string name = prop_files[i].Split('\\').Last();
+
+                double mm_x = Math.Round(proj[i, 0], 5);
+                double mm_y = Math.Round(proj[i, 1], 5);
+
+                chart.Series[0].Points.AddXY(mm_x, mm_y);
+
+                chart.Series[0].Points[i].LegendToolTip = name;
+                chart.Series[0].Points[i].Tag = prop_files[i];
+                chart.Series[0].Points[i].ToolTip = name + "\n X= " + proj[i, 0] + " Y = " + proj[i, 1];
+
+                min_max_axis_limits[0] = Math.Min(min_max_axis_limits[0], mm_x);
+                min_max_axis_limits[1] = Math.Max(min_max_axis_limits[1], mm_x);
+
+                min_max_axis_limits[2] = Math.Min(min_max_axis_limits[2], mm_y);
+                min_max_axis_limits[3] = Math.Max(min_max_axis_limits[3], mm_y);
+            }
+
+            min_max_axis_limits[0] *= expand_limtis;
+            min_max_axis_limits[1] *= expand_limtis;
+
+            min_max_axis_limits[2] *= expand_limtis;
+            min_max_axis_limits[3] *= expand_limtis;
+
+            chart.ChartAreas[0].AxisX.Minimum = min_max_axis_limits[0];
+            chart.ChartAreas[0].AxisX.Maximum = min_max_axis_limits[1];
+
+            chart.ChartAreas[0].AxisY.Minimum = min_max_axis_limits[2];
+            chart.ChartAreas[0].AxisY.Maximum = min_max_axis_limits[3];
+
+        }
+        private void button9_Click(object sender, EventArgs e)
+        {
+            generateLamp(chart1, 0);
+            //generateLamp(chart2, 1);
+            //generateLamp(chart3, 2);
+            //generateLamp(chart4, 3);
 
         }
 

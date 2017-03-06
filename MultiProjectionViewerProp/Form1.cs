@@ -173,8 +173,8 @@ namespace ClassCppToCS_CS
         array_other_files.Add(pt.Tag as string);
       }
 
-      CppWrapper.CppLAMPWrapper mlamp = new CppWrapper.CppLAMPWrapper();
-      double[,] arrayLAMP = mlamp.GetLAMP();
+      //CppWrapper.CppLAMPWrapper mlamp = new CppWrapper.CppLAMPWrapper();
+      //double[,] arrayLAMP = mlamp.GetLAMP();
 
       chart.Series[0].Points.Clear();
       chart.Series[2].Points.Clear();
