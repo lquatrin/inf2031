@@ -405,7 +405,7 @@ namespace ClassCppToCS_CS
             double m_dist = 1.0;
 
             int n_reference_points = scol.Points.Count();
-            for (int p = 1; p < n_reference_points; p++)
+            for (int p = 0; p < n_reference_points; p++)
             {
               DataPoint pt = scol.Points[p];
 
@@ -424,8 +424,10 @@ namespace ClassCppToCS_CS
 
             if (m_id >= 0)
             {
-              chart.Series[0].Points[m_id].XValue = xpos;
-              chart.Series[0].Points[m_id].YValues[0] = ypos;
+              if (chart.Series[0].Points[m_id].Color == Color.Blue)
+                chart.Series[0].Points[m_id].Color = Color.Red;
+              else if (chart.Series[0].Points[m_id].Color == Color.Red)
+                chart.Series[0].Points[m_id].Color = Color.Blue;
 
               id_mouse_aux[chart_id] = m_id;
             }
@@ -447,11 +449,11 @@ namespace ClassCppToCS_CS
           {
             if (result.ChartElementType == ChartElementType.PlottingArea)
             {
-              var xpos = result.ChartArea.AxisX.PixelPositionToValue(clickPosition.X);
-              var ypos = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
-
-              chart.Series[0].Points[id_mouse_aux[chart_id]].XValue = xpos;
-              chart.Series[0].Points[id_mouse_aux[chart_id]].YValues[0] = ypos;
+              //var xpos = result.ChartArea.AxisX.PixelPositionToValue(clickPosition.X);
+              //var ypos = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
+              //
+              //chart.Series[0].Points[id_mouse_aux[chart_id]].XValue = xpos;
+              //chart.Series[0].Points[id_mouse_aux[chart_id]].YValues[0] = ypos;
             }
           }
         }
@@ -774,13 +776,13 @@ namespace ClassCppToCS_CS
           {
             prop_files.Add(filename_path + multi_prop_path + "\\" + prop + "\\" + prop + "_" + (cases_files + 1) + ".prop");
           }
+          
+          // Return Property
+          //double[] ret_property = distance_prop_eval.SetInputFilePaths(prop_files.ToArray(), filter_files.ToArray(), k_values.ToArray());
           distance_prop_eval.SetMultiProjectionInputFilePaths(i, prop_files.ToArray());
         }
 
         double[,] array = distance_prop_eval.GetDistances();
-
-      // Return Property
-      //  double[] ret_property = distance_prop_eval.SetInputFilePaths(prop_files.ToArray(), filter_files.ToArray(), k_values.ToArray());
 
       //  input_property[chart_index, 0] = ret_property[0];
       //  input_property[chart_index, 1] = ret_property[1];
@@ -810,7 +812,8 @@ namespace ClassCppToCS_CS
           chart.Series[0].Points[i].LegendToolTip = name;
           chart.Series[0].Points[i].Tag = prop_files[i];
           chart.Series[0].Points[i].ToolTip = "Case " + (i+1) + "\n X= " + arrayMDS[i, 0] + " Y = " + arrayMDS[i, 1];
-      
+          chart.Series[0].Points[i].Color = Color.Blue;
+
           min_max_axis_limits[0] = Math.Min(min_max_axis_limits[0], mm_x);
           min_max_axis_limits[1] = Math.Max(min_max_axis_limits[1], mm_x);
       
