@@ -485,14 +485,10 @@ namespace ClassCppToCS_CS
                         var ypos = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
 
                         int m_id = -1;
-                        double m_dist = Math.Sqrt(
-                          Math.Pow(scol.Points[0].XValue - xpos, 2.0)
-                          +
-                          Math.Pow(scol.Points[0].YValues[0] - ypos, 2.0)
-                        );
+                        double m_dist = 1.0;
 
                         int n_reference_points = scol.Points.Count();
-                        for (int p = 1; p < n_reference_points; p++)
+                        for (int p = 0; p < n_reference_points; p++)
                         {
                             DataPoint pt = scol.Points[p];
 
@@ -548,8 +544,8 @@ namespace ClassCppToCS_CS
                         {
                             var xpos = result.ChartArea.AxisX.PixelPositionToValue(clickPosition.X);
                             var ypos = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
-                            chart.Series[0].Points[id_mouse_aux[chart_id]].XValue = xpos;
-                            chart.Series[0].Points[id_mouse_aux[chart_id]].YValues[0] = ypos;
+                            //chart.Series[0].Points[id_mouse_aux[chart_id]].XValue = xpos;
+                            //chart.Series[0].Points[id_mouse_aux[chart_id]].YValues[0] = ypos;
                         }
                     }
                 }
