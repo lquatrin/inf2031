@@ -392,11 +392,7 @@ namespace ClassCppToCS_CS
             var ypos = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
 
             int m_id = -1;
-            double m_dist = Math.Sqrt(
-              Math.Pow(scol.Points[0].XValue - xpos, 2.0)
-              +
-              Math.Pow(scol.Points[0].YValues[0] - ypos, 2.0)
-            );
+            double m_dist = 1.0;
 
             int n_reference_points = scol.Points.Count();
             for (int p = 1; p < n_reference_points; p++)
