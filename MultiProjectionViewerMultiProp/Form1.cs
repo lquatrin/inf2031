@@ -81,10 +81,20 @@ namespace ClassCppToCS_CS
       return openFileDialog1.ShowDialog();
     }
 
+    private DialogResult OpenCFGMultiPropDialog()
+    {
+      openFileDialog1.Filter =
+      "Input FIles (*.cfgmultiprop)|*.cfgmultiprop|" +
+      "All files (*.*)|*.*";
+
+      // Allow the user to select multiple images.
+      openFileDialog1.Multiselect = false;
+      openFileDialog1.Title = "File input selection";
+      return openFileDialog1.ShowDialog();
+    }
+
     private void button1_Click(object sender, EventArgs e)
     {
-
-      Console.Out.Write("niga");
       /*label1.Text = "Start LAMP";
       label1.Update();
 
@@ -565,60 +575,63 @@ namespace ClassCppToCS_CS
           {
             prop_files.Add(filename_path + multi_prop_path + "\\" + prop + "\\" + prop + "_" + (cases_files + 1) + ".prop");
           }
+          
+          // TODO: Return Property
           distance_prop_eval.SetMultiProjectionInputFilePaths(i, prop_files.ToArray());
         }
       
         double[,] array = distance_prop_eval.GetDistances();
-      
+
+      // Return Property
+      //  double[] ret_property = distance_prop_eval.SetInputFilePaths(prop_files.ToArray(), filter_files.ToArray(), k_values.ToArray());
+
       //  input_property[chart_index, 0] = ret_property[0];
       //  input_property[chart_index, 1] = ret_property[1];
-      //
-      //
-      //  CppWrapper.CppMDSWrapper eval_MDS = new CppWrapper.CppMDSWrapper(array, counter);
-      //  double[,] arrayMDS = eval_MDS.GetMDS();
-      //
-      //  chart.Series[0].Points.Clear();
-      //  //chart.Series[2].Points.Clear();
-      //
-      //  double[] min_max_axis_limits = new Double[4];
-      //  min_max_axis_limits[0] = Double.MaxValue;
-      //  min_max_axis_limits[1] = Double.MinValue;
-      //  min_max_axis_limits[2] = Double.MaxValue;
-      //  min_max_axis_limits[3] = Double.MinValue;
-      //
-      //  double expand_limtis = 1.2;
-      //
-      //  for (int i = 0; i < counter; i++)
-      //  {
-      //    string name = prop_files[i].Split('\\').Last();
-      //
-      //    double mm_x = Math.Round(arrayMDS[i, 0], 5);
-      //    double mm_y = Math.Round(arrayMDS[i, 1], 5);
-      //
-      //    chart.Series[0].Points.AddXY(mm_x, mm_y);
-      //
-      //    chart.Series[0].Points[i].LegendToolTip = name;
-      //    chart.Series[0].Points[i].Tag = prop_files[i];
-      //    chart.Series[0].Points[i].ToolTip = name + "\n X= " + arrayMDS[i, 0] + " Y = " + arrayMDS[i, 1];
-      //
-      //    min_max_axis_limits[0] = Math.Min(min_max_axis_limits[0], mm_x);
-      //    min_max_axis_limits[1] = Math.Max(min_max_axis_limits[1], mm_x);
-      //
-      //    min_max_axis_limits[2] = Math.Min(min_max_axis_limits[2], mm_y);
-      //    min_max_axis_limits[3] = Math.Max(min_max_axis_limits[3], mm_y);
-      //  }
-      //
-      //  min_max_axis_limits[0] *= expand_limtis;
-      //  min_max_axis_limits[1] *= expand_limtis;
-      //
-      //  min_max_axis_limits[2] *= expand_limtis;
-      //  min_max_axis_limits[3] *= expand_limtis;
-      //
-      //  chart.ChartAreas[0].AxisX.Minimum = min_max_axis_limits[0];
-      //  chart.ChartAreas[0].AxisX.Maximum = min_max_axis_limits[1];
-      //
-      //  chart.ChartAreas[0].AxisY.Minimum = min_max_axis_limits[2];
-      //  chart.ChartAreas[0].AxisY.Maximum = min_max_axis_limits[3];
+
+        CppWrapper.CppMDSWrapper eval_MDS = new CppWrapper.CppMDSWrapper(array, number_of_cases);
+        double[,] arrayMDS = eval_MDS.GetMDS();
+      
+        chart.Series[0].Points.Clear();
+      
+        double[] min_max_axis_limits = new Double[4];
+        min_max_axis_limits[0] = Double.MaxValue;
+        min_max_axis_limits[1] = Double.MinValue;
+        min_max_axis_limits[2] = Double.MaxValue;
+        min_max_axis_limits[3] = Double.MinValue;
+      
+        double expand_limtis = 1.2;
+
+        for (int i = 0; i < number_of_cases; i++)
+        {
+          string name = prop_files[i].Split('\\').Last();
+      
+          double mm_x = Math.Round(arrayMDS[i, 0], 5);
+          double mm_y = Math.Round(arrayMDS[i, 1], 5);
+      
+          chart.Series[0].Points.AddXY(mm_x, mm_y);
+      
+          chart.Series[0].Points[i].LegendToolTip = name;
+          chart.Series[0].Points[i].Tag = prop_files[i];
+          chart.Series[0].Points[i].ToolTip = "Case " + i + "\n X= " + arrayMDS[i, 0] + " Y = " + arrayMDS[i, 1];
+      
+          min_max_axis_limits[0] = Math.Min(min_max_axis_limits[0], mm_x);
+          min_max_axis_limits[1] = Math.Max(min_max_axis_limits[1], mm_x);
+      
+          min_max_axis_limits[2] = Math.Min(min_max_axis_limits[2], mm_y);
+          min_max_axis_limits[3] = Math.Max(min_max_axis_limits[3], mm_y);
+        }
+      
+        min_max_axis_limits[0] *= expand_limtis;
+        min_max_axis_limits[1] *= expand_limtis;
+      
+        min_max_axis_limits[2] *= expand_limtis;
+        min_max_axis_limits[3] *= expand_limtis;
+      
+        chart.ChartAreas[0].AxisX.Minimum = min_max_axis_limits[0];
+        chart.ChartAreas[0].AxisX.Maximum = min_max_axis_limits[1];
+      
+        chart.ChartAreas[0].AxisY.Minimum = min_max_axis_limits[2];
+        chart.ChartAreas[0].AxisY.Maximum = min_max_axis_limits[3];
       }
 
       label1.Text = "Finished MDS";
@@ -694,6 +707,132 @@ namespace ClassCppToCS_CS
       InverseProjection(chart1, 0);
       wrapper_inverse_projection.CalcNewPropGridByInverse();
     
+    }
+
+    private void CallMDSWithMultiPropAndCFG(object sender, EventArgs e)
+    {
+      int chart_index = 0;
+      Chart chart = chart1;
+
+      label1.Text = "Start CFG MultiProp MDS";
+      label1.Update();
+      
+      DialogResult result = OpenCFGMultiPropDialog();
+      if (result == DialogResult.OK)
+      {
+        String file_path_name = openFileDialog1.FileName;
+
+        // Get filename path
+        int splitted_paths = file_path_name.Split('\\').Last().Length;
+        string filename_path = file_path_name.Substring(0, file_path_name.Length - splitted_paths);
+
+        // Get lines
+        var lines = File.ReadAllLines(openFileDialog1.FileName);
+
+        model_loaded = true;
+        model_path = file_path_name;
+        
+        // Get "Model Name" and "Model Sizes"
+        System.IO.StreamReader file = new System.IO.StreamReader(model_path);
+        
+        model_name = lines[0];
+        label2.Text = model_name;
+        label2.Update();
+
+        model_size[0] = int.Parse(lines[1]);
+        model_size[1] = int.Parse(lines[2]);
+        model_size[2] = int.Parse(lines[3]);
+        
+        label3.Text = model_size[0] + " " + model_size[1] + " " + model_size[2];
+        label3.Update();
+        
+        file.Close();
+
+        // Get number of properties
+        int number_of_properties = int.Parse(lines[4]);
+        
+        // Get number of cases
+        int number_of_cases = int.Parse(lines[5]);
+        
+        // Get path properties
+        string multi_prop_path = lines[6];
+
+        // Distance Prop Class
+        CppWrapper.CppDistanceProp distance_prop_eval = new CppWrapper.CppDistanceProp();
+        distance_prop_eval.SetEnvironmentType(1);
+        distance_prop_eval.SetNumberOfPropertiesAndCases(number_of_properties, number_of_cases);
+        distance_prop_eval.SetMapSize(model_size[0], model_size[1]);
+        
+        List<string> prop_files = new List<string>();
+        for (int i = 0; i < number_of_properties; i++)
+        {
+          string prop = lines[7 + i];
+          Console.Out.WriteLine("Propriedade " + (i+1) + ": " + prop);
+
+          prop_files.Clear();
+          for (int cases_files = 0; cases_files < number_of_cases; cases_files++)
+          {
+            prop_files.Add(filename_path + multi_prop_path + "\\" + prop + "\\" + prop + "_" + (cases_files + 1) + ".prop");
+          }
+          distance_prop_eval.SetMultiProjectionInputFilePaths(i, prop_files.ToArray());
+        }
+
+        double[,] array = distance_prop_eval.GetDistances();
+
+      // Return Property
+      //  double[] ret_property = distance_prop_eval.SetInputFilePaths(prop_files.ToArray(), filter_files.ToArray(), k_values.ToArray());
+
+      //  input_property[chart_index, 0] = ret_property[0];
+      //  input_property[chart_index, 1] = ret_property[1];
+
+        CppWrapper.CppMDSWrapper eval_MDS = new CppWrapper.CppMDSWrapper(array, number_of_cases);
+        double[,] arrayMDS = eval_MDS.GetMDS();
+      
+        chart.Series[0].Points.Clear();
+      
+        double[] min_max_axis_limits = new Double[4];
+        min_max_axis_limits[0] = Double.MaxValue;
+        min_max_axis_limits[1] = Double.MinValue;
+        min_max_axis_limits[2] = Double.MaxValue;
+        min_max_axis_limits[3] = Double.MinValue;
+      
+        double expand_limtis = 1.2;
+
+        for (int i = 0; i < number_of_cases; i++)
+        {
+          string name = prop_files[i].Split('\\').Last();
+      
+          double mm_x = Math.Round(arrayMDS[i, 0], 5);
+          double mm_y = Math.Round(arrayMDS[i, 1], 5);
+      
+          chart.Series[0].Points.AddXY(mm_x, mm_y);
+      
+          chart.Series[0].Points[i].LegendToolTip = name;
+          chart.Series[0].Points[i].Tag = prop_files[i];
+          chart.Series[0].Points[i].ToolTip = "Case " + (i+1) + "\n X= " + arrayMDS[i, 0] + " Y = " + arrayMDS[i, 1];
+      
+          min_max_axis_limits[0] = Math.Min(min_max_axis_limits[0], mm_x);
+          min_max_axis_limits[1] = Math.Max(min_max_axis_limits[1], mm_x);
+      
+          min_max_axis_limits[2] = Math.Min(min_max_axis_limits[2], mm_y);
+          min_max_axis_limits[3] = Math.Max(min_max_axis_limits[3], mm_y);
+        }
+      
+        min_max_axis_limits[0] *= expand_limtis;
+        min_max_axis_limits[1] *= expand_limtis;
+      
+        min_max_axis_limits[2] *= expand_limtis;
+        min_max_axis_limits[3] *= expand_limtis;
+      
+        chart.ChartAreas[0].AxisX.Minimum = min_max_axis_limits[0];
+        chart.ChartAreas[0].AxisX.Maximum = min_max_axis_limits[1];
+      
+        chart.ChartAreas[0].AxisY.Minimum = min_max_axis_limits[2];
+        chart.ChartAreas[0].AxisY.Maximum = min_max_axis_limits[3];
+      }
+
+      label1.Text = "Finished CFG MultiProp MDS";
+      label1.Update();
     }
 
   }
