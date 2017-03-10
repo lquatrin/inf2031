@@ -474,6 +474,7 @@ namespace ClassCppToCS_CS
             Series scol = chart.Series[0];
             if (scol.Points.Count > 0)
             {
+              
                 var results = chart.HitTest(clickPosition.X, clickPosition.Y, false, ChartElementType.PlottingArea);
 
                 foreach (var result in results)
@@ -510,13 +511,21 @@ namespace ClassCppToCS_CS
 
                         if (m_id >= 0)
                         {
-                            chart.Series[0].Points[m_id].XValue = xpos;
-                            chart.Series[0].Points[m_id].YValues[0] = ypos;
+                            //chart.Series[0].Points[m_id].XValue = xpos;
+                            //chart.Series[0].Points[m_id].YValues[0] = ypos;
+                            
                             id_mouse_aux[chart_id] = m_id;
                             if (!controls_idx[chart_id].Contains(m_id))
                             {
+                                chart.Series[0].Points[m_id].Color = Color.Red;
                                 controls_idx[chart_id].Add(m_id);
                                 add = true;
+                            }
+                            else
+                            {
+                              chart.Series[0].Points[m_id].Color = Color.Blue;
+                              controls_idx[chart_id].Remove(m_id);
+                              add = true;
                             }
                         }
                     }
@@ -541,8 +550,6 @@ namespace ClassCppToCS_CS
                             var ypos = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
                             chart.Series[0].Points[id_mouse_aux[chart_id]].XValue = xpos;
                             chart.Series[0].Points[id_mouse_aux[chart_id]].YValues[0] = ypos;
-                            chart.Series[0].Points[id_mouse_aux[chart_id]].Color = Color.Red;
-
                         }
                     }
                 }
@@ -736,6 +743,7 @@ namespace ClassCppToCS_CS
                     chart.Series[0].Points[i].LegendToolTip = name;
                     chart.Series[0].Points[i].Tag = prop_files[i];
                     chart.Series[0].Points[i].ToolTip = name + "\n X= " + arrayMDS[i, 0] + " Y = " + arrayMDS[i, 1];
+                    chart.Series[0].Points[i].Color = Color.Blue;
 
                     min_max_axis_limits[0] = Math.Min(min_max_axis_limits[0], mm_x);
                     min_max_axis_limits[1] = Math.Max(min_max_axis_limits[1], mm_x);
