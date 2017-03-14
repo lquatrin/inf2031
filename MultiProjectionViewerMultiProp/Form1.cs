@@ -737,13 +737,13 @@ namespace ClassCppToCS_CS
         // Get "Model Name" and "Model Sizes"
         System.IO.StreamReader file = new System.IO.StreamReader(model_path);
         
-        model_name = lines[0];
+        model_name = lines[1];
         label2.Text = model_name;
         label2.Update();
 
-        model_size[0] = int.Parse(lines[1]);
-        model_size[1] = int.Parse(lines[2]);
-        model_size[2] = int.Parse(lines[3]);
+        model_size[0] = int.Parse(lines[2]);
+        model_size[1] = int.Parse(lines[3]);
+        model_size[2] = int.Parse(lines[4]);
         
         label3.Text = model_size[0] + " " + model_size[1] + " " + model_size[2];
         label3.Update();
@@ -751,13 +751,13 @@ namespace ClassCppToCS_CS
         file.Close();
 
         // Get number of properties
-        int number_of_properties = int.Parse(lines[4]);
+        int number_of_properties = int.Parse(lines[5]);
         
         // Get number of cases
-        int number_of_cases = int.Parse(lines[5]);
+        int number_of_cases = int.Parse(lines[6]);
         
         // Get path properties
-        string multi_prop_path = lines[6];
+        string multi_prop_path = lines[7];
 
         // Distance Prop Class
         CppWrapper.CppDistanceProp distance_prop_eval = new CppWrapper.CppDistanceProp();
@@ -768,7 +768,7 @@ namespace ClassCppToCS_CS
         List<string> prop_files = new List<string>();
         for (int i = 0; i < number_of_properties; i++)
         {
-          string prop = lines[7 + i];
+          string prop = lines[8 + i];
           Console.Out.WriteLine("Propriedade " + (i+1) + ": " + prop);
 
           prop_files.Clear();
