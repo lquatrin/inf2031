@@ -340,6 +340,13 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjectionPropBased(int n_r
   free(p);
 }
 
+void CppWrapper::CppInverseProjectionWrapper::InverseProjectionMultiPropBased (
+  array<double, 2>^ input_point,
+  int n_2d_control_points,
+  array<double, 2>^ ar_control_points)
+{
+
+}
 
 void CppWrapper::CppInverseProjectionWrapper::InverseProjectionByLambda(int n_reference_points,
   array<double, 2>^ arraypoints,
@@ -456,7 +463,7 @@ void CppWrapper::CppDistanceProp::SetNumberOfPropertiesAndCases (int props, int 
   DProp->SetNumberOfPropertiesAndCases(props, cases);
 }
 
-void CppWrapper::CppDistanceProp::SetMultiProjectionInputFilePaths (int prop, array<System::String^>^ props)
+array<double, 1>^ CppWrapper::CppDistanceProp::SetMultiProjectionInputFilePaths(int type, int prop, array<System::String^>^ props, double i_min, double i_max)
 {
   std::vector<std::string> p_path;
   for (int i = 0; i < props->Length; i++)
@@ -467,7 +474,17 @@ void CppWrapper::CppDistanceProp::SetMultiProjectionInputFilePaths (int prop, ar
       p_path.push_back(standardString);
     }
   }
-  DProp->AddMultiPropPaths(p_path);
+  DProp->AddMultiPropPaths(p_path, i_min, i_max, type);
+
+  array<double, 1>^ ret_min_max = gcnew array<double, 1>(2);
+
+  double m1, m2;
+  DProp->GetMinMaxPropValue(prop, &m1, &m2);
+
+  ret_min_max[0] = m1;
+  ret_min_max[1] = m2;
+
+  return ret_min_max;
 }
 
 void CppWrapper::CppDistanceProp::SetMapSize (int i_size, int j_size)

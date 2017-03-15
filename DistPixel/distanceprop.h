@@ -21,7 +21,9 @@ public:
   
   void SetEnvironmentType (int env_type);
   void SetNumberOfPropertiesAndCases (int props, int cases);
-  void AddMultiPropPaths (std::vector<std::string> props);
+  void AddMultiPropPaths (std::vector<std::string> props, double inp_min, double inp_max, int type = 0);
+
+  void GetMinMaxPropValue(int prop, double* min, double* max);
 
   void Clear ();
 private:
@@ -30,7 +32,9 @@ private:
   std::vector<std::string> fltr_paths;
   std::vector<int> lyrs_array;
 
-  std::vector<cv::Mat> prop_maps;
+  std::vector<cv::Mat> propty_maps;
+  std::vector<cv::Mat> filter_maps;
+
 
   // 0 -> Single Property
   // 1 -> Multi Properties

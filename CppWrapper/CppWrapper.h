@@ -92,6 +92,11 @@ namespace CppWrapper {
       int lyr_i_sz, int lyr_j_sz,
       array<double, 1>^ limits_prop_value);
     
+    void InverseProjectionMultiPropBased (
+      array<double, 2>^ input_point,
+      int n_2d_control_points,
+      array<double, 2>^ ar_control_points);
+
    void InverseProjectionByLambda(
       int n_reference_points,
       array<double, 2>^ arraypoints,
@@ -129,7 +134,7 @@ namespace CppWrapper {
 
     void SetEnvironmentType (int env_type);
     void SetNumberOfPropertiesAndCases (int props, int cases);
-    void SetMultiProjectionInputFilePaths (int prop, array<System::String^>^ props);
+    array<double, 1>^ SetMultiProjectionInputFilePaths(int type, int prop, array<System::String^>^ props, double i_min, double i_max);
 
     void SetMapSize (int i_size, int j_size);
 

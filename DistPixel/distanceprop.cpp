@@ -64,7 +64,7 @@ void DistanceProp::SetPaths(std::vector<std::string> property_paths, std::vector
 
     propfile.close();
 
-    prop_maps.push_back(map);
+    propty_maps.push_back(map);
   }
   data_limits[0] = min_value;
   data_limits[1] = max_value;
@@ -80,7 +80,7 @@ void DistanceProp::GetDistance (std::vector<std::vector<double>> &distMat)
 
   if (prop_paths.size() == 0) return;
 
-  int n = prop_maps.size();
+  int n = propty_maps.size();
   int s_i = i_size, s_j = j_size;
   
   double min = 0;
@@ -97,9 +97,9 @@ void DistanceProp::GetDistance (std::vector<std::vector<double>> &distMat)
       {
         for (int w = 0; w < s_i; w++)
         {
-          if (prop_maps[i].at<double>(k, w) > -1 && prop_maps[j].at<double>(k, w) > -1)
+          if (propty_maps[i].at<double>(k, w) > -1 && propty_maps[j].at<double>(k, w) > -1)
           {
-            sum += pow(prop_maps[i].at<double>(k, w) - prop_maps[j].at<double>(k, w), 2);
+            sum += pow(propty_maps[i].at<double>(k, w) - propty_maps[j].at<double>(k, w), 2);
           }
         }
       }
@@ -119,7 +119,7 @@ void DistanceProp::GetDistance (std::vector<std::vector<double>> &distMat)
     distMat.push_back(d);
   }
 
-  for (int i = 0; i < distMat.size(); i++){
+  /*for (int i = 0; i < distMat.size(); i++){
     for (int j = 0; j < distMat[i].size(); j++){
      
       double z = (distMat[i][j] - min) / (max - min);
@@ -129,7 +129,7 @@ void DistanceProp::GetDistance (std::vector<std::vector<double>> &distMat)
       printf("%g ", z);
     }
     printf("\n ");
-  }
+  }*/
 }
 
 void DistanceProp::SetEnvironmentType (int env_type)
@@ -144,41 +144,69 @@ void DistanceProp::SetNumberOfPropertiesAndCases (int props, int cases)
   env_cases = cases;
 }
 
-void DistanceProp::AddMultiPropPaths(std::vector<std::string> property_paths)
+void DistanceProp::AddMultiPropPaths (std::vector<std::string> property_paths, double inp_min, double inp_max, int type)
 {
-
   int n_maps = property_paths.size();
   prop_paths.insert(prop_paths.end(), property_paths.begin(), property_paths.end());
 
   MinMaxDistanceMP mm_values;
-  mm_values.max = -99999999;
-  mm_values.min = 99999999;
+  if (inp_min == inp_max)
+  {
+    mm_values.max = -99999999;
+    mm_values.min = 99999999;
+  }
+  else
+  {
+    mm_values.min = inp_min;
+    mm_values.max = inp_max;
+  }
+  
   for (int t = 0; t < n_maps; t++)
   {
     cv::Mat map = cv::Mat::zeros(j_size, i_size, cv::DataType<double>::type);
+    cv::Mat filter = cv::Mat::zeros(j_size, i_size, cv::DataType<int>::type);
 
     std::ifstream propfile;
     propfile.open(property_paths[t]);
 
-    double val;
-    for (int j = 0; j < j_size; j++)
+    if (type == 1)
     {
-      for (int i = 0; i < i_size && propfile >> val; i++)
+      int x,y;
+      double val;
+      while (propfile >> x && propfile >> y && propfile >> val)
       {
-        map.at<double>(j, i) = val;
-        if (val > -1)
+        map.at<double>(x, y) = val;
+        filter.at<int>(x, y) = 1;
+        mm_values.max = MAX(mm_values.max, val);
+        mm_values.min = MIN(mm_values.min, val);
+      }
+    }
+    else
+    {
+      double val;
+      for (int j = 0; j < j_size; j++)
+      {
+        for (int i = 0; i < i_size && propfile >> val; i++)
         {
-          mm_values.max = MAX(mm_values.max, val);
-          mm_values.min = MIN(mm_values.min, val);
+          map.at<double>(j, i) = val;
+          
+          if (val > -1)
+          {
+            filter.at<int>(j, i) = 1;
+            mm_values.max = MAX(mm_values.max, val);
+            mm_values.min = MIN(mm_values.min, val);
+          }
         }
       }
     }
 
     propfile.close();
 
-    prop_maps.push_back(map);
-    mp_min_max_values.push_back(mm_values);
+    propty_maps.push_back(map);
+    filter_maps.push_back(filter);
   }
+
+  mp_min_max_values.push_back(mm_values);
 }
 
 void DistanceProp::Clear ()
@@ -186,7 +214,8 @@ void DistanceProp::Clear ()
   prop_paths.clear();
   fltr_paths.clear();
   lyrs_array.clear();
-  prop_maps.clear();
+  propty_maps.clear();
+  filter_maps.clear();
   mp_min_max_values.clear();
 }
 
@@ -210,32 +239,33 @@ void DistanceProp::GetMultiPropertyDistance(std::vector<std::vector<double>> &di
       {
         for (int w = 0; w < s_i; w++)
         {
-          if (prop_maps[i].at<double>(k, w) > -1 && prop_maps[j].at<double>(k, w) > -1)
+          // Para todas as propriedades
+          // Soma tudo
+           for (int kprop = 0; kprop < n_p; kprop++)
           {
-            sum += pow(prop_maps[i].at<double>(k, w) - prop_maps[j].at<double>(k, w), 2);
+            if (filter_maps[i + kprop * n].at<int>(k, w) && filter_maps[j + kprop * n].at<int>(k, w))
+            {
+              //Normaliza cada propriedade, baseado no mínimo e máximo calculado ao definir os arquivos.
+              sum += pow(
+              ((propty_maps[i + kprop * n].at<double>(k, w) - mp_min_max_values[kprop].min) / (mp_min_max_values[kprop].max - mp_min_max_values[kprop].min))
+              -
+              ((propty_maps[j + kprop * n].at<double>(k, w) - mp_min_max_values[kprop].min) / (mp_min_max_values[kprop].max - mp_min_max_values[kprop].min))
+              , 2);
+            }
           }
         }
       }
 
       sum = sqrt(sum);
-
-      if (max < sum) max = sum;
-      if (min > sum) min = sum;
-      if (max == min){
-        min -= 1;
-        max += 1;
-      }
-
       d.push_back(sum);
-
     }
     distMat.push_back(d);
   }
 
-  for (int i = 0; i < distMat.size(); i++){
-    for (int j = 0; j < distMat[i].size(); j++){
-      double z = (distMat[i][j] - min) / (max - min);
-      distMat[i][j] = z;
-    }
-  }
+}
+
+void DistanceProp::GetMinMaxPropValue(int prop, double* min, double* max)
+{
+  (*min) = mp_min_max_values[prop].min;
+  (*max) = mp_min_max_values[prop].max;
 }
