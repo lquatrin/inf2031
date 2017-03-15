@@ -170,6 +170,11 @@ CppWrapper::CppInverseProjectionWrapper::CppInverseProjectionWrapper ()
   pinvproj = new InverseProjection();
 }
 
+void CppWrapper::CppInverseProjectionWrapper::SetModelSize (int width, int height, int depth)
+{
+  pinvproj->SetModelSize(width, height, depth);
+}
+
 void CppWrapper::CppInverseProjectionWrapper::SetInputColorScapeType (int type)
 {
   pinvproj->input_colorspace = type;
@@ -341,11 +346,58 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjectionPropBased(int n_r
 }
 
 void CppWrapper::CppInverseProjectionWrapper::InverseProjectionMultiPropBased (
+  int input_prop_file,
   array<double, 2>^ input_point,
   int n_2d_control_points,
-  array<double, 2>^ ar_control_points)
+  array<double, 2>^ ar_control_points,
+  array<System::String^>^ bytes,
+  int number_of_properties,
+  array<double, 2>^ min_max_properties)
 {
+  
+  double **i_control_points = (double**)malloc(n_2d_control_points * sizeof(double*));
+  for (int i = 0; i < n_2d_control_points; i++)
+  {
+    i_control_points[i] = (double*)malloc(2 * sizeof(double));
+    i_control_points[i][0] = ar_control_points[i, 0];
+    i_control_points[i][1] = ar_control_points[i, 1];
+  }
 
+  double *p = (double*)malloc(2 * sizeof(double));
+  p[0] = input_point[0, 0];
+  p[1] = input_point[0, 1];
+  
+
+  std::vector<std::string> prop_paths;
+  for (int i = 0; i < bytes->Length; i++)
+  {
+    msclr::interop::marshal_context context;
+    std::string standardString = context.marshal_as<std::string>(bytes[i]);
+    prop_paths.push_back(standardString);
+  }
+
+  double *limits = (double*)malloc(number_of_properties * 2 * sizeof(double));
+  for (int i = 0; i < number_of_properties; i++)
+  {
+    limits[0 + i*2] = min_max_properties[i, 0];
+    limits[1 + i*2] = min_max_properties[i, 1];
+  }
+
+  pinvproj->CalcInverseProjectionMultiPropBased(input_prop_file
+    , number_of_properties
+    , n_2d_control_points
+    , i_control_points
+    , p 
+    , prop_paths
+    , limits
+  );
+
+
+  for (int i = 0; i < n_2d_control_points; i++)
+    free(i_control_points[i]);
+  free(i_control_points);
+  free(p);
+  free(limits);
 }
 
 void CppWrapper::CppInverseProjectionWrapper::InverseProjectionByLambda(int n_reference_points,

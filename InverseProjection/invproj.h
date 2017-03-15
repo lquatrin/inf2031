@@ -55,6 +55,8 @@ public:
   InverseProjection ();
   ~InverseProjection ();
 
+  void SetModelSize (int w, int h, int d);
+
   void ReadImages (std::vector<std::string> paths,int channel);
 
   void CalcInverseProjection (void);
@@ -114,8 +116,23 @@ public:
 
   double dist(double *x1, double *x2);
 
+  void CalcInverseProjectionMultiPropBased(
+    int input_prop_type
+    , int n_properties
+    , int n_control_points
+    , double** v_control_points
+    , double* input_point
+    , std::vector<std::string> prop_paths
+    , double* n_property_limits
+  );
+
 private:
+  int mdl_width;
+  int mdl_height;
+  int mdl_depth;
+
   void GenerateImage(int j_size, int i_size, int s, cv::Mat map, std::string name, double* limits_pro_val);
+  void GenerateImageWithFilter(int j_size, int i_size, int s, cv::Mat map, std::string name, double* limits_pro_val, cv::Mat filter);
 
   vr::TransferFunction1D tf_1D;
 

@@ -73,6 +73,8 @@ namespace CppWrapper {
   {
   public:
     CppInverseProjectionWrapper ();
+    
+    void SetModelSize (int width, int height, int depth);
 
     void SetInputColorScapeType (int type);
     void InverseProjection01(int n_sets, int n_points_per_set, array<double, 2>^ set_points, array<double, 2>^ input_points, array<System::String^>^ bytes);
@@ -93,9 +95,13 @@ namespace CppWrapper {
       array<double, 1>^ limits_prop_value);
     
     void InverseProjectionMultiPropBased (
+      int input_prop_file,
       array<double, 2>^ input_point,
       int n_2d_control_points,
-      array<double, 2>^ ar_control_points);
+      array<double, 2>^ ar_control_points,
+      array<System::String^>^ bytes,
+      int number_of_properties,
+      array<double, 2>^ min_max_properties);
 
    void InverseProjectionByLambda(
       int n_reference_points,

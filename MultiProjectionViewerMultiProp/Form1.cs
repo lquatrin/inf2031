@@ -19,10 +19,14 @@ namespace ClassCppToCS_CS
     public CppWrapper.CppInverseProjectionWrapper wrapper_inverse_projection;
     public int current_colorspace_input;
 
-    private bool model_loaded = false;
     private string model_name;
     private int[] model_size = new int[3];
-    private int[] id_mouse_aux = new int[5];
+    
+    private int input_prop_type;
+
+    private string[] loaded_properties;
+    private int number_of_properties;
+
     private string model_path;
     private double[,] min_max_property;
 
@@ -56,6 +60,9 @@ namespace ClassCppToCS_CS
       chart.Series[2].Color = Color.Red;
       chart.Series[2].MarkerStyle = MarkerStyle.Square;
 
+      input_prop_type = 0;
+      loaded_properties = null;
+      number_of_properties = 0;
       min_max_property = null;
     }
 
@@ -163,23 +170,33 @@ namespace ClassCppToCS_CS
       }
 
       double[,] arraypoints = new double[n_2d_control_points, 2];
-      
-      //List<string> paths = new List<string>();
-      //int counter = 0;
-      for (int p = 0; p < n_2d_control_points; p++)
-      {
-        DataPoint pt = chart.Series[0].Points[p];
-      //  paths.Add(pt.Tag.ToString());
-      //  counter++;
-      //
 
-        if (pt.Color == Color.Red)
+
+      List<string> ctl_paths = new List<string>(n_2d_control_points * number_of_properties);
+      for (int i=0;i<n_2d_control_points * number_of_properties;i++) ctl_paths.Add(null);
+
+      int p2d = 0;
+      for (int i = 0; i < chart.Series[0].Points.Count(); i++)
+      {
+        if (chart.Series[0].Points[i].Color == Color.Red)
         {
-          arraypoints[p, 0] = pt.XValue;
-          arraypoints[p, 1] = pt.YValues[0];
+          DataPoint pt = chart.Series[0].Points[i];
+          if (pt.Color == Color.Red)
+          {
+            arraypoints[p2d, 0] = pt.XValue;
+            arraypoints[p2d, 1] = pt.YValues[0];
+
+            for (int py = 0; py < number_of_properties; py++)
+            {
+              ctl_paths[p2d + py * n_2d_control_points] = (model_path + "\\" + loaded_properties[py] + "\\" + loaded_properties[py] + "_" + (pt.Tag) + ".prop");
+            }
+            p2d++;
+          }
         }
       }
-      
+      //for (int t = 0; t < ctl_paths.Count(); t++)
+      //  Console.Out.WriteLine(ctl_paths[t]);
+            
       double[,] input_point = new double[,] { { 0, 0 } };
       
       if (chart.Series[1].Points.Count() > 0)
@@ -188,19 +205,17 @@ namespace ClassCppToCS_CS
         input_point[0, 1] = chart.Series[1].Points[0].YValues[0];
       }
       
-      //double[] minmax = new double[2];
-      //minmax[0] = min_max_property[0,0];
-      //minmax[1] = min_max_property[0,1];
+      wrapper_inverse_projection.SetModelSize(model_size[0], model_size[1], model_size[2]);
 
       wrapper_inverse_projection.InverseProjectionMultiPropBased(
-          input_point,
-          n_2d_control_points,
-          arraypoints
-          //paths.ToArray(),
-          //model_size[0],
-          //model_size[1],
-          //minmax
-          );
+        input_prop_type,
+        input_point,
+        n_2d_control_points,
+        arraypoints,
+        ctl_paths.ToArray(),
+        number_of_properties,
+        min_max_property
+      );
 
       label1.Text = "Finished Inverse Projection";
       label1.Update();
@@ -313,7 +328,6 @@ namespace ClassCppToCS_CS
 
     private void MouseDownRightButtonProcess(Chart chart, Point clickPosition, int chart_id)
     {
-      id_mouse_aux[chart_id] = -1;
       Series scol = chart.Series[0];
       if (scol.Points.Count > 0)
       {
@@ -353,8 +367,6 @@ namespace ClassCppToCS_CS
                 chart.Series[0].Points[m_id].Color = Color.Red;
               else if (chart.Series[0].Points[m_id].Color == Color.Red)
                 chart.Series[0].Points[m_id].Color = Color.Blue;
-
-              id_mouse_aux[chart_id] = m_id;
             }
           }
         }
@@ -363,31 +375,10 @@ namespace ClassCppToCS_CS
 
     private void MouseMoveRightButtonProcess(Chart chart, Point clickPosition, int chart_id)
     {
-      if (id_mouse_aux[chart_id] >= 0)
-      {
-        Series scol = chart.Series[0];
-        if (scol.Points.Count > 0)
-        {
-          var results = chart.HitTest(clickPosition.X, clickPosition.Y, false, ChartElementType.PlottingArea);
-
-          foreach (var result in results)
-          {
-            if (result.ChartElementType == ChartElementType.PlottingArea)
-            {
-              //var xpos = result.ChartArea.AxisX.PixelPositionToValue(clickPosition.X);
-              //var ypos = result.ChartArea.AxisY.PixelPositionToValue(clickPosition.Y);
-              //
-              //chart.Series[0].Points[id_mouse_aux[chart_id]].XValue = xpos;
-              //chart.Series[0].Points[id_mouse_aux[chart_id]].YValues[0] = ypos;
-            }
-          }
-        }
-      }
     }
 
     private void MouseUpRightButtonProcess(Chart chart, Point clickPosition, int chart_id)
     {
-      id_mouse_aux[chart_id] = -1;
     }
 
     private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -460,13 +451,12 @@ namespace ClassCppToCS_CS
         // Get lines
         var lines = File.ReadAllLines(openFileDialog1.FileName);
         
-        model_loaded = true;
         model_path = file_path_name;
         
         // Get "Model Name" and "Model Sizes"
         System.IO.StreamReader file = new System.IO.StreamReader(model_path);
 
-        int input_file_type = int.Parse(lines[0]);
+        input_prop_type = int.Parse(lines[0]);
         
         model_name = lines[1];
         label2.Text = model_name;
@@ -482,10 +472,13 @@ namespace ClassCppToCS_CS
         file.Close();
         
         // Get number of properties
-        int number_of_properties = int.Parse(lines[5]);
+        number_of_properties = int.Parse(lines[5]);
 
         min_max_property = null;
         min_max_property = new double[number_of_properties, 2];
+
+        loaded_properties = null;
+        loaded_properties = new string[number_of_properties];
 
         // Get number of cases
         int number_of_cases = int.Parse(lines[6]);
@@ -506,8 +499,9 @@ namespace ClassCppToCS_CS
           double min = double.Parse(lines[8 + i * 3 + 1]);
           double max = double.Parse(lines[8 + i * 3 + 2]);
 
-          Console.Out.WriteLine("Propriedade " + (i + 1) + ": " + prop);
-        
+          Console.Out.WriteLine("Propriedade " + (i + 1) + ":\n - " + prop + " between [" + min + ", " + max + "]");
+          loaded_properties[i] = prop;
+
           prop_files.Clear();
           for (int cases_files = 0; cases_files < number_of_cases; cases_files++)
           {
@@ -515,9 +509,8 @@ namespace ClassCppToCS_CS
           }
           
           // Return Property
-          Console.Out.WriteLine("Min: " + min + ", Max: " + max);
           double[] ret_input = distance_prop_eval.SetMultiProjectionInputFilePaths(
-              input_file_type
+              input_prop_type
             , i
             , prop_files.ToArray()
             , min
@@ -527,8 +520,10 @@ namespace ClassCppToCS_CS
           min_max_property[i,0] = ret_input[0];
           min_max_property[i,1] = ret_input[1];
 
-          Console.Out.WriteLine("Min: " + min_max_property[i, 0] + ", Max: " + min_max_property[i, 1]);
+          Console.Out.WriteLine(" - Min: " + min_max_property[i, 0] + ", Max: " + min_max_property[i, 1]);
         }
+
+        model_path = filename_path + multiprop_path;
 
         double[,] array = distance_prop_eval.GetDistances();
 

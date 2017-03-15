@@ -42,11 +42,22 @@ InverseProjection::InverseProjection ()
 
   input_colorspace = 0;
   rad_kernel_gama = 2.0;
+
+  mdl_width  = -1;
+  mdl_height = -1;
+  mdl_depth  = -1;
 }
 
 InverseProjection::~InverseProjection ()
 {
   Clear();
+}
+
+void InverseProjection::SetModelSize (int w, int h, int d)
+{
+  mdl_width  = w;
+  mdl_height = h;
+  mdl_depth  = d;
 }
 
 void InverseProjection::ReadImages (std::vector<std::string> paths, int channel)
@@ -1025,4 +1036,176 @@ void InverseProjection::CalcNewPropGridByInverse(void){
 
   printf("max min da composta %g %g\n max min %g %g", vec[0], vec[1], max,min);
   GenerateImage(ws,hs, 15, result, "novaprop.png", vec);
+}
+
+void InverseProjection::CalcInverseProjectionMultiPropBased(int input_prop_type
+                                                          , int n_properties
+                                                          , int n_control_points
+                                                          , double** v_control_points
+                                                          , double* v_input_point
+                                                          , std::vector<std::string> prop_paths
+                                                          , double* n_property_limits
+                                                          )
+{
+    //printf("%d points:\n", n_control_points);
+    //for (int i = 0; i < n_control_points; i++)
+    //{
+    //  printf(". %d %.5lf %.5lf\n", i, v_control_points[i][0], v_control_points[i][1]);
+    //  for (int p = 0; p < n_properties; p++)
+    //  {
+    //    printf(" -> %d: %s\n", p, prop_paths[i + p*n_control_points].c_str());
+    //  }
+    //}
+    //printf("Input Point: %.5lf %.5lf\n", v_input_point[0], v_input_point[1]);
+    //printf("%d properties:\n", n_properties);
+    for (int p = 0; p < n_properties; p++)
+    {
+      //printf(" %d MinMax = %.5lf %.5lf\n", p, n_property_limits[0 + p * 2], n_property_limits[1 + p * 2]);
+      int i1 = 0 + p*2;
+      int i2 = 1 + p*2;
+      n_property_limits[i2] = n_property_limits[i2] + (n_property_limits[i2] - n_property_limits[i1]) * 0.05;
+      n_property_limits[i1] = n_property_limits[i1] - (n_property_limits[i2] - n_property_limits[i1]) * 0.05;
+    }
+  
+    std::vector<cv::Mat> ctl_maps;
+    std::vector<cv::Mat> ctl_filters;
+
+    double max_val = 0;
+  
+    if (input_prop_type == 1)
+    {
+      for (int p = 0; p < n_properties; p++)
+      {
+        for (int t = 0; t < n_control_points; t++)
+        {
+          cv::Mat map    = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
+          cv::Mat filter = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<int>::type);
+          
+          std::ifstream propfile;
+          propfile.open(prop_paths[t + p*n_control_points]);
+          
+          int x, y;
+          double val;
+          while (propfile >> x && propfile >> y && propfile >> val)
+          {
+            map.at<double>(y, x) = val;
+            filter.at<int>(y, x) = 1;
+          }
+          
+          ctl_maps.push_back(map);
+          ctl_filters.push_back(filter);
+          
+          propfile.close();
+          
+          GenerateImageWithFilter(mdl_height, mdl_width, 15, map, std::to_string(p + 1) + "_" + std::to_string(t + 1) + "_file.png", &n_property_limits[p * 2], filter);
+        }
+      }
+    }
+    else
+    {
+      for (int p = 0; p < n_properties; p++)
+      {
+        for (int t = 0; t < n_control_points; t++)
+        {
+          cv::Mat map = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
+          cv::Mat filter = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<int>::type);
+
+          std::ifstream propfile;
+          propfile.open(prop_paths[t + p*n_control_points]);
+
+          double val;
+          for (int l = 0; l < mdl_height; l++)
+          {
+            for (int c = 0; c < mdl_width && propfile >> val; c++)
+            {
+              if (val > -1.0)
+              {
+                map.at<double>(l, c) = val;
+                filter.at<int>(l, c) = 1;
+              }
+            }
+          }
+  
+          ctl_maps.push_back(map);
+          ctl_filters.push_back(filter);
+  
+          propfile.close();
+  
+          GenerateImageWithFilter(mdl_height, mdl_width, 15, map, std::to_string(p + 1) + "_" + std::to_string(t + 1) + "_file.png", &n_property_limits[p * 2], filter);
+        }
+      }
+    }
+  
+    std::vector<double> values;
+    std::vector<double> input;
+  
+    cv::Mat result = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
+    cv::Mat r_filter = cv::Mat::ones(mdl_height, mdl_width, cv::DataType<int>::type);
+
+    double sum = 0;
+  
+    cv::Mat map = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
+    bool zero = false;
+
+    for (int i = 0; i < n_control_points; i++){
+      double dist = sqrt(pow(v_input_point[0] - v_control_points[i][0], 2) + pow(v_input_point[1] - v_control_points[i][1], 2));
+      if (dist != 0){
+        map += (1.0 / pow(dist, 2)) *  ctl_maps[i];
+        sum += 1.0 / pow(dist, 2);
+        lambdas.push_back((1.0 / pow(dist, 2)));
+        r_filter = r_filter.dot(ctl_filters[i]);
+      }
+      else{
+        zero = true;
+        for (int j = 0; j < lambdas.size(); j++) lambdas[i] = 0.f;
+        lambdas[i] = 1.0f;
+        map = ctl_maps[i];
+        r_filter = ctl_filters[i];
+        break;
+      }
+    }
+
+    if (zero == false){
+      result = map / sum;
+      for (int i = 0; i < lambdas.size(); i++) lambdas[i] = lambdas[i] / sum;
+    }
+    else result = map;
+
+    arrayResps.push_back(result);
+
+    std::size_t found = prop_paths[0].find_last_of("/\\");
+    GenerateImageWithFilter(mdl_height, mdl_width, 15, result, prop_paths[0].substr(found + 1) + "propinverse.png", n_property_limits, r_filter);
+}
+
+
+void InverseProjection::GenerateImageWithFilter(int j_size, int i_size, int s, cv::Mat map, std::string name, double* limits_pro_val, cv::Mat filter)
+{
+  cv::Mat ret = cv::Mat::zeros(j_size * s, i_size * s, cv::DataType<cv::Vec3b>::type);
+
+  for (int l = 0; l < j_size; l++)
+  {
+    for (int c = 0; c < i_size; c++)
+    {
+      double val = map.at<double>(l, c);
+      int active_cell = filter.at<int>(l, c);
+
+      for (int si = 0; si < s; si++)
+      {
+        for (int sj = 0; sj < s; sj++)
+        {
+          int local_l = (j_size - (l + 1)) * s + sj;
+          int local_c = c * s + si;
+          glm::vec4 colr;
+          if (active_cell) colr = tf_1D.Get(((val - limits_pro_val[0]) / (limits_pro_val[1] - limits_pro_val[0])) * 255.0);
+          else colr = glm::vec4(0, 0, 0, 0);
+
+          ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(colr.x * 255);
+          ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(colr.y * 255);
+          ret.at<cv::Vec3b>(local_l, local_c).val[2] = (uchar)(colr.z * 255);
+        }
+      }
+    }
+  }
+
+  cv::imwrite(name, ret);
 }
