@@ -47,3 +47,4 @@ WrappersCppFromCS/MathFuncs/obj
 
 # Visual Studio files
 *.sdf
+Output/
