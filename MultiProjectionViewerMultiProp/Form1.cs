@@ -474,6 +474,8 @@ namespace ClassCppToCS_CS
         // Get number of properties
         number_of_properties = int.Parse(lines[5]);
 
+        label4.Text = number_of_properties + " properties:";
+        
         min_max_property = null;
         min_max_property = new double[number_of_properties, 2];
 
@@ -500,6 +502,7 @@ namespace ClassCppToCS_CS
           double max = double.Parse(lines[8 + i * 3 + 2]);
 
           Console.Out.WriteLine("Propriedade " + (i + 1) + ":\n - " + prop + " between [" + min + ", " + max + "]");
+          label4.Text = label4.Text + " \"" + prop + "\"";
           loaded_properties[i] = prop;
 
           prop_files.Clear();
@@ -577,6 +580,8 @@ namespace ClassCppToCS_CS
         chart.ChartAreas[0].AxisY.Maximum = min_max_axis_limits[3];
       }
 
+      label4.Update();
+
       label1.Text = "Finished CFG MultiProp MDS";
       label1.Update();
     }
@@ -587,6 +592,11 @@ namespace ClassCppToCS_CS
     }
 
     private void chart1_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void label4_Click_1(object sender, EventArgs e)
     {
 
     }
