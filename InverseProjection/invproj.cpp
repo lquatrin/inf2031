@@ -1153,7 +1153,7 @@ void InverseProjection::CalcInverseProjectionMultiPropBased(int input_prop_type
         map += (1.0 / pow(dist, 2)) *  ctl_maps[i];
         sum += 1.0 / pow(dist, 2);
         lambdas.push_back((1.0 / pow(dist, 2)));
-        r_filter = ctl_filters[i];//r_filter.dot(ctl_filters[i]);
+        r_filter = r_filter.mul(ctl_filters[i]);
       }
       else{
         zero = true;
@@ -1201,7 +1201,7 @@ void InverseProjection::GenerateImageWithFilter(int j_size, int i_size, int s, c
           int local_c = c * s + si;
           glm::vec4 colr;
           if (active_cell) colr = tf_1D.Get(((val - limits_pro_val[0]) / (limits_pro_val[1] - limits_pro_val[0])) * 255.0);
-          else colr = glm::vec4(0, 0, 0, 0);
+          else colr = glm::vec4(1, 1, 1, 1);
 
           ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(colr.x * 255);
           ret.at<cv::Vec3b>(local_l, local_c).val[1] = (uchar)(colr.y * 255);
