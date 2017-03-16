@@ -1153,7 +1153,7 @@ void InverseProjection::CalcInverseProjectionMultiPropBased(int input_prop_type
         map += (1.0 / pow(dist, 2)) *  ctl_maps[i];
         sum += 1.0 / pow(dist, 2);
         lambdas.push_back((1.0 / pow(dist, 2)));
-        r_filter = r_filter.dot(ctl_filters[i]);
+        r_filter = ctl_filters[i];//r_filter.dot(ctl_filters[i]);
       }
       else{
         zero = true;
@@ -1174,7 +1174,11 @@ void InverseProjection::CalcInverseProjectionMultiPropBased(int input_prop_type
     arrayResps.push_back(result);
 
     std::size_t found = prop_paths[0].find_last_of("/\\");
-    GenerateImageWithFilter(mdl_height, mdl_width, 15, result, prop_paths[0].substr(found + 1) + "propinverse.png", n_property_limits, r_filter);
+    std::string st = prop_paths[0].substr(found + 1);
+    std::size_t fountPoint = st.find_last_of(".");
+    st = st.substr(0, fountPoint - 2);
+
+    GenerateImageWithFilter(mdl_height, mdl_width, 15, result, st + "." + "propinverse.png", n_property_limits, r_filter);
 }
 
 
