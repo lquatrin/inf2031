@@ -1211,5 +1211,5 @@ void InverseProjection::GenerateImageWithFilter(int j_size, int i_size, int s, c
     }
   }
 
-  cv::imwrite(name, ret);
+  cv::imwrite("../Output/" + name, ret);
 }
