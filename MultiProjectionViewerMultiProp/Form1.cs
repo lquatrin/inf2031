@@ -112,38 +112,117 @@ namespace ClassCppToCS_CS
 
     private void button1_Click(object sender, EventArgs e)
     {
-      /*label1.Text = "Start LAMP";
+      label1.Text = "Start LAMP";
       label1.Update();
+      /*
+      int n_reference_points = chart.Series[0].Points.Count();
 
-      Chart chart = new Chart();
-      chart = chart1;
+      double[,] arraypoints = new double[n_reference_points, 2];
 
-      double[,] array_input = new double[chart.Series[2].Points.Count, 2];
-      List<string> array_prop_files = new List<string>();
-      List<string> array_other_files = new List<string>();
-      int count = 0;
-      foreach (DataPoint pt in chart.Series[2].Points)
+      List<string> paths = new List<string>();
+      int counter = 0;
+      for (int p = 0; p < n_reference_points; p++)
       {
-        array_input[count, 0] = pt.XValue;
-        array_input[count, 1] = pt.YValues[0];
+        DataPoint pt = chart.Series[0].Points[p];
+        paths.Add(pt.Tag.ToString());
+        counter++;
 
-        array_prop_files.Add(pt.Tag as string);
+        arraypoints[p, 0] = pt.XValue;
+        arraypoints[p, 1] = pt.YValues[0];
+      }
+
+      int[] indexPoints = new int[controls_idx[index_chart].Count];
+      int k = 0;
+
+      foreach (int val in controls_idx[index_chart])
+      {
+        indexPoints[k] = val;
+        k++;
+      }
+      List<List<double>> tcontrol = controls[index_chart];
+      double[,] controlPoints = new double[controls[index_chart].Count, 2];
+      k = 0;
+      foreach (var a in tcontrol)
+      {
+        controlPoints[k, 0] = a[0];
+        controlPoints[k, 1] = a[1];
+        k++;
+      }
+      CppWrapper.CppLAMPWrapper lamp = new CppWrapper.CppLAMPWrapper();
+      double[,] proj = lamp.GetLAMP(arraypoints, controlPoints, indexPoints, controls_idx[index_chart].Count, n_reference_points);
+
+
+      List<string> prop_files = new List<string>();
+      List<string> filter_files = new List<string>();
+      List<int> k_values = new List<int>();
+
+      prop_files.Clear();
+      filter_files.Clear();
+
+      int count = 0;
+      foreach (String file in openFileDialog1.FileNames)
+      {
+        string idk = file.Split('\\').Last().Split('_').Last().Split('.').First();
+        string prop = file.Split('\\').Last().Split('_').First();
+        int splitted_paths = file.Split('\\').Last().Length;
+
+        string path = file.Substring(0, file.Length - splitted_paths);
+        path = path + prop.ToString() + '\\' + "k_" + idk.ToString() + ".filter";
+
+        prop_files.Add(file);
+
+        filter_files.Add(path);
+        k_values.Add(Int32.Parse(idk));
+
         count++;
       }
-      
-      foreach (DataPoint pt in chart.Series[0].Points)
-      {
-        array_other_files.Add(pt.Tag as string);
-      }
-
-      CppWrapper.CppLAMPWrapper mlamp = new CppWrapper.CppLAMPWrapper();
-      double[,] arrayLAMP = mlamp.GetLAMP();
 
       chart.Series[0].Points.Clear();
-      chart.Series[2].Points.Clear();
-      
+      //chart.Series[2].Points.Clear();
+
+      double[] min_max_axis_limits = new Double[4];
+      min_max_axis_limits[0] = Double.MaxValue;
+      min_max_axis_limits[1] = Double.MinValue;
+      min_max_axis_limits[2] = Double.MaxValue;
+      min_max_axis_limits[3] = Double.MinValue;
+
+      double expand_limtis = 1.2;
+
+      for (int i = 0; i < counter; i++)
+      {
+        string name = prop_files[i].Split('\\').Last();
+
+        double mm_x = Math.Round(proj[i, 0], 5);
+        double mm_y = Math.Round(proj[i, 1], 5);
+
+        chart.Series[0].Points.AddXY(mm_x, mm_y);
+
+        chart.Series[0].Points[i].LegendToolTip = name;
+        chart.Series[0].Points[i].Tag = prop_files[i];
+        chart.Series[0].Points[i].ToolTip = name + "\n X= " + proj[i, 0] + " Y = " + proj[i, 1];
+
+        min_max_axis_limits[0] = Math.Min(min_max_axis_limits[0], mm_x);
+        min_max_axis_limits[1] = Math.Max(min_max_axis_limits[1], mm_x);
+
+        min_max_axis_limits[2] = Math.Min(min_max_axis_limits[2], mm_y);
+        min_max_axis_limits[3] = Math.Max(min_max_axis_limits[3], mm_y);
+      }
+
+      min_max_axis_limits[0] *= expand_limtis;
+      min_max_axis_limits[1] *= expand_limtis;
+
+      min_max_axis_limits[2] *= expand_limtis;
+      min_max_axis_limits[3] *= expand_limtis;
+
+      chart.ChartAreas[0].AxisX.Minimum = min_max_axis_limits[0];
+      chart.ChartAreas[0].AxisX.Maximum = min_max_axis_limits[1];
+
+      chart.ChartAreas[0].AxisY.Minimum = min_max_axis_limits[2];
+      chart.ChartAreas[0].AxisY.Maximum = min_max_axis_limits[3];    
+      */
+
       label1.Text = "Finished LAMP";
-      label1.Update();*/
+      label1.Update();
     }
 
     private void textBox1_TextChanged(object sender, EventArgs e)

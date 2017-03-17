@@ -1136,49 +1136,49 @@ void InverseProjection::CalcInverseProjectionMultiPropBased(int input_prop_type
       }
     }
   
-    std::vector<double> values;
-    std::vector<double> input;
-  
-    cv::Mat result = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
-    cv::Mat r_filter = cv::Mat::ones(mdl_height, mdl_width, cv::DataType<int>::type);
+    for (int curr_prop = 0; curr_prop < n_properties; curr_prop++)
+    {
+      cv::Mat result = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
+      cv::Mat r_filter = cv::Mat::ones(mdl_height, mdl_width, cv::DataType<int>::type);
 
-    double sum = 0;
-  
-    cv::Mat map = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
-    bool zero = false;
+      double sum = 0;
+    
+      cv::Mat map = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
+      bool zero = false;
 
-    for (int i = 0; i < n_control_points; i++){
-      double dist = sqrt(pow(v_input_point[0] - v_control_points[i][0], 2) + pow(v_input_point[1] - v_control_points[i][1], 2));
-      if (dist != 0){
-        map += (1.0 / pow(dist, 2)) *  ctl_maps[i];
-        sum += 1.0 / pow(dist, 2);
-        lambdas.push_back((1.0 / pow(dist, 2)));
-        r_filter = r_filter.mul(ctl_filters[i]);
+      for (int i = 0; i < n_control_points; i++){
+        double dist = sqrt(pow(v_input_point[0] - v_control_points[i][0], 2) + pow(v_input_point[1] - v_control_points[i][1], 2));
+        if (dist != 0){
+          map += (1.0 / pow(dist, 2)) *  ctl_maps[curr_prop * n_control_points + i];
+          sum += 1.0 / pow(dist, 2);
+          lambdas.push_back((1.0 / pow(dist, 2)));
+          r_filter = r_filter.mul(ctl_filters[curr_prop * n_control_points + i]);
+        }
+        else{
+          zero = true;
+          for (int j = 0; j < lambdas.size(); j++) lambdas[i] = 0.f;
+          lambdas[i] = 1.0f;
+          map = ctl_maps[curr_prop * n_control_points + i];
+          r_filter = ctl_filters[curr_prop * n_control_points + i];
+          break;
+        }
       }
-      else{
-        zero = true;
-        for (int j = 0; j < lambdas.size(); j++) lambdas[i] = 0.f;
-        lambdas[i] = 1.0f;
-        map = ctl_maps[i];
-        r_filter = ctl_filters[i];
-        break;
+
+      if (zero == false){
+        result = map / sum;
+        for (int i = 0; i < lambdas.size(); i++) lambdas[i] = lambdas[i] / sum;
       }
+      else result = map;
+
+      arrayResps.push_back(result);
+
+      std::size_t found = prop_paths[curr_prop * n_control_points].find_last_of("/\\");
+      std::string st = prop_paths[curr_prop * n_control_points].substr(found + 1);
+      std::size_t fountPoint = st.find_last_of(".");
+      st = st.substr(0, fountPoint - 2);
+
+      GenerateImageWithFilter(mdl_height, mdl_width, 15, result, st + "." + "propinverse.png", &n_property_limits[curr_prop * 2], r_filter);
     }
-
-    if (zero == false){
-      result = map / sum;
-      for (int i = 0; i < lambdas.size(); i++) lambdas[i] = lambdas[i] / sum;
-    }
-    else result = map;
-
-    arrayResps.push_back(result);
-
-    std::size_t found = prop_paths[0].find_last_of("/\\");
-    std::string st = prop_paths[0].substr(found + 1);
-    std::size_t fountPoint = st.find_last_of(".");
-    st = st.substr(0, fountPoint - 2);
-
-    GenerateImageWithFilter(mdl_height, mdl_width, 15, result, st + "." + "propinverse.png", n_property_limits, r_filter);
 }
 
 

@@ -146,7 +146,6 @@ namespace ClassCppToCS_CS
         private void button1_Click(object sender, EventArgs e)
         {
 
-            Console.Out.Write("niga");
             /*label1.Text = "Start LAMP";
             label1.Update();
 

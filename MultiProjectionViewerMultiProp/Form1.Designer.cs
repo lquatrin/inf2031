@@ -28,9 +28,9 @@
     /// </summary>
     private void InitializeComponent()
     {
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
       this.openCFGDialog = new System.Windows.Forms.OpenFileDialog();
@@ -47,19 +47,19 @@
       // 
       // chart1
       // 
-      chartArea4.Name = "ChartArea1";
-      this.chart1.ChartAreas.Add(chartArea4);
-      legend4.Name = "Legend1";
-      this.chart1.Legends.Add(legend4);
+      chartArea1.Name = "ChartArea1";
+      this.chart1.ChartAreas.Add(chartArea1);
+      legend1.Name = "Legend1";
+      this.chart1.Legends.Add(legend1);
       this.chart1.Location = new System.Drawing.Point(12, 78);
       this.chart1.Name = "chart1";
-      series4.ChartArea = "ChartArea1";
-      series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-      series4.LabelToolTip = "#SERIESNAME";
-      series4.Legend = "Legend1";
-      series4.Name = "Series1";
-      series4.ToolTip = "#SERIESNAME";
-      this.chart1.Series.Add(series4);
+      series1.ChartArea = "ChartArea1";
+      series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+      series1.LabelToolTip = "#SERIESNAME";
+      series1.Legend = "Legend1";
+      series1.Name = "Series1";
+      series1.ToolTip = "#SERIESNAME";
+      this.chart1.Series.Add(series1);
       this.chart1.Size = new System.Drawing.Size(620, 371);
       this.chart1.TabIndex = 0;
       this.chart1.Text = "1";
@@ -121,7 +121,7 @@
       this.button9.Name = "button9";
       this.button9.Size = new System.Drawing.Size(123, 23);
       this.button9.TabIndex = 28;
-      this.button9.Text = "Generate Lamp";
+      this.button9.Text = "LAMP";
       this.button9.UseVisualStyleBackColor = true;
       // 
       // button1
