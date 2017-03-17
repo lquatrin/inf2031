@@ -28,9 +28,9 @@
     /// </summary>
     private void InitializeComponent()
     {
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
       this.openCFGDialog = new System.Windows.Forms.OpenFileDialog();
@@ -47,23 +47,22 @@
       // 
       // chart1
       // 
-      chartArea1.Name = "ChartArea1";
-      this.chart1.ChartAreas.Add(chartArea1);
-      legend1.Name = "Legend1";
-      this.chart1.Legends.Add(legend1);
+      chartArea2.Name = "ChartArea1";
+      this.chart1.ChartAreas.Add(chartArea2);
+      legend2.Name = "Legend1";
+      this.chart1.Legends.Add(legend2);
       this.chart1.Location = new System.Drawing.Point(12, 78);
       this.chart1.Name = "chart1";
-      series1.ChartArea = "ChartArea1";
-      series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-      series1.LabelToolTip = "#SERIESNAME";
-      series1.Legend = "Legend1";
-      series1.Name = "Series1";
-      series1.ToolTip = "#SERIESNAME";
-      this.chart1.Series.Add(series1);
+      series2.ChartArea = "ChartArea1";
+      series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+      series2.LabelToolTip = "#SERIESNAME";
+      series2.Legend = "Legend1";
+      series2.Name = "Series1";
+      series2.ToolTip = "#SERIESNAME";
+      this.chart1.Series.Add(series2);
       this.chart1.Size = new System.Drawing.Size(620, 371);
       this.chart1.TabIndex = 0;
       this.chart1.Text = "1";
-      this.chart1.Click += new System.EventHandler(this.chart1_Click);
       this.chart1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       this.chart1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
       this.chart1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart_MouseUp);
@@ -84,7 +83,7 @@
       this.button2.TabIndex = 7;
       this.button2.Text = "Inverse Projection";
       this.button2.UseVisualStyleBackColor = true;
-      this.button2.Click += new System.EventHandler(this.button2_Click);
+      this.button2.Click += new System.EventHandler(this.btn_inverseprojection_click);
       // 
       // label1
       // 
@@ -103,7 +102,6 @@
       this.label2.Size = new System.Drawing.Size(39, 13);
       this.label2.TabIndex = 14;
       this.label2.Text = " Model";
-      this.label2.Click += new System.EventHandler(this.label2_Click);
       // 
       // label3
       // 
@@ -113,7 +111,6 @@
       this.label3.Size = new System.Drawing.Size(30, 13);
       this.label3.TabIndex = 15;
       this.label3.Text = " Size";
-      this.label3.Click += new System.EventHandler(this.label3_Click);
       // 
       // button9
       // 
@@ -123,6 +120,7 @@
       this.button9.TabIndex = 28;
       this.button9.Text = "LAMP";
       this.button9.UseVisualStyleBackColor = true;
+      this.button9.Click += new System.EventHandler(this.btn_lamp_click);
       // 
       // button1
       // 
@@ -145,7 +143,6 @@
       this.controlpoints_state.TabIndex = 30;
       this.controlpoints_state.Text = "All Loaded Points as Control Points";
       this.controlpoints_state.UseVisualStyleBackColor = true;
-      this.controlpoints_state.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
       // 
       // label4
       // 
@@ -155,7 +152,6 @@
       this.label4.Size = new System.Drawing.Size(33, 13);
       this.label4.TabIndex = 31;
       this.label4.Text = "props";
-      this.label4.Click += new System.EventHandler(this.label4_Click_1);
       // 
       // Form1
       // 
