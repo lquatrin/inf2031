@@ -2,7 +2,7 @@
 
 /**
  * https://www.siam.org/students/siuro/vol4/S01084.pdf
-**/
+ **/
 
 #include "invproj.h"
 
@@ -18,21 +18,21 @@ double InverseProjection::RadialBasisKernel(double* X1, double* X2)
   double sed = sqrt(pow(X2[0] - X1[0], 2) + pow(X2[1] - X1[1], 2));
   double c = 0.0;
 
-  double kbf = 
+  double kbf =
     //C^0 Matern
     exp(-err*sed)
-    
+
     //RBF
     //exp(-pow(err*sed, 2.0))
 
-	//Multiquadratic
+    //Multiquadratic
     //sqrt(c + pow(err * sed, 2.0));
     ;
 
   return kbf;
 }
 
-InverseProjection::InverseProjection ()
+InverseProjection::InverseProjection()
 {
   tf_1D.AddRGBControlPoint(vr::TransferControlPoint(1, 0, 0, 0));
   tf_1D.AddRGBControlPoint(vr::TransferControlPoint(0, 1, 0, 128));
@@ -43,24 +43,24 @@ InverseProjection::InverseProjection ()
   input_colorspace = 0;
   rad_kernel_gama = 2.0;
 
-  mdl_width  = -1;
+  mdl_width = -1;
   mdl_height = -1;
-  mdl_depth  = -1;
+  mdl_depth = -1;
 }
 
-InverseProjection::~InverseProjection ()
+InverseProjection::~InverseProjection()
 {
   Clear();
 }
 
-void InverseProjection::SetModelSize (int w, int h, int d)
+void InverseProjection::SetModelSize(int w, int h, int d)
 {
-  mdl_width  = w;
+  mdl_width = w;
   mdl_height = h;
-  mdl_depth  = d;
+  mdl_depth = d;
 }
 
-void InverseProjection::ReadImages (std::vector<std::string> paths, int channel)
+void InverseProjection::ReadImages(std::vector<std::string> paths, int channel)
 {
 
   for (int i = 0; i < paths.size(); i++)
@@ -83,7 +83,7 @@ void InverseProjection::ReadImages (std::vector<std::string> paths, int channel)
 // x: coeficientes
 // b: resultados
 // TODO: receber a matriz de distâncias correta em relação a cada pixel.
-void InverseProjection::CalcInverseProjection (void)
+void InverseProjection::CalcInverseProjection(void)
 {
   if (srcs.size() == 0) return;
 
@@ -107,39 +107,39 @@ void InverseProjection::CalcInverseProjection (void)
         A.at<double>(2, 0) = 1.0;
         A.at<double>(0, 1) = 1.0;
         A.at<double>(0, 2) = 1.0;
-        
+
         cv::Mat C = cv::Mat::zeros(n, 1, cv::DataType<double>::type);
 
         for (int i_imgs = 0; i_imgs < n; i_imgs++)
           C.at<double>(i_imgs, 0) = ((double)srcs[i_imgs].at<cv::Vec3b>(prow, pcol).val[chnls]) / MAX_UCHAR_IMAGE_VALUE;
-        
+
         cv::Cholesky(A.ptr<double>(), A.step, A.rows, C.ptr<double>(), C.step, C.cols);
       }
     }
   }
 }
 
-void InverseProjection::test ()
+void InverseProjection::test()
 {
   std::vector<std::string> paths;
   paths.push_back("images\\blue.png");
   paths.push_back("images\\green.png");
   paths.push_back("images\\red.png");
 
-  ReadImages(paths,0);
-  
+  ReadImages(paths, 0);
+
   for (int i = 0; i < srcs.size(); i++)
   {
     cv::Vec3b intensity = srcs[i].at<cv::Vec3b>(0, 0);
     uchar blue = intensity.val[0];
     uchar green = intensity.val[1];
     uchar red = intensity.val[2];
-    
+
     printf("%d [%s]:\n", i, paths[i].c_str());
     printf(" - %.03d %.03d %.03d\n", blue, green, red);
   }
   printf("\n");
-  
+
   CalcInverseProjection();
 
   //std::vector<std::vector<double>> m_vec;
@@ -151,9 +151,9 @@ void InverseProjection::testCholesky(void)
 {
   //Cholesky test with only the A matrix
   {
-    cv::Mat m1 = (cv::Mat_<double>(3, 3) << 4,  12, -16,
-                                           12,  37, -43,
-                                          -16, -43,  98);
+    cv::Mat m1 = (cv::Mat_<double>(3, 3) << 4, 12, -16,
+      12, 37, -43,
+      -16, -43, 98);
 
     std::cout << "Matrix A:\n" << m1 << std::endl << std::endl;
 
@@ -164,7 +164,7 @@ void InverseProjection::testCholesky(void)
       m1.at<double>(i, i) = 1 / m1.at<double>(i, i);
     // Remove upper triangle region
     m1.at<double>(0, 1) = 0; m1.at<double>(0, 2) = 0; m1.at<double>(1, 2) = 0;
-    
+
 
     std::cout << "---------------" << std::endl;
 
@@ -175,10 +175,10 @@ void InverseProjection::testCholesky(void)
 
   {
     cv::Mat m1 = (cv::Mat_<double>(4, 4) <<
-       5, 1.2, 0.3, -0.6,
-       1.2, 6, -0.4, 0.9,
-       0.3, -0.4, 8, 1.7,
-       -0.6, 0.9, 1.7, 10);
+      5, 1.2, 0.3, -0.6,
+      1.2, 6, -0.4, 0.9,
+      0.3, -0.4, 8, 1.7,
+      -0.6, 0.9, 1.7, 10);
 
     std::cout << "Matrix A:\n" << m1 << std::endl << std::endl;
 
@@ -236,15 +236,15 @@ void InverseProjection::testCholesky(void)
   }
 }
 
-void InverseProjection::testLU ()
-{  
+void InverseProjection::testLU()
+{
   int n = 3;
   {
     cv::Mat A = (cv::Mat_<double>(3, 3) <<
-      2, -2,   4,
-      -5, -4,  -4,
+      2, -2, 4,
+      -5, -4, -4,
       3, -4, -4);
-  
+
     cv::Mat M = A;
     cv::Mat P = PLUDecomp(A);
 
@@ -269,10 +269,10 @@ void InverseProjection::testLU ()
 
     std::cout << "Matrix PLU:\n" << (P.t()*(L*U)) << std::endl << std::endl;
   }
-  
+
   {
     cv::Mat A = (cv::Mat_<double>(3, 3) <<
-      1, 2,  4,
+      1, 2, 4,
       3, 8, 14,
       2, 6, 13);
     cv::Mat b = (cv::Mat_<double>(3, 1) << 3, 13, 4);
@@ -283,7 +283,7 @@ void InverseProjection::testLU ()
   }
 }
 
-void InverseProjection::Clear ()
+void InverseProjection::Clear()
 {
   srcs.clear();
   hsvs.clear();
@@ -321,7 +321,7 @@ void InverseProjection::CalcInverseProjection01(
     for (int r = 0; r < n_points_per_set; r++)
     {
       A.at<double>(r, r) = RadialBasisKernel(points[r + chnls*n_points_per_set], points[r + chnls*n_points_per_set]);;
-     
+
       for (int c = r + 1; c < n_points_per_set; c++)
       {
         double dist = RadialBasisKernel(points[r + chnls*n_points_per_set], points[c + chnls*n_points_per_set]);
@@ -348,7 +348,7 @@ void InverseProjection::CalcInverseProjection01(
 
         cv::Mat X = LUSolve(A, P, b);
         cv::Mat_<double> value_r = Ar * X;
-        
+
         Res.at<cv::Vec3b>(prow, pcol).val[chnls] = (uchar)(value_r.at<double>(0, 0));
       }
     }
@@ -360,7 +360,7 @@ void InverseProjection::CalcInverseProjection01(
   printf(" - End CalcInverseProjection with LU decomp\n");
 }
 
-void InverseProjection::CalcInverseProjectionValBased (int n_ref_points
+void InverseProjection::CalcInverseProjectionValBased(int n_ref_points
   , double** ref_points
   , std::vector<std::string> image_paths
   , double* input_point
@@ -374,11 +374,11 @@ void InverseProjection::CalcInverseProjectionValBased (int n_ref_points
   std::vector<cv::Mat> srcs;
   for (int i = 0; i < image_paths.size(); i++)
     srcs.push_back(cv::imread(image_paths[i], 1));
-  
+
   std::vector<cv::Mat> hsvs;
   for (int i = 0; i < srcs.size(); i++)
     hsvs.push_back(ConvertBGRToInputColorSpace(srcs[i], input_colorspace));
-  
+
   cv::Mat fimage = hsvs[0];
 
   //for (int i = 0; i < hsvs.size(); i++)
@@ -404,19 +404,19 @@ void InverseProjection::CalcInverseProjectionValBased (int n_ref_points
     for (int c = r + 1; c < n_ref_points; c++)
     {
       double dist = RadialBasisKernel(ref_points[r], ref_points[c]);
-  
+
       A.at<double>(r, c) = dist;
       A.at<double>(c, r) = dist;
     }
   }
-  
+
   cv::Mat P = LUDecomp(A);
-  
+
   // Vetor de dissimilaridade entre o ponto de entrada e os pontos de referência
   cv::Mat Ar = cv::Mat::zeros(1, n_ref_points, cv::DataType<double>::type);
   for (int r = 0; r < n_ref_points; r++)
     Ar.at<double>(0, r) = RadialBasisKernel(input_point, ref_points[r]);
- 
+
   for (int pcol = 0; pcol < fimage.cols; pcol++)
   {
     for (int prow = 0; prow < fimage.rows; prow++)
@@ -424,10 +424,10 @@ void InverseProjection::CalcInverseProjectionValBased (int n_ref_points
       cv::Mat b = cv::Mat::zeros(n_ref_points, 1, cv::DataType<double>::type);
       for (int i_imgs = 0; i_imgs < hsvs.size(); i_imgs++)
         b.at<double>(i_imgs, 0) = ((double)hsvs[i_imgs].at<cv::Vec3b>(prow, pcol).val[0] / 255.0);
-      
+
       cv::Mat X = LUSolve(A, P, b);
       cv::Mat_<double> value_r = Ar * X;
-      
+
       Res.at<cv::Vec3b>(prow, pcol).val[0] = (uchar)(value_r.at<double>(0, 0) * 255.0);
     }
   }
@@ -465,7 +465,7 @@ cv::Mat InverseProjection::ConvertInputColorSpaceToBGR(cv::Mat ipt, int type)
   return ret;
 }
 
-cv::Mat InverseProjection::LUDecomp (cv::Mat& A)
+cv::Mat InverseProjection::LUDecomp(cv::Mat& A)
 {
   int n = A.rows;
   cv::Mat P = cv::Mat::zeros(n, n, cv::DataType<double>::type);
@@ -529,7 +529,7 @@ cv::Mat InverseProjection::PLUDecomp(cv::Mat& A)
 
 // Compute:
 // . L * U * x = P * b
-cv::Mat InverseProjection::LUSolve (cv::Mat LU, cv::Mat P, cv::Mat b)
+cv::Mat InverseProjection::LUSolve(cv::Mat LU, cv::Mat P, cv::Mat b)
 {
   int n = LU.rows;
 
@@ -538,22 +538,22 @@ cv::Mat InverseProjection::LUSolve (cv::Mat LU, cv::Mat P, cv::Mat b)
 
   // Forward Substitution
   // L * y = B, with y = U * x
-  for(int i = 0; i < n; i++)
+  for (int i = 0; i < n; i++)
   {
     double sum = 0;
-    for(int j = 0; j < i; j++)
+    for (int j = 0; j < i; j++)
       sum += LU.at<double>(i, j) * B.at<double>(j, 0);
-    B.at<double>(i, 0) = (B.at<double>(i,0) - sum);
+    B.at<double>(i, 0) = (B.at<double>(i, 0) - sum);
   }
 
   cv::Mat X = cv::Mat::zeros(n, 1, cv::DataType<double>::type);
 
   // Backward Substitution
   // U * x = y
-  for(int i = n-1; i >= 0; i--)
+  for (int i = n - 1; i >= 0; i--)
   {
     double sum = 0;
-    for(int j = i + 1; j < n; j++)
+    for (int j = i + 1; j < n; j++)
     {
       sum += LU.at<double>(i, j) * X.at<double>(j, 0);
     }
@@ -565,13 +565,13 @@ cv::Mat InverseProjection::LUSolve (cv::Mat LU, cv::Mat P, cv::Mat b)
 
 // P^t * L * U * X = B
 // return B
-cv::Mat InverseProjection::LUEvalB (cv::Mat LU, cv::Mat P, cv::Mat X)
+cv::Mat InverseProjection::LUEvalB(cv::Mat LU, cv::Mat P, cv::Mat X)
 {
   int n = LU.rows;
-  
+
   cv::Mat L = cv::Mat::zeros(n, n, cv::DataType<double>::type);
   cv::Mat U = cv::Mat::zeros(n, n, cv::DataType<double>::type);
-  
+
   for (int i = 0; i < n; i++)
     for (int j = i; j < n; j++)
       U.at<double>(i, j) = LU.at<double>(i, j);
@@ -659,7 +659,7 @@ void InverseProjection::CalcInverseProjection02(
   printf(" - End CalcInverseProjection01\n");
 }
 
-void InverseProjection::GenInverseProjection (
+void InverseProjection::GenInverseProjection(
   int n_sets,
   int n_points_per_set,
   int dimension,
@@ -675,7 +675,7 @@ void InverseProjection::ClearInverseArray(){
   arrayResps.clear();
 }
 
-void InverseProjection::CalcInverseProjectionPropBased (
+void InverseProjection::CalcInverseProjectionPropBased(
   int n_ref_points
   , double** ref_points
   , std::vector<std::string> prop_paths
@@ -685,10 +685,10 @@ void InverseProjection::CalcInverseProjectionPropBased (
   , double* limits_pro_val
   )
 {
-  
+
   printf("chamando shepard!");
   CalcInverseProjectionShepard(n_ref_points
-    ,  ref_points
+    , ref_points
     , prop_paths
     , input_point
     , layer_i_size
@@ -697,13 +697,13 @@ void InverseProjection::CalcInverseProjectionPropBased (
   /*
   printf("%d points:\n", n_ref_points);
   for (int i = 0; i < n_ref_points; i++)
-    printf(". %d %.5lf %.5lf - %s\n", i, ref_points[i][0], ref_points[i][1], prop_paths[i].c_str());
+  printf(". %d %.5lf %.5lf - %s\n", i, ref_points[i][0], ref_points[i][1], prop_paths[i].c_str());
   printf("Input Point: %.5lf %.5lf\n", input_point[0], input_point[1]);
   printf("MinMax = %.5lf %.5lf\n", limits_pro_val[0], limits_pro_val[1]);
 
   limits_pro_val[1] = limits_pro_val[1] + (limits_pro_val[1] - limits_pro_val[0]) * 0.05;
   limits_pro_val[0] = limits_pro_val[0] - (limits_pro_val[1] - limits_pro_val[0]) * 0.05;
-  
+
   printf("Recalculated MinMax = %.5lf %.5lf\n", limits_pro_val[0], limits_pro_val[1]);
 
   std::vector<cv::Mat> f_maps;
@@ -711,28 +711,28 @@ void InverseProjection::CalcInverseProjectionPropBased (
   double max_val = 0;
 
   {
-    for (int t = 0; t < prop_paths.size(); t++)
-    {
-      cv::Mat map = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
-      
-      std::ifstream propfile;
-      propfile.open(prop_paths[t]);
-      
-      double val;
-      for (int l = 0; l < layer_j_size; l++)
-      {
-        for (int c = 0; c < layer_i_size && propfile >> val; c++)
-        {
-          map.at<double>(l, c) = val;
-        }
-      }
+  for (int t = 0; t < prop_paths.size(); t++)
+  {
+  cv::Mat map = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
 
-      f_maps.push_back(map);
+  std::ifstream propfile;
+  propfile.open(prop_paths[t]);
 
-      propfile.close();
+  double val;
+  for (int l = 0; l < layer_j_size; l++)
+  {
+  for (int c = 0; c < layer_i_size && propfile >> val; c++)
+  {
+  map.at<double>(l, c) = val;
+  }
+  }
 
-      GenerateImage(layer_j_size, layer_i_size, 15, map, std::to_string(t + 1) + "_file.png", limits_pro_val);
-    }
+  f_maps.push_back(map);
+
+  propfile.close();
+
+  GenerateImage(layer_j_size, layer_i_size, 15, map, std::to_string(t + 1) + "_file.png", limits_pro_val);
+  }
   }
 
   cv::Mat Res = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
@@ -742,45 +742,45 @@ void InverseProjection::CalcInverseProjectionPropBased (
   cv::Mat A = cv::Mat::zeros(n_ref_points, n_ref_points, cv::DataType<double>::type);
   for (int r = 0; r < n_ref_points; r++)
   {
-    A.at<double>(r, r) = 1.0;
-    for (int c = r + 1; c < n_ref_points; c++)
-    {
-      double dist = RadialBasisKernel(ref_points[r], ref_points[c]);
-      A.at<double>(r, c) = dist;
-      A.at<double>(c, r) = dist;
-    }
+  A.at<double>(r, r) = 1.0;
+  for (int c = r + 1; c < n_ref_points; c++)
+  {
+  double dist = RadialBasisKernel(ref_points[r], ref_points[c]);
+  A.at<double>(r, c) = dist;
+  A.at<double>(c, r) = dist;
+  }
   }
   cv::Mat CA;
   A.copyTo(CA);
 
   cv::Mat P = PLUDecomp(A);
-  
+
   // Vetor de dissimilaridade entre o ponto de entrada e os pontos de referência
   cv::Mat Ar = cv::Mat::zeros(1, n_ref_points, cv::DataType<double>::type);
   for (int r = 0; r < n_ref_points; r++)
-    Ar.at<double>(0, r) = RadialBasisKernel(input_point, ref_points[r]);
+  Ar.at<double>(0, r) = RadialBasisKernel(input_point, ref_points[r]);
 
   for (int pcol = 0; pcol < layer_i_size; pcol++)
   {
-    for (int prow = 0; prow < layer_j_size; prow++)
-    {
-      double v0 = f_maps[0].at<double>(prow, pcol);
-      printf("%g\n", v0);
-      if (v0 < 0)
-        Res.at<double>(prow, pcol) = -1;
-      else
-      {
-        cv::Mat b = cv::Mat::zeros(n_ref_points, 1, cv::DataType<double>::type);
-        for (int i_inp = 0; i_inp < f_maps.size(); i_inp++)
-          b.at<double>(i_inp, 0) = f_maps[i_inp].at<double>(prow, pcol);
+  for (int prow = 0; prow < layer_j_size; prow++)
+  {
+  double v0 = f_maps[0].at<double>(prow, pcol);
+  printf("%g\n", v0);
+  if (v0 < 0)
+  Res.at<double>(prow, pcol) = -1;
+  else
+  {
+  cv::Mat b = cv::Mat::zeros(n_ref_points, 1, cv::DataType<double>::type);
+  for (int i_inp = 0; i_inp < f_maps.size(); i_inp++)
+  b.at<double>(i_inp, 0) = f_maps[i_inp].at<double>(prow, pcol);
 
-        cv::Mat_<double> X = LUSolve(A, P, b);
+  cv::Mat_<double> X = LUSolve(A, P, b);
 
-        cv::Mat_<double> value_r = Ar *  X;
+  cv::Mat_<double> value_r = Ar *  X;
 
-        Res.at<double>(prow, pcol) = value_r.at<double>(0, 0);
-      } 
-    }
+  Res.at<double>(prow, pcol) = value_r.at<double>(0, 0);
+  }
+  }
   }
 
 
@@ -792,10 +792,10 @@ void InverseProjection::CalcInverseProjectionPropBased (
 }
 
 
-void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat map, std::string name, double* limits_pro_val)
+void InverseProjection::GenerateImage(int j_size, int i_size, int s, cv::Mat map, std::string name, double* limits_pro_val)
 {
   cv::Mat ret = cv::Mat::zeros(j_size * s, i_size * s, cv::DataType<cv::Vec3b>::type);
-  
+
   for (int l = 0; l < j_size; l++)
   {
     for (int c = 0; c < i_size; c++)
@@ -809,7 +809,7 @@ void InverseProjection::GenerateImage (int j_size, int i_size, int s, cv::Mat ma
           int local_l = (j_size - (l + 1)) * s + sj;
           int local_c = c * s + si;
           glm::vec4 colr;
-          if (val < 0) colr = glm::vec4(0, 0, 0,0);
+          if (val < 0) colr = glm::vec4(0, 0, 0, 0);
           else colr = tf_1D.Get(((val - limits_pro_val[0]) / (limits_pro_val[1] - limits_pro_val[0])) * 255.0);
 
           ret.at<cv::Vec3b>(local_l, local_c).val[0] = (uchar)(colr.x * 255);
@@ -834,24 +834,24 @@ double InverseProjection::dist(double* x1, double* x2){
 
 /* https://pt.wikipedia.org/wiki/Inverso_da_pot%C3%AAncia_das_dist%C3%A2ncias*/
 /*http://www.scielo.br/scielo.php?script=sci_arttext&pid=S1679-78252013000200004*/
-double InverseProjection::Shepard(int D,int start,double **u, double *x, double value,double p){
-  
+double InverseProjection::Shepard(int D, int start, double **u, double *x, double value, double p){
+
   std::vector<double> dist_matrix;
-  
+
   double result = 0;
   double sum = 0;
-  
-  for (int i = start; i < D ; i++){
+
+  for (int i = start; i < D; i++){
     dist_matrix.push_back(dist(x, u[i]));
     sum += (1 / pow(dist_matrix[i], p));
     if (dist_matrix[i] == 0) return value;
   }
 
   for (int i = 0; i < dist_matrix.size(); i++){
-    result += ((1 / pow(dist_matrix[i], p))*value)/sum;
+    result += ((1 / pow(dist_matrix[i], p))*value) / sum;
   }
-  
- 
+
+
   return result;
 }
 
@@ -903,10 +903,10 @@ void InverseProjection::CalcInverseProjectionShepard(int n_ref_points
     }
   }
 
- 
+
   std::vector<double> values;
   std::vector<double> input;
-  
+
   cv::Mat result = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
   double sum = 0;
   cv::Mat map = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
@@ -914,8 +914,8 @@ void InverseProjection::CalcInverseProjectionShepard(int n_ref_points
   for (int i = 0; i < n_ref_points; i++){
     double dist = sqrt(pow(input_point[0] - ref_points[i][0], 2) + pow(input_point[1] - ref_points[i][1], 2));
     if (dist != 0){
-      map += (1.0/pow(dist,2)) *  f_maps[i];
-      sum += 1.0/pow(dist,2);
+      map += (1.0 / pow(dist, 2)) *  f_maps[i];
+      sum += 1.0 / pow(dist, 2);
       lambdas.push_back((1.0 / pow(dist, 2)));
     }
     else{
@@ -935,7 +935,7 @@ void InverseProjection::CalcInverseProjectionShepard(int n_ref_points
   ws = layer_j_size;
   hs = layer_i_size;
   std::size_t found = prop_paths[0].find_last_of("/\\");
-  GenerateImage(layer_j_size, layer_i_size, 15, result, prop_paths[0].substr(found + 1) +"propinverse.png", limits_pro_val);
+  GenerateImage(layer_j_size, layer_i_size, 15, result, prop_paths[0].substr(found + 1) + "propinverse.png", limits_pro_val);
 
 }
 
@@ -994,7 +994,7 @@ void InverseProjection::CalcByLambdas(
   cv::Mat map = cv::Mat::zeros(layer_j_size, layer_i_size, cv::DataType<double>::type);
   bool zero = false;
   for (int i = 0; i < n_ref_points; i++){
-      map += lambdas[i] *  f_maps[i];
+    map += lambdas[i] * f_maps[i];
 
   }
   result = map;
@@ -1011,10 +1011,10 @@ void InverseProjection::CalcNewPropGridByInverse(void){
   cv::Size s = arrayResps[0].size();
 
   cv::Mat result = cv::Mat::zeros(ws, hs, cv::DataType<double>::type);
-  
+
   for (int j = 0; j < hs; j++){
     for (int i = 0; i < ws; i++){
-      if (arrayResps[0].at<double>(i, j) < 0 || arrayResps[1].at<double>(i, j) < 0 || arrayResps[2].at<double>(i, j) < 0 || arrayResps[3].at<double>(i, j) < 0 )
+      if (arrayResps[0].at<double>(i, j) < 0 || arrayResps[1].at<double>(i, j) < 0 || arrayResps[2].at<double>(i, j) < 0 || arrayResps[3].at<double>(i, j) < 0)
         result.at<double>(i, j) = -1;
       else
         result.at<double>(i, j) = arrayResps[0].at<double>(i, j) * arrayResps[1].at<double>(i, j) * arrayResps[2].at<double>(i, j) * arrayResps[3].at<double>(i, j);
@@ -1023,164 +1023,163 @@ void InverseProjection::CalcNewPropGridByInverse(void){
 
   double min, max;
   double* vec = (double*)malloc(2 * sizeof(double));
-  
+
   cv::minMaxLoc(result, &min, &max);
   vec[0] = min;
   vec[1] = max;
 
 
   vec[1] = vec[1] + (vec[1] - vec[0]) * 0.05;
-  vec[0] = (vec[0]-0.5f)-(vec[1] - vec[0]) * 0.05;
+  vec[0] = (vec[0] - 0.5f) - (vec[1] - vec[0]) * 0.05;
 
 
 
-  printf("max min da composta %g %g\n max min %g %g", vec[0], vec[1], max,min);
-  GenerateImage(ws,hs, 15, result, "novaprop.png", vec);
+  printf("max min da composta %g %g\n max min %g %g", vec[0], vec[1], max, min);
+  GenerateImage(ws, hs, 15, result, "novaprop.png", vec);
 }
 
 void InverseProjection::CalcInverseProjectionMultiPropBased(int input_prop_type
-                                                          , int n_properties
-                                                          , int n_control_points
-                                                          , double** v_control_points
-                                                          , double* v_input_point
-                                                          , std::vector<std::string> prop_paths
-                                                          , double* n_property_limits
-                                                          )
+  , int n_properties
+  , int n_control_points
+  , double** v_control_points
+  , double* v_input_point
+  , std::vector<std::string> prop_paths
+  , double* n_property_limits
+  )
 {
-    //printf("%d points:\n", n_control_points);
-    //for (int i = 0; i < n_control_points; i++)
-    //{
-    //  printf(". %d %.5lf %.5lf\n", i, v_control_points[i][0], v_control_points[i][1]);
-    //  for (int p = 0; p < n_properties; p++)
-    //  {
-    //    printf(" -> %d: %s\n", p, prop_paths[i + p*n_control_points].c_str());
-    //  }
-    //}
-    //printf("Input Point: %.5lf %.5lf\n", v_input_point[0], v_input_point[1]);
-    //printf("%d properties:\n", n_properties);
+  //printf("%d points:\n", n_control_points);
+  //for (int i = 0; i < n_control_points; i++)
+  //{
+  //  printf(". %d %.5lf %.5lf\n", i, v_control_points[i][0], v_control_points[i][1]);
+  //  for (int p = 0; p < n_properties; p++)
+  //  {
+  //    printf(" -> %d: %s\n", p, prop_paths[i + p*n_control_points].c_str());
+  //  }
+  //}
+  //printf("Input Point: %.5lf %.5lf\n", v_input_point[0], v_input_point[1]);
+  //printf("%d properties:\n", n_properties);
+  for (int p = 0; p < n_properties; p++)
+  {
+    //printf(" %d MinMax = %.5lf %.5lf\n", p, n_property_limits[0 + p * 2], n_property_limits[1 + p * 2]);
+    int i1 = 0 + p * 2;
+    int i2 = 1 + p * 2;
+    n_property_limits[i2] = n_property_limits[i2] + (n_property_limits[i2] - n_property_limits[i1]) * 0.05;
+    n_property_limits[i1] = n_property_limits[i1] - (n_property_limits[i2] - n_property_limits[i1]) * 0.05;
+  }
+
+  std::vector<cv::Mat> ctl_maps;
+  std::vector<cv::Mat> ctl_filters;
+
+  double max_val = 0;
+
+  if (input_prop_type == 1)
+  {
     for (int p = 0; p < n_properties; p++)
     {
-      //printf(" %d MinMax = %.5lf %.5lf\n", p, n_property_limits[0 + p * 2], n_property_limits[1 + p * 2]);
-      int i1 = 0 + p*2;
-      int i2 = 1 + p*2;
-      n_property_limits[i2] = n_property_limits[i2] + (n_property_limits[i2] - n_property_limits[i1]) * 0.05;
-      n_property_limits[i1] = n_property_limits[i1] - (n_property_limits[i2] - n_property_limits[i1]) * 0.05;
-    }
-  
-    std::vector<cv::Mat> ctl_maps;
-    std::vector<cv::Mat> ctl_filters;
-
-    double max_val = 0;
-  
-    if (input_prop_type == 1)
-    {
-      for (int p = 0; p < n_properties; p++)
+      for (int t = 0; t < n_control_points; t++)
       {
-        for (int t = 0; t < n_control_points; t++)
+        cv::Mat map = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
+        cv::Mat filter = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<int>::type);
+
+        std::ifstream propfile;
+        propfile.open(prop_paths[t + p*n_control_points]);
+
+        int x, y;
+        double val;
+        while (propfile >> x && propfile >> y && propfile >> val)
         {
-          cv::Mat map    = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
-          cv::Mat filter = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<int>::type);
-          
-          std::ifstream propfile;
-          propfile.open(prop_paths[t + p*n_control_points]);
-          
-          int x, y;
-          double val;
-          while (propfile >> x && propfile >> y && propfile >> val)
-          {
-            map.at<double>(y, x) = val;
-            filter.at<int>(y, x) = 1;
-          }
-          
-          ctl_maps.push_back(map);
-          ctl_filters.push_back(filter);
-          
-          propfile.close();
-          
-          GenerateImageWithFilter(mdl_height, mdl_width, 15, map, std::to_string(p + 1) + "_" + std::to_string(t + 1) + "_file.png", &n_property_limits[p * 2], filter);
+          map.at<double>(y, x) = val;
+          filter.at<int>(y, x) = 1;
         }
+
+        ctl_maps.push_back(map);
+        ctl_filters.push_back(filter);
+
+        propfile.close();
+
+        GenerateImageWithFilter(mdl_height, mdl_width, 15, map, std::to_string(p + 1) + "_" + std::to_string(t + 1) + "_file.png", &n_property_limits[p * 2], filter);
       }
     }
-    else
+  }
+  else
+  {
+    for (int p = 0; p < n_properties; p++)
     {
-      for (int p = 0; p < n_properties; p++)
+      for (int t = 0; t < n_control_points; t++)
       {
-        for (int t = 0; t < n_control_points; t++)
+        cv::Mat map = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
+        cv::Mat filter = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<int>::type);
+
+        std::ifstream propfile;
+        propfile.open(prop_paths[t + p*n_control_points]);
+
+        double val;
+        for (int l = 0; l < mdl_height; l++)
         {
-          cv::Mat map = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
-          cv::Mat filter = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<int>::type);
-
-          std::ifstream propfile;
-          propfile.open(prop_paths[t + p*n_control_points]);
-
-          double val;
-          for (int l = 0; l < mdl_height; l++)
+          for (int c = 0; c < mdl_width && propfile >> val; c++)
           {
-            for (int c = 0; c < mdl_width && propfile >> val; c++)
+            if (val > -1.0)
             {
-              if (val > -1.0)
-              {
-                map.at<double>(l, c) = val;
-                filter.at<int>(l, c) = 1;
-              }
+              map.at<double>(l, c) = val;
+              filter.at<int>(l, c) = 1;
             }
           }
-  
-          ctl_maps.push_back(map);
-          ctl_filters.push_back(filter);
-  
-          propfile.close();
-  
-          GenerateImageWithFilter(mdl_height, mdl_width, 15, map, std::to_string(p + 1) + "_" + std::to_string(t + 1) + "_file.png", &n_property_limits[p * 2], filter);
         }
+
+        ctl_maps.push_back(map);
+        ctl_filters.push_back(filter);
+
+        propfile.close();
+
+        GenerateImageWithFilter(mdl_height, mdl_width, 15, map, std::to_string(p + 1) + "_" + std::to_string(t + 1) + "_file.png", &n_property_limits[p * 2], filter);
       }
     }
-  
-    for (int curr_prop = 0; curr_prop < n_properties; curr_prop++)
-    {
-      cv::Mat result = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
-      cv::Mat r_filter = cv::Mat::ones(mdl_height, mdl_width, cv::DataType<int>::type);
+  }
 
-      double sum = 0;
-    
-      cv::Mat map = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
-      bool zero = false;
+  for (int curr_prop = 0; curr_prop < n_properties; curr_prop++)
+  {
+    cv::Mat result = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
+    cv::Mat r_filter = cv::Mat::ones(mdl_height, mdl_width, cv::DataType<int>::type);
 
-      for (int i = 0; i < n_control_points; i++){
-        double dist = sqrt(pow(v_input_point[0] - v_control_points[i][0], 2) + pow(v_input_point[1] - v_control_points[i][1], 2));
-        if (dist != 0){
-          map += (1.0 / pow(dist, 2)) *  ctl_maps[curr_prop * n_control_points + i];
-          sum += 1.0 / pow(dist, 2);
-          lambdas.push_back((1.0 / pow(dist, 2)));
-          r_filter = r_filter.mul(ctl_filters[curr_prop * n_control_points + i]);
-        }
-        else{
-          zero = true;
-          for (int j = 0; j < lambdas.size(); j++) lambdas[i] = 0.f;
-          lambdas[i] = 1.0f;
-          map = ctl_maps[curr_prop * n_control_points + i];
-          r_filter = ctl_filters[curr_prop * n_control_points + i];
-          break;
-        }
+    double sum = 0;
+
+    cv::Mat map = cv::Mat::zeros(mdl_height, mdl_width, cv::DataType<double>::type);
+    bool zero = false;
+
+    for (int i = 0; i < n_control_points; i++){
+      double dist = sqrt(pow(v_input_point[0] - v_control_points[i][0], 2) + pow(v_input_point[1] - v_control_points[i][1], 2));
+      if (dist != 0){
+        map += (1.0 / pow(dist, 2)) *  ctl_maps[curr_prop * n_control_points + i];
+        sum += 1.0 / pow(dist, 2);
+        lambdas.push_back((1.0 / pow(dist, 2)));
+        r_filter = r_filter.mul(ctl_filters[curr_prop * n_control_points + i]);
       }
-
-      if (zero == false){
-        result = map / sum;
-        for (int i = 0; i < lambdas.size(); i++) lambdas[i] = lambdas[i] / sum;
+      else{
+        zero = true;
+        for (int j = 0; j < lambdas.size(); j++) lambdas[i] = 0.f;
+        lambdas[i] = 1.0f;
+        map = ctl_maps[curr_prop * n_control_points + i];
+        r_filter = ctl_filters[curr_prop * n_control_points + i];
+        break;
       }
-      else result = map;
-
-      arrayResps.push_back(result);
-
-      std::size_t found = prop_paths[curr_prop * n_control_points].find_last_of("/\\");
-      std::string st = prop_paths[curr_prop * n_control_points].substr(found + 1);
-      std::size_t fountPoint = st.find_last_of(".");
-      st = st.substr(0, fountPoint - 2);
-
-      GenerateImageWithFilter(mdl_height, mdl_width, 15, result, st + "." + "propinverse.png", &n_property_limits[curr_prop * 2], r_filter);
     }
+
+    if (zero == false){
+      result = map / sum;
+      for (int i = 0; i < lambdas.size(); i++) lambdas[i] = lambdas[i] / sum;
+    }
+    else result = map;
+
+    arrayResps.push_back(result);
+
+    std::size_t found = prop_paths[curr_prop * n_control_points].find_last_of("/\\");
+    std::string st = prop_paths[curr_prop * n_control_points].substr(found + 1);
+    std::size_t fountPoint = st.find_last_of(".");
+    st = st.substr(0, fountPoint - 2);
+
+    GenerateImageWithFilter(mdl_height, mdl_width, 15, result, st + "." + "propinverse.png", &n_property_limits[curr_prop * 2], r_filter);
+  }
 }
-
 
 void InverseProjection::GenerateImageWithFilter(int j_size, int i_size, int s, cv::Mat map, std::string name, double* limits_pro_val, cv::Mat filter)
 {
