@@ -499,6 +499,7 @@ namespace ClassCppToCS_CS
 
       double[,] pts_inputarray = new double[chart.Series[0].Points.Count(), 2];
       List<string> ctl_paths = new List<string>(chart.Series[0].Points.Count() * number_of_properties);
+      for (int i = 0; i < chart.Series[0].Points.Count() * number_of_properties; i++) ctl_paths.Add("");
 
       for (int i = 0; i < n_2d_control_points * number_of_properties; i++) ctl_paths.Add(null);
 
@@ -522,33 +523,16 @@ namespace ClassCppToCS_CS
           {
             pts_control[p2d, 0] = pt.XValue;
             pts_control[p2d, 1] = pt.YValues[0];
-
+            indexPoints[p2d] = i;
             p2d++;
           }
         }
       }
 
+      CppWrapper.CppLAMPWrapper lamp = new CppWrapper.CppLAMPWrapper();
+      double[,] proj = lamp.GetLAMP(pts_inputarray, pts_control, indexPoints, n_2d_control_points, chart.Series[0].Points.Count());
 
       /*
-      int k = 0;
-      foreach (int val in controls_idx[index_chart])
-      {
-        indexPoints[k] = val;
-        k++;
-      }
-      List<List<double>> tcontrol = controls[index_chart];
-      double[,] controlPoints = new double[controls[index_chart].Count, 2];
-      k = 0;
-      foreach (var a in tcontrol)
-      {
-        controlPoints[k, 0] = a[0];
-        controlPoints[k, 1] = a[1];
-        k++;
-      }
-      CppWrapper.CppLAMPWrapper lamp = new CppWrapper.CppLAMPWrapper();
-      double[,] proj = lamp.GetLAMP(arraypoints, controlPoints, indexPoints, controls_idx[index_chart].Count, n_reference_points);
-
-
       List<string> prop_files = new List<string>();
       List<string> filter_files = new List<string>();
       List<int> k_values = new List<int>();
