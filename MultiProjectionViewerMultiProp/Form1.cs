@@ -478,15 +478,6 @@ namespace ClassCppToCS_CS
       label1.Text = "Start LAMP";
       label1.Update();
 
-
-      //private string model_name;
-      //private int[] model_size = new int[3];
-      //
-      //private int input_prop_type;
-      //
-      //private string model_path;
-      //private double[,] min_max_property;
-
       int n_2d_control_points = 0;
       for (int i = 0; i < chart.Series[0].Points.Count(); i++)
       {
@@ -504,62 +495,30 @@ namespace ClassCppToCS_CS
       for (int i = 0; i < n_2d_control_points * number_of_properties; i++) ctl_paths.Add(null);
 
       int p2d = 0;
-      for (int i = 0; i < chart.Series[0].Points.Count(); i++)
+      int n_ref_points = chart.Series[0].Points.Count();
+      for (int i = 0; i < n_ref_points; i++)
       {
-        if (chart.Series[0].Points[i].Color == Color.Red)
+        DataPoint pt = chart.Series[0].Points[i];
+        pts_inputarray[i, 0] = pt.XValue;
+        pts_inputarray[i, 1] = pt.YValues[0];
+        
+        for (int py = 0; py < number_of_properties; py++)
         {
-          DataPoint pt = chart.Series[0].Points[i];
-          pts_inputarray[i, 0] = pt.XValue;
-          pts_inputarray[i, 1] = pt.YValues[0];
-
-          for (int py = 0; py < number_of_properties; py++)
-          {
-            string prop_path_ith = (model_path + "\\" + loaded_properties[py] + "\\" + loaded_properties[py] + "_" + (pt.Tag) + ".prop");
-            Console.Out.WriteLine(prop_path_ith);
-            ctl_paths[i + py * chart.Series[0].Points.Count()] = prop_path_ith;
-          }
-
-          if (pt.Color == Color.Red)
-          {
-            pts_control[p2d, 0] = pt.XValue;
-            pts_control[p2d, 1] = pt.YValues[0];
-            indexPoints[p2d] = i;
-            p2d++;
-          }
+          string prop_path_ith = (model_path + "\\" + loaded_properties[py] + "\\" + loaded_properties[py] + "_" + (pt.Tag) + ".prop");
+          ctl_paths[i + py * chart.Series[0].Points.Count()] = prop_path_ith;
+        }
+        
+        if (pt.Color == Color.Red)
+        {
+          pts_control[p2d, 0] = pt.XValue;
+          pts_control[p2d, 1] = pt.YValues[0];
+          indexPoints[p2d] = i;
+          p2d++;
         }
       }
 
       CppWrapper.CppLAMPWrapper lamp = new CppWrapper.CppLAMPWrapper();
-      double[,] proj = lamp.GetLAMP(pts_inputarray, pts_control, indexPoints, n_2d_control_points, chart.Series[0].Points.Count());
-
-      /*
-      List<string> prop_files = new List<string>();
-      List<string> filter_files = new List<string>();
-      List<int> k_values = new List<int>();
-
-      prop_files.Clear();
-      filter_files.Clear();
-
-      int count = 0;
-      foreach (String file in openFileDialog1.FileNames)
-      {
-        string idk = file.Split('\\').Last().Split('_').Last().Split('.').First();
-        string prop = file.Split('\\').Last().Split('_').First();
-        int splitted_paths = file.Split('\\').Last().Length;
-
-        string path = file.Substring(0, file.Length - splitted_paths);
-        path = path + prop.ToString() + '\\' + "k_" + idk.ToString() + ".filter";
-
-        prop_files.Add(file);
-
-        filter_files.Add(path);
-        k_values.Add(Int32.Parse(idk));
-
-        count++;
-      }
-
-      chart.Series[0].Points.Clear();
-      //chart.Series[2].Points.Clear();
+      double[,] proj = lamp.GetLAMP(pts_inputarray, pts_control, indexPoints, n_2d_control_points, n_ref_points);
 
       double[] min_max_axis_limits = new Double[4];
       min_max_axis_limits[0] = Double.MaxValue;
@@ -569,18 +528,15 @@ namespace ClassCppToCS_CS
 
       double expand_limtis = 1.2;
 
-      for (int i = 0; i < counter; i++)
+      for (int i = 0; i < n_ref_points; i++)
       {
-        string name = prop_files[i].Split('\\').Last();
-
         double mm_x = Math.Round(proj[i, 0], 5);
         double mm_y = Math.Round(proj[i, 1], 5);
 
-        chart.Series[0].Points.AddXY(mm_x, mm_y);
+        Console.Out.WriteLine(i + " - [" + mm_x + ", " + mm_y + "]");
 
-        chart.Series[0].Points[i].LegendToolTip = name;
-        chart.Series[0].Points[i].Tag = prop_files[i];
-        chart.Series[0].Points[i].ToolTip = name + "\n X= " + proj[i, 0] + " Y = " + proj[i, 1];
+        chart.Series[0].Points[i].XValue = mm_x;
+        chart.Series[0].Points[i].YValues[0] = mm_y;
 
         min_max_axis_limits[0] = Math.Min(min_max_axis_limits[0], mm_x);
         min_max_axis_limits[1] = Math.Max(min_max_axis_limits[1], mm_x);
@@ -591,16 +547,15 @@ namespace ClassCppToCS_CS
 
       min_max_axis_limits[0] *= expand_limtis;
       min_max_axis_limits[1] *= expand_limtis;
-
+      
       min_max_axis_limits[2] *= expand_limtis;
       min_max_axis_limits[3] *= expand_limtis;
-
+      
       chart.ChartAreas[0].AxisX.Minimum = min_max_axis_limits[0];
       chart.ChartAreas[0].AxisX.Maximum = min_max_axis_limits[1];
-
+      
       chart.ChartAreas[0].AxisY.Minimum = min_max_axis_limits[2];
       chart.ChartAreas[0].AxisY.Maximum = min_max_axis_limits[3];    
-      */
 
       label1.Text = "Finished LAMP";
       label1.Update();

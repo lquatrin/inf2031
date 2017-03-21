@@ -30,8 +30,8 @@ LAMPClass::LAMPClass(double** pInt, int arrSize)
 
 std::vector<std::vector<double>> LAMPClass::calcLAMP(double** X, int* cp_index, double** Ys, int numPoints, int numCPoints)
 {  
-  cv::Mat mpoints = cv::Mat(numPoints, 2, CV_32FC1, **X);
-  cv::Mat mcpoints = cv::Mat(numCPoints, 2, CV_32FC1, **Ys);
+  cv::Mat mpoints = cv::Mat(numPoints, 2, cv::DataType<double>::type, **X);
+  cv::Mat mcpoints = cv::Mat(numCPoints, 2, cv::DataType<double>::type, **Ys);
 
   std::vector<int> index;
   printf("matriz de distancias iniciais\n");
