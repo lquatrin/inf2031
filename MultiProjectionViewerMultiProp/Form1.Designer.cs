@@ -141,6 +141,7 @@
       this.controlpoints_state.TabIndex = 30;
       this.controlpoints_state.Text = "All Loaded Points as Control Points";
       this.controlpoints_state.UseVisualStyleBackColor = true;
+      this.controlpoints_state.CheckedChanged += new System.EventHandler(this.controlpoints_state_CheckedChanged);
       // 
       // label4
       // 

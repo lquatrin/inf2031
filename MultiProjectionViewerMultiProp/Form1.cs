@@ -568,14 +568,15 @@ namespace ClassCppToCS_CS
       double expand_limtis = 1.2;
       for (int i = 0; i < n_ref_points; i++)
       {
-        double mm_x = Math.Round(proj[i, 0], 5);
-        double mm_y = Math.Round(proj[i, 1], 5);
+        double mm_x = proj[i, 0]; //Math.Round(proj[i, 0], 5);
+        double mm_y = proj[i, 1]; //Math.Round(proj[i, 1], 5);
 
         Console.Out.WriteLine(i + " - [" + mm_x + ", " + mm_y + "]");
 
         chart.Series[0].Points[i].XValue = mm_x;
         chart.Series[0].Points[i].YValues[0] = mm_y;
         //chart.Series[0].Points.AddXY(mm_x, mm_y);
+
         min_max_axis_limits[0] = Math.Min(min_max_axis_limits[0], mm_x);
         min_max_axis_limits[1] = Math.Max(min_max_axis_limits[1], mm_x);
 
@@ -597,6 +598,20 @@ namespace ClassCppToCS_CS
 
       label1.Text = "Finished LAMP";
       label1.Update();
+    }
+
+    private void controlpoints_state_CheckedChanged(object sender, EventArgs e)
+    {
+      bool checked_box_state = this.controlpoints_state.Checked;
+      Chart chart = chart1;
+
+      for (int i = 0; i < chart.Series[0].Points.Count(); i++)
+      {
+        if (checked_box_state)
+          chart.Series[0].Points[i].Color = Color.Red;
+        else
+          chart.Series[0].Points[i].Color = Color.Blue;
+      }
     }
 
   };
