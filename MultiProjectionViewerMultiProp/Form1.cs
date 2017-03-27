@@ -22,6 +22,8 @@ namespace ClassCppToCS_CS
     private string model_name;
     private int[] model_size = new int[3];
     
+    private int global_mouse_id_click;
+
     private int input_prop_type;
 
     private string[] loaded_properties;
@@ -30,9 +32,14 @@ namespace ClassCppToCS_CS
     private string model_path;
     private double[,] min_max_property;
 
+    private int global_n_of_cases;
+    private double[,] original_xy_cases;
+
     public Form1()
     {
       InitializeComponent();
+
+      global_mouse_id_click = -1;
 
       current_colorspace_input = 0;
 
@@ -240,12 +247,26 @@ namespace ClassCppToCS_CS
 
     private void MouseMoveChartCallback(int chart_id, Chart chart, MouseEventArgs e)
     {
+      if (global_mouse_id_click >= 0)
+      {
+        Point clickPosition = e.Location;
+        var xpos = chart.ChartAreas[0].AxisX.PixelPositionToValue(clickPosition.X);
+        var ypos = chart.ChartAreas[0].AxisY.PixelPositionToValue(clickPosition.Y);
+
+        chart.Series[0].Points[global_mouse_id_click].XValue = xpos;
+        chart.Series[0].Points[global_mouse_id_click].YValues[0] = ypos;
+        chart.Series[0].Points[global_mouse_id_click].ToolTip = "Case " + (global_mouse_id_click + 1) + "\n X= " + xpos + " Y = " + ypos;
+      }
     }
     private void MouseUpChartCallback(int chart_id, Chart chart, MouseEventArgs e)
     {
       if (e.Button == MouseButtons.Left)
       {
         MouseLeftButtonProcess(chart, e.Location);
+      }
+      if (e.Button == MouseButtons.Right)
+      {
+        global_mouse_id_click = -1;
       }
     }
 
@@ -309,9 +330,20 @@ namespace ClassCppToCS_CS
             if (m_id >= 0)
             {
               if (chart.Series[0].Points[m_id].Color == Color.Blue)
+              {
+                global_mouse_id_click = m_id;
+
                 chart.Series[0].Points[m_id].Color = Color.Red;
+              }
               else if (chart.Series[0].Points[m_id].Color == Color.Red)
+              {
+                global_mouse_id_click = -1;
+                chart.Series[0].Points[m_id].XValue = original_xy_cases[m_id, 0];
+                chart.Series[0].Points[m_id].YValues[0] = original_xy_cases[m_id, 1];
+                chart.Series[0].Points[m_id].ToolTip = "Case " + (m_id + 1) + "\n X= " + original_xy_cases[m_id, 0] + " Y = " + original_xy_cases[m_id, 1];
+                
                 chart.Series[0].Points[m_id].Color = Color.Blue;
+              }
             }
           }
         }
@@ -369,7 +401,11 @@ namespace ClassCppToCS_CS
 
         // Get number of cases
         int number_of_cases = int.Parse(lines[6]);
-        
+        global_n_of_cases = number_of_cases;
+
+        original_xy_cases = null;
+        original_xy_cases = new double[global_n_of_cases, 2];
+
         // Get path properties
         string multiprop_path = lines[7];
         
@@ -432,11 +468,14 @@ namespace ClassCppToCS_CS
         {
           string name = prop_files[i].Split('\\').Last();
         
-          double mm_x = Math.Round(arrayMDS[i, 0], 5);
-          double mm_y = Math.Round(arrayMDS[i, 1], 5);
+          double mm_x = arrayMDS[i, 0]; //Math.Round(arrayMDS[i, 0], 5);
+          double mm_y = arrayMDS[i, 1]; //Math.Round(arrayMDS[i, 1], 5);
         
           chart.Series[0].Points.AddXY(mm_x, mm_y);
-        
+          original_xy_cases[i, 0] = mm_x;
+          original_xy_cases[i, 1] = mm_y;
+
+
           chart.Series[0].Points[i].LegendToolTip = "loadedpoint";
           chart.Series[0].Points[i].Tag = (i + 1).ToString();
           chart.Series[0].Points[i].ToolTip = "Case " + (i+1) + "\n X= " + arrayMDS[i, 0] + " Y = " + arrayMDS[i, 1];
@@ -499,8 +538,8 @@ namespace ClassCppToCS_CS
       for (int i = 0; i < n_ref_points; i++)
       {
         DataPoint pt = chart.Series[0].Points[i];
-        pts_inputarray[i, 0] = Math.Round(pt.XValue, 5);
-        pts_inputarray[i, 1] = Math.Round(pt.YValues[0],5);
+        pts_inputarray[i, 0] = original_xy_cases[i, 0];
+        pts_inputarray[i, 1] = original_xy_cases[i, 1];
         
         for (int py = 0; py < number_of_properties; py++)
         {
