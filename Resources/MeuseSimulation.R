@@ -2,18 +2,18 @@
 library(gstat)
 library(sp)
 
-number_of_simulations <- 8
-name_of_prop <- "zinc"
+number_of_simulations <- 10
+name_of_prop <- "cadmium"
 
 data(meuse)
 coordinates(meuse) = ~x+y
-v <- variogram(log(zinc)~1, meuse)
+v <- variogram(log(cadmium)~1, meuse)
 m <- fit.variogram(v, vgm(1, "Sph", 300, 1))
 plot(v, model = m)
 set.seed(131)
 data(meuse.grid)
 gridded(meuse.grid) = ~x+y
-sim <- krige(formula = log(zinc)~1, meuse, meuse.grid, model = m, 
+sim <- krige(formula = log(cadmium)~1, meuse, meuse.grid, model = m, 
              nmax = 15, beta = 5.9, nsim = number_of_simulations)
 # show all 5 simulation
 spplot(sim, col.regions = colorRampPalette(c("blue","light blue","light green","green","yellow", "orange", "red")))
@@ -42,5 +42,5 @@ for (ith in c(1:number_of_simulations))
                            Y = y_coords,
                            V = xyvalues)
   
-  write.table(meuse_data, paste(c("D:/GitHub/inf2031/Resources/meuse/",name_of_prop,"/",name_of_prop,"_",ith,".prop"), collapse=""), sep="\t", row.names = FALSE, col.names = FALSE)
+  write.table(meuse_data, paste(c("D:/GitHub/",name_of_prop,"/",name_of_prop,"_",ith,".prop"), collapse=""), sep="\t", row.names = FALSE, col.names = FALSE)
 }
