@@ -686,7 +686,7 @@ void InverseProjection::CalcInverseProjectionPropBased(
   )
 {
 
-  printf("chamando shepard!");
+  printf("sheppard!\n");
   CalcInverseProjectionShepard(n_ref_points
     , ref_points
     , prop_paths
@@ -898,7 +898,6 @@ void InverseProjection::CalcInverseProjectionShepard(int n_ref_points
       f_maps.push_back(map);
 
       propfile.close();
-
       GenerateImage(layer_j_size, layer_i_size, 15, map, std::to_string(t + 1) + "_file.png", limits_pro_val);
     }
   }
@@ -936,7 +935,7 @@ void InverseProjection::CalcInverseProjectionShepard(int n_ref_points
   hs = layer_i_size;
   std::size_t found = prop_paths[0].find_last_of("/\\");
   GenerateImage(layer_j_size, layer_i_size, 15, result, prop_paths[0].substr(found + 1) + "propinverse.png", limits_pro_val);
-
+  printf("oioioioioioio\n");
 }
 
 void InverseProjection::CalcByLambdas(
@@ -1176,7 +1175,7 @@ void InverseProjection::CalcInverseProjectionMultiPropBased(int input_prop_type
     std::string st = prop_paths[curr_prop * n_control_points].substr(found + 1);
     std::size_t fountPoint = st.find_last_of(".");
     st = st.substr(0, fountPoint - 2);
-
+	printf("%s\n",st + "." + "propinverse.png");
     GenerateImageWithFilter(mdl_height, mdl_width, 15, result, st + "." + "propinverse.png", &n_property_limits[curr_prop * 2], r_filter);
   }
 }
@@ -1210,5 +1209,5 @@ void InverseProjection::GenerateImageWithFilter(int j_size, int i_size, int s, c
     }
   }
 
-  cv::imwrite("../Output/" + name, ret);
+  cv::imwrite(name, ret);
 }

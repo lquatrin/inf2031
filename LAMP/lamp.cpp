@@ -61,7 +61,7 @@ std::vector<std::vector<double>> LAMPClass::calcLAMP(double** X, int* cp_index, 
 	  std::vector<double> aux;
 	  for (int c = 0; c < m_lampRes.cols; ++c)
 	  {
-		  aux.push_back(m_lampRes.at<float>(k, c));
+		  aux.push_back(m_lampRes.at<double>(k, c));
 
 	  }
 	  vect.push_back(aux);
@@ -81,7 +81,7 @@ double LAMPClass::SumArray()
 
 struct PointDistance {
   int index;
-  float distance;
+  double distance;
 };
 
 struct PointDistanceSortFunc
@@ -99,7 +99,7 @@ void LAMPClass::PrintCVMAT(cv::Mat m)
     printf("   %.02d | ", k);
     for (int c = 0; c < m.cols; ++c)
     {
-      printf("%.2f ", m.at<float>(k, c));
+      printf("%.2f ", m.at<double>(k, c));
     }
     printf("|\n");
   }
@@ -139,22 +139,22 @@ cv::Mat LAMPClass::ilamp(const cv::Mat& X, const cv::Mat& Y, const unsigned int 
   for (int i = 0; i < k; ++i)
   {
     cv::Mat t = Ys.row(i) - p;
-    alpha.at<float>(0, i) = 1 / cv::max(t.dot(t), TOLERANCE);
+    alpha.at<double>(0, i) = 1 / cv::max(t.dot(t), TOLERANCE);
     //alpha.at<float>(0, i) = 1 / cv::max(cv::norm(Ys.row(i), p), TOLERANCE);
   }
 
   // 4 - t = x~ - y~ * M, with: x~ = (SUM_{i=1, k} alpha_i * x_i) / (SUM_{i=1, k} alpha_i), y~ = (SUM_{i=1, k} alpha_i * y_i) / (SUM_{i=1, k} alpha_i)
   cv::Mat a_xi = cv::Mat::zeros(Xs.rows, Xs.cols, Xs.depth());
   for (int i = 0; i < Xs.rows; i++)
-    a_xi.row(i) = alpha.at<float>(0, i) * Xs.row(i);
+    a_xi.row(i) = alpha.at<double>(0, i) * Xs.row(i);
 
   cv::Mat a_yi = cv::Mat::zeros(Ys.rows, Ys.cols, Ys.depth());
   for (int i = 0; i < Ys.rows; i++)
-    a_yi.row(i) = alpha.at<float>(0, i) * Ys.row(i);
+    a_yi.row(i) = alpha.at<double>(0, i) * Ys.row(i);
 
-  float sum_alpha = 0.0f;
+  double sum_alpha = 0.0f;
   for (int i = 0; i < alpha.cols; i++)
-    sum_alpha += alpha.at<float>(0, i);
+    sum_alpha += alpha.at<double>(0, i);
 
   cv::Mat x_t;
   //Sum each component of each alphai*xi, resulting into a single row
@@ -187,12 +187,12 @@ cv::Mat LAMPClass::ilamp(const cv::Mat& X, const cv::Mat& Y, const unsigned int 
   cv::Mat A;
   y_c.copyTo(A);
   for (int i = 0; i < A.rows; i++)
-    A.row(i) = sqrt_alpha.at<float>(0, i) * y_c.row(i);
+    A.row(i) = sqrt_alpha.at<double>(0, i) * y_c.row(i);
 
   cv::Mat B;
   x_c.copyTo(B);
   for (int i = 0; i < B.rows; i++)
-    B.row(i) = sqrt_alpha.at<float>(0, i) * x_c.row(i);
+    B.row(i) = sqrt_alpha.at<double>(0, i) * x_c.row(i);
 
   //TODO PRINTS
 

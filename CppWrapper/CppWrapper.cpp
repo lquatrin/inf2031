@@ -53,7 +53,7 @@ array<double, 2>^ CppWrapper::CppLAMPWrapper::GetLAMP(array<double, 2>^ tvalues,
   
   for (int i = 0; i < vec.size(); i++){
     for (int j = 0; j < vec[i].size(); j++){
-      dists[i, j] = vec[i][j];
+		dists[i, j] = vec[i][j];
     }
   }
 
@@ -337,6 +337,7 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjectionPropBased(int n_r
   limits[0] = limits_prop_val[0];
   limits[1] = limits_prop_val[1];
 
+  printf("calling sheppard!");
   pinvproj->CalcInverseProjectionPropBased(n_reference_points, m, image_paths, p, lyr_i_sz, lyr_j_sz, limits);
 
   for (int i = 0; i < n_reference_points; i++)
@@ -383,6 +384,7 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjectionMultiPropBased (
     limits[1 + i*2] = min_max_properties[i, 1];
   }
 
+  printf("chameiiiiiiiii\n");
   pinvproj->CalcInverseProjectionMultiPropBased(input_prop_file
     , number_of_properties
     , n_2d_control_points

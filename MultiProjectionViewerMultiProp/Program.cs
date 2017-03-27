@@ -24,18 +24,6 @@ namespace ClassCppToCS_CS
         myArray[i] = i * 10;
       }
 
-      unsafe
-      {
-        fixed (int* pmyArray = &myArray[0])
-        {
-          CppWrapper.CppLAMPWrapper controlCpp = new CppWrapper.CppLAMPWrapper(pmyArray, noElements);
-          controlCpp.GetSum();
-          double sumOfArray = controlCpp.sum;
-          Console.WriteLine(sumOfArray.ToString());
-          controlCpp.testLamp();
-        }
-
-      }
 
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);

@@ -499,8 +499,8 @@ namespace ClassCppToCS_CS
       for (int i = 0; i < n_ref_points; i++)
       {
         DataPoint pt = chart.Series[0].Points[i];
-        pts_inputarray[i, 0] = pt.XValue;
-        pts_inputarray[i, 1] = pt.YValues[0];
+        pts_inputarray[i, 0] = Math.Round(pt.XValue, 5);
+        pts_inputarray[i, 1] = Math.Round(pt.YValues[0],5);
         
         for (int py = 0; py < number_of_properties; py++)
         {
@@ -510,8 +510,8 @@ namespace ClassCppToCS_CS
         
         if (pt.Color == Color.Red)
         {
-          pts_control[p2d, 0] = pt.XValue;
-          pts_control[p2d, 1] = pt.YValues[0];
+          pts_control[p2d, 0] = Math.Round(pt.XValue,5);
+          pts_control[p2d, 1] = Math.Round(pt.YValues[0],5);
           indexPoints[p2d] = i;
           p2d++;
         }
@@ -527,7 +527,6 @@ namespace ClassCppToCS_CS
       min_max_axis_limits[3] = Double.MinValue;
 
       double expand_limtis = 1.2;
-
       for (int i = 0; i < n_ref_points; i++)
       {
         double mm_x = Math.Round(proj[i, 0], 5);
@@ -537,7 +536,7 @@ namespace ClassCppToCS_CS
 
         chart.Series[0].Points[i].XValue = mm_x;
         chart.Series[0].Points[i].YValues[0] = mm_y;
-
+        //chart.Series[0].Points.AddXY(mm_x, mm_y);
         min_max_axis_limits[0] = Math.Min(min_max_axis_limits[0], mm_x);
         min_max_axis_limits[1] = Math.Max(min_max_axis_limits[1], mm_x);
 
@@ -561,5 +560,5 @@ namespace ClassCppToCS_CS
       label1.Update();
     }
 
-  }
+  };
 }

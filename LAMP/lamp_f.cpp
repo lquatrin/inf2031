@@ -59,7 +59,7 @@ cv::Mat LAMPClass::lamp(const cv::Mat& X, const std::vector<int> cp_index, const
     Ys.row(i).copyTo(Y.row(cp_index[i]));
   }
 
-  cv::Mat alpha = cv::Mat::zeros(1, cp_index.size(), CV_32FC1);
+  cv::Mat alpha = cv::Mat::zeros(1, cp_index.size(), CV_64FC1);
   for (int i = 0; i < X.rows; ++i) {
     if (proj_idx[i] == -1)
       continue;
@@ -68,11 +68,11 @@ cv::Mat LAMPClass::lamp(const cv::Mat& X, const std::vector<int> cp_index, const
     for (int j = 0; j < cp_index.size(); ++j)
     {
       cv::Mat t = Xs.row(j) - X.row(proj_idx[i]);
-      alpha.at<float>(0, j) = 1 / cv::max(t.dot(t), tol);
+      alpha.at<double>(0, j) = 1 / cv::max(t.dot(t), tol);
       //alpha.at<float>(0, j) = 1 / cv::max(cv::norm(Xs.row(j), X.row(proj_idx[i])), tol);
     }
 
-    float sum_alpha = cv::sum(alpha)[0];
+    double sum_alpha = cv::sum(alpha)[0];
 
     cv::Mat T = cv::Mat::zeros(Xs.rows, Xs.cols, Xs.depth());
     for (int k = 0; k < Xs.cols; ++k)
@@ -129,7 +129,7 @@ cv::Mat LAMPClass::lamp(const cv::Mat& X, const std::vector<int> cp_index, const
 
 void LAMPClass::lampTest()
 {
-  float d[10][3] = {
+  double d[10][3] = {
     { 1, 2, 3 },
     { 3, 2, 1 },
     { 4, 5, 6 },
