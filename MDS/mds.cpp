@@ -32,7 +32,7 @@ MDSClass::MDSClass(double** pInt, int arrSize){
 
 	mdists = Mat(arrSize, arrSize, CV_32FC1, **pInt);
 
-	printf("matriz de distancias iniciais\n");
+	//printf("matriz de distancias iniciais\n");
 
 	for (int k = 0; k < mdists.rows; ++k)
 	{
@@ -40,7 +40,7 @@ MDSClass::MDSClass(double** pInt, int arrSize){
 		{
 			mdists.at<float>(k, c) = pInt[k][c];
 		}
-		printf("\n");
+		//printf("\n");
 	}
 }
 

@@ -384,7 +384,7 @@ void CppWrapper::CppInverseProjectionWrapper::InverseProjectionMultiPropBased (
     limits[1 + i*2] = min_max_properties[i, 1];
   }
 
-  printf("chameiiiiiiiii\n");
+  //printf("chameiiiiiiiii\n");
   pinvproj->CalcInverseProjectionMultiPropBased(input_prop_file
     , number_of_properties
     , n_2d_control_points

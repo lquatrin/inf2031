@@ -28,9 +28,9 @@
     /// </summary>
     private void InitializeComponent()
     {
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
       this.openCFGDialog = new System.Windows.Forms.OpenFileDialog();
@@ -42,27 +42,30 @@
       this.button1 = new System.Windows.Forms.Button();
       this.controlpoints_state = new System.Windows.Forms.CheckBox();
       this.label4 = new System.Windows.Forms.Label();
+      this.pct_box_result_image = new System.Windows.Forms.PictureBox();
       ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pct_box_result_image)).BeginInit();
       this.SuspendLayout();
       // 
       // chart1
       // 
-      chartArea1.Name = "ChartArea1";
-      this.chart1.ChartAreas.Add(chartArea1);
-      legend1.Name = "Legend1";
-      this.chart1.Legends.Add(legend1);
+      chartArea2.Name = "ChartArea1";
+      this.chart1.ChartAreas.Add(chartArea2);
+      legend2.Name = "Legend1";
+      this.chart1.Legends.Add(legend2);
       this.chart1.Location = new System.Drawing.Point(12, 78);
       this.chart1.Name = "chart1";
-      series1.ChartArea = "ChartArea1";
-      series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-      series1.LabelToolTip = "#SERIESNAME";
-      series1.Legend = "Legend1";
-      series1.Name = "Series1";
-      series1.ToolTip = "#SERIESNAME";
-      this.chart1.Series.Add(series1);
+      series2.ChartArea = "ChartArea1";
+      series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+      series2.LabelToolTip = "#SERIESNAME";
+      series2.Legend = "Legend1";
+      series2.Name = "Series1";
+      series2.ToolTip = "#SERIESNAME";
+      this.chart1.Series.Add(series2);
       this.chart1.Size = new System.Drawing.Size(620, 371);
       this.chart1.TabIndex = 0;
       this.chart1.Text = "1";
+      this.chart1.Click += new System.EventHandler(this.chart1_Click);
       this.chart1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       this.chart1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
       this.chart1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart_MouseUp);
@@ -135,6 +138,8 @@
       // controlpoints_state
       // 
       this.controlpoints_state.AutoSize = true;
+      this.controlpoints_state.Checked = true;
+      this.controlpoints_state.CheckState = System.Windows.Forms.CheckState.Checked;
       this.controlpoints_state.Location = new System.Drawing.Point(426, 18);
       this.controlpoints_state.Name = "controlpoints_state";
       this.controlpoints_state.Size = new System.Drawing.Size(190, 17);
@@ -152,11 +157,20 @@
       this.label4.TabIndex = 31;
       this.label4.Text = "props";
       // 
+      // pct_box_result_image
+      // 
+      this.pct_box_result_image.Location = new System.Drawing.Point(638, 78);
+      this.pct_box_result_image.Name = "pct_box_result_image";
+      this.pct_box_result_image.Size = new System.Drawing.Size(424, 371);
+      this.pct_box_result_image.TabIndex = 32;
+      this.pct_box_result_image.TabStop = false;
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(638, 459);
+      this.ClientSize = new System.Drawing.Size(1074, 459);
+      this.Controls.Add(this.pct_box_result_image);
       this.Controls.Add(this.label4);
       this.Controls.Add(this.controlpoints_state);
       this.Controls.Add(this.button1);
@@ -170,6 +184,7 @@
       this.Text = "Property Projection Analysis";
       this.Load += new System.EventHandler(this.Form1_Load);
       ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pct_box_result_image)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -189,6 +204,7 @@
     private System.Windows.Forms.Button button1;
     private System.Windows.Forms.CheckBox controlpoints_state;
     private System.Windows.Forms.Label label4;
+    private System.Windows.Forms.PictureBox pct_box_result_image;
   }
 }
 

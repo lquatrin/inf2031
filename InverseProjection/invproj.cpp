@@ -1175,7 +1175,9 @@ void InverseProjection::CalcInverseProjectionMultiPropBased(int input_prop_type
     std::string st = prop_paths[curr_prop * n_control_points].substr(found + 1);
     std::size_t fountPoint = st.find_last_of(".");
     st = st.substr(0, fountPoint - 2);
-	printf("%s\n",st + "." + "propinverse.png");
+
+	  //printf("%s\n",st + "." + "propinverse.png");
+
     GenerateImageWithFilter(mdl_height, mdl_width, 15, result, st + "." + "propinverse.png", &n_property_limits[curr_prop * 2], r_filter);
   }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Drawing.Drawing2D;
 
 using CppWrapper;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -38,6 +39,9 @@ namespace ClassCppToCS_CS
     public Form1()
     {
       InitializeComponent();
+
+      this.pct_box_result_image.Image = null;
+      this.pct_box_result_image.BorderStyle = BorderStyle.FixedSingle;
 
       global_mouse_id_click = -1;
 
@@ -117,7 +121,7 @@ namespace ClassCppToCS_CS
       return openFileDialog1.ShowDialog();
     }
 
-    private void btn_inverseprojection_click(object sender, EventArgs e)
+    private void InverseProjection ()
     {
       Chart chart = chart1;
 
@@ -165,6 +169,12 @@ namespace ClassCppToCS_CS
         input_point[0, 1] = chart.Series[1].Points[0].YValues[0];
       }
 
+      if (this.pct_box_result_image.Image != null)
+      {
+        this.pct_box_result_image.Image.Dispose();
+        this.pct_box_result_image.Image = null;
+      }
+
       wrapper_inverse_projection.SetModelSize(model_size[0], model_size[1], model_size[2]);
 
       wrapper_inverse_projection.InverseProjectionMultiPropBased(
@@ -177,8 +187,31 @@ namespace ClassCppToCS_CS
         min_max_property
       );
 
+
+      Bitmap b = new Bitmap(this.pct_box_result_image.Width, this.pct_box_result_image.Height);
+      Graphics g = Graphics.FromImage((Image)b);
+
+      int step_x = this.pct_box_result_image.Width / loaded_properties.Length;
+      for (int i = 0; i < loaded_properties.Length; i++)
+      {
+        Image res_image = Image.FromFile(loaded_properties[i] + ".propinverse.png");
+        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+        g.DrawImage(res_image, step_x * i, 0, step_x, this.pct_box_result_image.Height);
+        res_image.Dispose();
+      }
+      g.Dispose();
+
+      this.pct_box_result_image.Image = (Image)b.Clone();
+
+      b.Dispose();
+
       label1.Text = "Finished Inverse Projection";
       label1.Update();
+    }
+
+    private void btn_inverseprojection_click(object sender, EventArgs e)
+    {
+      InverseProjection();
     }
 
     private void pictureBox1_Click(object sender, EventArgs e)
@@ -200,14 +233,6 @@ namespace ClassCppToCS_CS
     private void Form1_Load(object sender, EventArgs e)
     {
 
-    }
-
-    private void chart1_MouseClick(object sender, MouseEventArgs e)
-    {
-      if (e.Button == MouseButtons.Left)
-      {
-        MouseLeftButtonProcess(chart1, e.Location);
-      }
     }
 
     private Chart GetChartByID (int c_id)
@@ -612,6 +637,11 @@ namespace ClassCppToCS_CS
         else
           chart.Series[0].Points[i].Color = Color.Blue;
       }
+    }
+
+    private void chart1_Click(object sender, EventArgs e)
+    {
+
     }
 
   };

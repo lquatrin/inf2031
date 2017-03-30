@@ -90,15 +90,15 @@ namespace ClassCppToCS_CS
           dist.addPath(paths.ToArray(), k);
           double[,] array = dist.GetDistances();
 
-          Console.WriteLine("matriz de distancias\n");
-          for (int i = 0; i < counter; i++)
-          {
-            for (int j = 0; j < counter; j++)
-            {
-              Console.Write(" " + array[i, j]);
-            }
-            Console.Write("\n");
-          }
+          //Console.WriteLine("matriz de distancias\n");
+          //for (int i = 0; i < counter; i++)
+          //{
+          //  for (int j = 0; j < counter; j++)
+          //  {
+          //    Console.Write(" " + array[i, j]);
+          //  }
+          //  Console.Write("\n");
+          //}
 
           CppWrapper.CppMDSWrapper mMDS = new CppWrapper.CppMDSWrapper(array, counter);
           double[,] arrayMDS = mMDS.GetMDS();
