@@ -191,12 +191,33 @@ namespace ClassCppToCS_CS
       Bitmap b = new Bitmap(this.pct_box_result_image.Width, this.pct_box_result_image.Height);
       Graphics g = Graphics.FromImage((Image)b);
 
-      int step_x = this.pct_box_result_image.Width / loaded_properties.Length;
+      Image f_image = Image.FromFile(loaded_properties[0] + ".propinverse.png");
+      double pbw = this.pct_box_result_image.Width;
+      double pbh = this.pct_box_result_image.Height;
+
+      double orig_imw = f_image.Width;
+      double imw = f_image.Width * loaded_properties.Length;
+      double imh = f_image.Height;
+      
+      double sw = pbw / imw;
+      double sh = pbh / imh;
+      
+      f_image.Dispose();
+
+      double s;
+      if (sw < sh)
+        s = sw;
+      else
+        s = sh;
+
+      int step_x = (int)(orig_imw * s);
+      int step_y = (int)(imh * s);
+      int mid_h = this.pct_box_result_image.Height / 2;
       for (int i = 0; i < loaded_properties.Length; i++)
       {
         Image res_image = Image.FromFile(loaded_properties[i] + ".propinverse.png");
         g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-        g.DrawImage(res_image, step_x * i, 0, step_x, this.pct_box_result_image.Height);
+        g.DrawImage(res_image, step_x * i, 0, step_x, step_y);
         res_image.Dispose();
       }
       g.Dispose();
